@@ -14,7 +14,7 @@ public class TestActivity extends ActionBarActivity {
 
     RichEditText richEditText;
     TextView htmlView;
-    ToggleButton boldButton,italicButton;
+    ToggleButton boldButton,italicButton,underlineButton;
     Button undoButton, redoButton;
 
     @Override
@@ -25,6 +25,7 @@ public class TestActivity extends ActionBarActivity {
         htmlView = (TextView) findViewById(R.id.html);
         boldButton = (ToggleButton) findViewById(R.id.bold_button);
         italicButton = (ToggleButton) findViewById(R.id.italic_button);
+        underlineButton = (ToggleButton) findViewById(R.id.underline_button);
 
         undoButton = (Button) findViewById(R.id.undo_button);
         redoButton = (Button) findViewById(R.id.redo_button);
@@ -39,6 +40,12 @@ public class TestActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 richEditText.italicClick();
+            }
+        });
+        underlineButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                richEditText.underlineClick();
             }
         });
         undoButton.setOnClickListener(new View.OnClickListener() {
@@ -64,9 +71,10 @@ public class TestActivity extends ActionBarActivity {
 
         richEditText.setOnStyleChangeListener(new RichEditText.OnStyleChangeListener() {
             @Override
-            public void onStyleChange(boolean bold,boolean italic) {
+            public void onStyleChange(boolean bold,boolean italic,boolean underline) {
                 boldButton.setChecked(bold);
                 italicButton.setChecked(italic);
+                underlineButton.setChecked(underline);
             }
         });
         richEditText.setOnHistoryChangeListener(new RichEditText.OnHistoryChangeListener() {

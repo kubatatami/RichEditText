@@ -6,18 +6,15 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.EditText;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
+import com.github.kubatatami.richedittext.styles.StyleSpanInfo;
+import com.github.kubatatami.richedittext.styles.UnderlineSpanInfo;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,8 +29,9 @@ public class RichEditText extends EditText {
     protected OnHistoryChangeListener onHistoryChangeListener;
     protected final LinkedList<EditHistory> undoList = new LinkedList<EditHistory>();
     protected final LinkedList<EditHistory> redoList = new LinkedList<EditHistory>();
-    protected final StyleInfo boldStyle = new StyleInfo(Typeface.BOLD);
-    protected final StyleInfo italicStyle = new StyleInfo(Typeface.ITALIC);
+    protected final StyleSpanInfo boldStyle = new StyleSpanInfo(Typeface.BOLD);
+    protected final StyleSpanInfo italicStyle = new StyleSpanInfo(Typeface.ITALIC);
+    protected final UnderlineSpanInfo underlineStyle = new UnderlineSpanInfo();
     protected boolean ignoreHistory = false;
 
     public RichEditText(Context context) {
@@ -88,7 +86,8 @@ public class RichEditText extends EditText {
             StyleSelectionInfo styleSelectionInfo = getStyleSelectionInfo();
             onStyleChangeListener.onStyleChange(
                     !isAdd(styleSelectionInfo, boldStyle),
-                    !isAdd(styleSelectionInfo, italicStyle)
+                    !isAdd(styleSelectionInfo, italicStyle),
+                    !isAdd(styleSelectionInfo, underlineStyle)
             );
         }
     }
@@ -130,6 +129,10 @@ public class RichEditText extends EditText {
         textStyleClick(boldStyle);
     }
 
+    public void underlineClick() {
+        textStyleClick(underlineStyle);
+    }
+
     public void italicClick() {
         textStyleClick(italicStyle);
     }
@@ -154,7 +157,7 @@ public class RichEditText extends EditText {
 
     protected void selectStyle(StyleSelectionInfo styleSelectionInfo, SpanInfo<?> spanInfo) {
         if (styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd) {
-            spanInfo.add(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd);
+            spanInfo.add(getText(), styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd);
         } else {
             int finalSpanStart = styleSelectionInfo.selectionStart;
             int finalSpanEnd = styleSelectionInfo.selectionEnd;
@@ -169,7 +172,7 @@ public class RichEditText extends EditText {
                 }
                 getText().removeSpan(span);
             }
-            spanInfo.add(finalSpanStart, finalSpanEnd);
+            spanInfo.add(getText(), finalSpanStart, finalSpanEnd);
         }
 
     }
@@ -180,7 +183,7 @@ public class RichEditText extends EditText {
             int spanStart = getText().getSpanStart(span);
             int spanEnd = getText().getSpanEnd(span);
             getText().removeSpan(span);
-            tempStyleSpan = spanInfo.add(spanStart, spanEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE | Spanned.SPAN_COMPOSING);
+            tempStyleSpan = spanInfo.add(getText(), spanStart, spanEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE | Spanned.SPAN_COMPOSING);
         } else {
             for (Object span : spanInfo.filter(getText().getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, spanInfo.clazz))) {
                 int spanStart = getText().getSpanStart(span);
@@ -189,14 +192,14 @@ public class RichEditText extends EditText {
                     getText().removeSpan(span);
                 } else if (spanStart < styleSelectionInfo.selectionStart && spanEnd <= styleSelectionInfo.selectionEnd) {
                     getText().removeSpan(span);
-                    spanInfo.add(spanStart, styleSelectionInfo.selectionStart);
+                    spanInfo.add(getText(), spanStart, styleSelectionInfo.selectionStart);
                 } else if (spanStart >= styleSelectionInfo.selectionStart && spanEnd > styleSelectionInfo.selectionEnd) {
                     getText().removeSpan(span);
-                    spanInfo.add(styleSelectionInfo.selectionEnd, spanEnd);
+                    spanInfo.add(getText(), styleSelectionInfo.selectionEnd, spanEnd);
                 } else {
                     getText().removeSpan(span);
-                    spanInfo.add(spanStart, styleSelectionInfo.selectionStart);
-                    spanInfo.add(styleSelectionInfo.selectionEnd, spanEnd);
+                    spanInfo.add(getText(), spanStart, styleSelectionInfo.selectionStart);
+                    spanInfo.add(getText(), styleSelectionInfo.selectionEnd, spanEnd);
                 }
             }
         }
@@ -256,10 +259,10 @@ public class RichEditText extends EditText {
         boolean selection;
     }
 
-    protected abstract class SpanInfo<T> {
-        Class<T> clazz;
+    public static abstract class SpanInfo<T> {
+        protected Class<T> clazz;
 
-        SpanInfo(Class<T> clazz) {
+        public SpanInfo(Class<T> clazz) {
             this.clazz = clazz;
         }
 
@@ -267,42 +270,18 @@ public class RichEditText extends EditText {
             return Arrays.asList(spans);
         }
 
-        public void add(int selectionStart, int selectionEnd) {
-            add(selectionStart, selectionEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        public void add(Editable editable, int selectionStart, int selectionEnd) {
+            add(editable, selectionStart, selectionEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         }
 
-        public abstract Object add(int selectionStart, int selectionEnd, int flags);
+        public abstract Object add(Editable editable, int selectionStart, int selectionEnd, int flags);
 
-    }
-
-    protected class StyleInfo extends SpanInfo<StyleSpan> {
-        int typeface;
-
-        StyleInfo(int typeface) {
-            super(StyleSpan.class);
-            this.typeface = typeface;
-        }
-
-        @Override
-        public List<Object> filter(Object[] spans) {
-            List<Object> result = new ArrayList<Object>();
-            for (Object span : spans) {
-                if (span instanceof StyleSpan) {
-                    if (((StyleSpan) span).getStyle() == typeface) {
-                        result.add(span);
-                    }
-                }
-            }
-            return result;
-        }
-
-        @Override
-        public Object add(int selectionStart, int selectionEnd, int flags) {
-            Object result = new StyleSpan(typeface);
-            getText().setSpan(result, selectionStart, selectionEnd, flags);
-            return result;
+        public Class<T> getClazz() {
+            return clazz;
         }
     }
+
+
 
     protected class EditHistory {
         protected Editable editable;
@@ -321,7 +300,7 @@ public class RichEditText extends EditText {
     }
 
     public interface OnStyleChangeListener {
-        public void onStyleChange(boolean bold, boolean italic);
+        public void onStyleChange(boolean bold, boolean italic, boolean underline);
     }
 
     public void setOnStyleChangeListener(OnStyleChangeListener onStyleChangeListener) {

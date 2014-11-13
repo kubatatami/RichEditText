@@ -1,15 +1,16 @@
-package com.github.kubatatami.richedittext.styles;
+package com.github.kubatatami.richedittext.styles.binary;
 
 import android.text.Editable;
 import android.text.style.StyleSpan;
 
-import com.github.kubatatami.richedittext.RichEditText;
+import com.github.kubatatami.richedittext.styles.base.BinaryStyleInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StyleSpanInfo extends RichEditText.SpanInfo<StyleSpan> {
+public class StyleSpanInfo extends BinaryStyleInfo<StyleSpan> {
     protected int typeface;
+
 
     public StyleSpanInfo(int typeface) {
         super(StyleSpan.class);
@@ -17,12 +18,12 @@ public class StyleSpanInfo extends RichEditText.SpanInfo<StyleSpan> {
     }
 
     @Override
-    public List<Object> filter(Object[] spans) {
-        List<Object> result = new ArrayList<Object>();
+    public List<StyleSpan> filter(Object[] spans) {
+        List<StyleSpan> result = new ArrayList<StyleSpan>();
         for (Object span : spans) {
             if (span instanceof StyleSpan) {
                 if (((StyleSpan) span).getStyle() == typeface) {
-                    result.add(span);
+                    result.add((StyleSpan) span);
                 }
             }
         }
@@ -30,9 +31,11 @@ public class StyleSpanInfo extends RichEditText.SpanInfo<StyleSpan> {
     }
 
     @Override
-    public Object add(Editable editable, int selectionStart, int selectionEnd, int flags) {
-        Object result = new StyleSpan(typeface);
+    public StyleSpan add(Editable editable, int selectionStart, int selectionEnd, int flags) {
+        StyleSpan result = new StyleSpan(typeface);
         editable.setSpan(result, selectionStart, selectionEnd, flags);
         return result;
     }
+
+
 }

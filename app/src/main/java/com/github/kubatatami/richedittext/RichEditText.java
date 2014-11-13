@@ -6,18 +6,16 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.TextWatcher;
-import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.EditText;
 
-import com.github.kubatatami.richedittext.styles.StyleSpanInfo;
-import com.github.kubatatami.richedittext.styles.UnderlineSpanInfo;
+import com.github.kubatatami.richedittext.other.TextWatcherAdapter;
+import com.github.kubatatami.richedittext.styles.multi.ColorSpanInfo;
+import com.github.kubatatami.richedittext.styles.multi.SizeSpanInfo;
+import com.github.kubatatami.richedittext.styles.binary.StyleSpanInfo;
+import com.github.kubatatami.richedittext.styles.binary.UnderlineSpanInfo;
 
-import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by Kuba on 20/07/14.
@@ -25,14 +23,24 @@ import java.util.List;
 public class RichEditText extends EditText {
 
     protected Object tempStyleSpan;
-    protected OnStyleChangeListener onStyleChangeListener;
+    protected OnBoldChangeListener onBoldChangeListener;
+    protected OnItalicChangeListener onItalicChangeListener;
+    protected OnUnderlineChangeListener onUnderlineChangeListener;
+
+    protected OnSizeChangeListener onSizeChangeListener;
     protected OnHistoryChangeListener onHistoryChangeListener;
     protected final LinkedList<EditHistory> undoList = new LinkedList<EditHistory>();
     protected final LinkedList<EditHistory> redoList = new LinkedList<EditHistory>();
+    protected boolean ignoreHistory = false;
+
+
+
     protected final StyleSpanInfo boldStyle = new StyleSpanInfo(Typeface.BOLD);
     protected final StyleSpanInfo italicStyle = new StyleSpanInfo(Typeface.ITALIC);
     protected final UnderlineSpanInfo underlineStyle = new UnderlineSpanInfo();
-    protected boolean ignoreHistory = false;
+    protected final SizeSpanInfo sizeStyle = new SizeSpanInfo();
+    protected final ColorSpanInfo colorStyle = new ColorSpanInfo();
+
 
     public RichEditText(Context context) {
         super(context);
@@ -49,20 +57,10 @@ public class RichEditText extends EditText {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        addTextChangedListener(new TextWatcher() {
+        addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 saveHistory();
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
             }
         });
     }
@@ -73,7 +71,9 @@ public class RichEditText extends EditText {
             int spanStart = getText().getSpanStart(tempStyleSpan);
             int spanEnd = getText().getSpanEnd(tempStyleSpan);
             getText().removeSpan(tempStyleSpan);
-            getText().setSpan(tempStyleSpan, spanStart, spanEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            if (spanEnd != -1) {
+                getText().setSpan(tempStyleSpan, spanStart, spanEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            }
             tempStyleSpan = null;
         }
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
@@ -82,15 +82,26 @@ public class RichEditText extends EditText {
     @Override
     protected void onSelectionChanged(int selStart, int selEnd) {
         super.onSelectionChanged(selStart, selEnd);
-        if (onStyleChangeListener != null) {
-            StyleSelectionInfo styleSelectionInfo = getStyleSelectionInfo();
-            onStyleChangeListener.onStyleChange(
-                    !isAdd(styleSelectionInfo, boldStyle),
-                    !isAdd(styleSelectionInfo, italicStyle),
-                    !isAdd(styleSelectionInfo, underlineStyle)
-            );
-        }
+        checkChanges();
     }
+
+    protected void checkChanges(){
+        StyleSelectionInfo styleSelectionInfo = getStyleSelectionInfo();
+        if (onBoldChangeListener != null && boldStyle.checkChange(this,styleSelectionInfo)) {
+            onBoldChangeListener.onBoldChange(boldStyle.getValue());
+        }
+        if (onItalicChangeListener != null && italicStyle.checkChange(this,styleSelectionInfo)) {
+            onItalicChangeListener.onItalicChange(italicStyle.getValue());
+        }
+        if (onUnderlineChangeListener != null && underlineStyle.checkChange(this,styleSelectionInfo)) {
+            onUnderlineChangeListener.onUnderlineChange(underlineStyle.getValue());
+        }
+        if (onSizeChangeListener != null && sizeStyle.checkChange(this,styleSelectionInfo)) {
+            onSizeChangeListener.onSizeChange(sizeStyle.getValue());
+        }
+
+    }
+
 
     protected void saveHistory() {
         if (!ignoreHistory) {
@@ -119,6 +130,7 @@ public class RichEditText extends EditText {
         setText(editHistory.editable, BufferType.EDITABLE);
         setSelection(editHistory.selectionStart, editHistory.selectionEnd);
         checkHistory();
+        checkChanges();
     }
 
     public String getHtml() {
@@ -126,27 +138,29 @@ public class RichEditText extends EditText {
     }
 
     public void boldClick() {
-        textStyleClick(boldStyle);
+        tempStyleSpan = boldStyle.perform(getText(),getStyleSelectionInfo());
     }
 
     public void underlineClick() {
-        textStyleClick(underlineStyle);
+        tempStyleSpan = underlineStyle.perform(getText(),getStyleSelectionInfo());
     }
 
     public void italicClick() {
-        textStyleClick(italicStyle);
+        tempStyleSpan = italicStyle.perform(getText(),getStyleSelectionInfo());
     }
 
-    public void textStyleClick(SpanInfo<?> spanInfo) {
-        StyleSelectionInfo styleSelectionInfo = getStyleSelectionInfo();
-        boolean add = isAdd(styleSelectionInfo, spanInfo);
-        Log.i("add", add + "");
-        if (add) {
-            selectStyle(styleSelectionInfo, spanInfo);
-        } else {
-            clearStyle(styleSelectionInfo, spanInfo);
-        }
+    public void sizeClick(float size) {
+        tempStyleSpan = sizeStyle.perform(size, getText(), getStyleSelectionInfo());
     }
+
+    public void sizeClick(SizeSpanInfo.Size size) {
+        tempStyleSpan = sizeStyle.perform(size.getSize(), getText(), getStyleSelectionInfo());
+    }
+
+    public void colorClick(int color) {
+        tempStyleSpan = colorStyle.perform(color, getText(), getStyleSelectionInfo());
+    }
+
 
     protected void checkHistory() {
         if (onHistoryChangeListener != null) {
@@ -154,56 +168,6 @@ public class RichEditText extends EditText {
         }
     }
 
-
-    protected void selectStyle(StyleSelectionInfo styleSelectionInfo, SpanInfo<?> spanInfo) {
-        if (styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd) {
-            spanInfo.add(getText(), styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd);
-        } else {
-            int finalSpanStart = styleSelectionInfo.selectionStart;
-            int finalSpanEnd = styleSelectionInfo.selectionEnd;
-            for (Object span : spanInfo.filter(getText().getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, spanInfo.clazz))) {
-                int spanStart = getText().getSpanStart(span);
-                int spanEnd = getText().getSpanEnd(span);
-                if (spanStart < finalSpanStart) {
-                    finalSpanStart = spanStart;
-                }
-                if (spanEnd > finalSpanEnd) {
-                    finalSpanEnd = spanEnd;
-                }
-                getText().removeSpan(span);
-            }
-            spanInfo.add(getText(), finalSpanStart, finalSpanEnd);
-        }
-
-    }
-
-    protected void clearStyle(StyleSelectionInfo styleSelectionInfo, SpanInfo<?> spanInfo) {
-        if (styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd) {
-            Object span = spanInfo.filter(getText().getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, spanInfo.clazz)).get(0);
-            int spanStart = getText().getSpanStart(span);
-            int spanEnd = getText().getSpanEnd(span);
-            getText().removeSpan(span);
-            tempStyleSpan = spanInfo.add(getText(), spanStart, spanEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE | Spanned.SPAN_COMPOSING);
-        } else {
-            for (Object span : spanInfo.filter(getText().getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, spanInfo.clazz))) {
-                int spanStart = getText().getSpanStart(span);
-                int spanEnd = getText().getSpanEnd(span);
-                if (spanStart >= styleSelectionInfo.selectionStart && spanEnd <= styleSelectionInfo.selectionEnd) {
-                    getText().removeSpan(span);
-                } else if (spanStart < styleSelectionInfo.selectionStart && spanEnd <= styleSelectionInfo.selectionEnd) {
-                    getText().removeSpan(span);
-                    spanInfo.add(getText(), spanStart, styleSelectionInfo.selectionStart);
-                } else if (spanStart >= styleSelectionInfo.selectionStart && spanEnd > styleSelectionInfo.selectionEnd) {
-                    getText().removeSpan(span);
-                    spanInfo.add(getText(), styleSelectionInfo.selectionEnd, spanEnd);
-                } else {
-                    getText().removeSpan(span);
-                    spanInfo.add(getText(), spanStart, styleSelectionInfo.selectionStart);
-                    spanInfo.add(getText(), styleSelectionInfo.selectionEnd, spanEnd);
-                }
-            }
-        }
-    }
 
     protected StyleSelectionInfo getStyleSelectionInfo() {
         StyleSelectionInfo result = new StyleSelectionInfo();
@@ -225,63 +189,18 @@ public class RichEditText extends EditText {
         }
         result.selectionStart = selectionStart;
         result.selectionEnd = selectionEnd;
+        result.realSelectionStart = getSelectionStart();
+        result.realSelectionEnd = getSelectionEnd();
         return result;
     }
 
-
-    protected boolean isContinuous(StyleSelectionInfo styleSelectionInfo, SpanInfo<?> spanInfo) {
-        for (int i = styleSelectionInfo.selectionStart; i <= styleSelectionInfo.selectionEnd; i++) {
-            if (getText().getSpans(i, i, spanInfo.clazz).length == 0) {
-                return false;
-            }
-        }
-        return true;
+    public class StyleSelectionInfo {
+        public int selectionStart;
+        public int selectionEnd;
+        public int realSelectionStart;
+        public int realSelectionEnd;
+        public boolean selection;
     }
-
-    protected boolean isExists(StyleSelectionInfo styleSelectionInfo, SpanInfo<?> spanInfo) {
-        return spanInfo.filter(getText().getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, spanInfo.clazz)).size() > 0;
-    }
-
-
-    protected boolean isAdd(StyleSelectionInfo styleSelectionInfo, SpanInfo<?> spanInfo) {
-        if (styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd) {
-            return !isExists(styleSelectionInfo, spanInfo);
-        } else if (styleSelectionInfo.selection) {
-            return !isContinuous(styleSelectionInfo, spanInfo);
-        } else {
-            return !isExists(styleSelectionInfo, spanInfo);
-        }
-    }
-
-    protected class StyleSelectionInfo {
-        int selectionStart;
-        int selectionEnd;
-        boolean selection;
-    }
-
-    public static abstract class SpanInfo<T> {
-        protected Class<T> clazz;
-
-        public SpanInfo(Class<T> clazz) {
-            this.clazz = clazz;
-        }
-
-        public List<Object> filter(Object[] spans) {
-            return Arrays.asList(spans);
-        }
-
-        public void add(Editable editable, int selectionStart, int selectionEnd) {
-            add(editable, selectionStart, selectionEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        }
-
-        public abstract Object add(Editable editable, int selectionStart, int selectionEnd, int flags);
-
-        public Class<T> getClazz() {
-            return clazz;
-        }
-    }
-
-
 
     protected class EditHistory {
         protected Editable editable;
@@ -299,17 +218,40 @@ public class RichEditText extends EditText {
         public void onHistoryChange(boolean undo, boolean redo);
     }
 
-    public interface OnStyleChangeListener {
-        public void onStyleChange(boolean bold, boolean italic, boolean underline);
+    public interface OnBoldChangeListener {
+        public void onBoldChange(boolean bold);
     }
 
-    public void setOnStyleChangeListener(OnStyleChangeListener onStyleChangeListener) {
-        this.onStyleChangeListener = onStyleChangeListener;
+    public interface OnItalicChangeListener {
+        public void onItalicChange(boolean italic);
+    }
+
+    public interface OnUnderlineChangeListener {
+        public void onUnderlineChange(boolean underline);
+    }
+
+    public interface OnSizeChangeListener {
+        public void onSizeChange(float size);
     }
 
     public void setOnHistoryChangeListener(OnHistoryChangeListener onHistoryChangeListener) {
         this.onHistoryChangeListener = onHistoryChangeListener;
+        onHistoryChangeListener.onHistoryChange(!undoList.isEmpty(), !redoList.isEmpty());
     }
 
+    public void setOnSizeChangeListener(OnSizeChangeListener onSizeChangeListener) {
+        this.onSizeChangeListener = onSizeChangeListener;
+    }
 
+    public void setOnBoldChangeListener(OnBoldChangeListener onBoldChangeListener) {
+        this.onBoldChangeListener = onBoldChangeListener;
+    }
+
+    public void setOnItalicChangeListener(OnItalicChangeListener onItalicChangeListener) {
+        this.onItalicChangeListener = onItalicChangeListener;
+    }
+
+    public void setOnUnderlineChangeListener(OnUnderlineChangeListener onUnderlineChangeListener) {
+        this.onUnderlineChangeListener = onUnderlineChangeListener;
+    }
 }

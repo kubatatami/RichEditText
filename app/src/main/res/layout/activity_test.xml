@@ -37,6 +37,22 @@
             android:textOn="UNDERLINE"
             android:textOff="UNDERLINE"/>
 
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/font_size_spinner"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -65,8 +81,11 @@
 
     <com.github.kubatatami.richedittext.RichEditText
         android:id="@+id/rich_edit_text"
+        android:inputType="textNoSuggestions|textMultiLine"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content" >
+        <requestFocus/>
+        </com.github.kubatatami.richedittext.RichEditText>
 
     <TextView
         android:id="@+id/html"

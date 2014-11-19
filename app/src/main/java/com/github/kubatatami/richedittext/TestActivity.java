@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -71,11 +72,15 @@ public class TestActivity extends ActionBarActivity {
         adapter = new ArrayAdapter<SizeSpanController.Size>(this, android.R.layout.simple_spinner_item, android.R.id.text1, SizeSpanController.Size.values());
         fontSizeSpinner.setAdapter(adapter);
         fontSizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            boolean first=true;
+
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (!ignoreSizeEvent) {
+                if (!ignoreSizeEvent && !first) {
                     richEditText.sizeClick(adapter.getItem(position));
                 }
+                first=false;
                 ignoreSizeEvent = false;
             }
 
@@ -145,6 +150,7 @@ public class TestActivity extends ActionBarActivity {
 
             }
         });
+        richEditText.setTextSize(TypedValue.COMPLEX_UNIT_DIP,adapter.getItem(0).getSize());
         colorPicker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
             @Override
             public void onColorChanged(int i) {

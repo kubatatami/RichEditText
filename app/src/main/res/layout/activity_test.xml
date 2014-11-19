@@ -83,6 +83,7 @@
 
         <com.github.kubatatami.richedittext.RichEditText
             android:id="@+id/rich_edit_text"
+            android:layout_marginTop="-20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textNoSuggestions|textMultiLine">

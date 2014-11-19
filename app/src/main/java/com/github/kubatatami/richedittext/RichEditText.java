@@ -27,7 +27,6 @@ import java.util.LinkedList;
  */
 public class RichEditText extends EditText {
 
-    protected Object composeStyleSpan;
     protected OnBoldChangeListener onBoldChangeListener;
     protected OnItalicChangeListener onItalicChangeListener;
     protected OnUnderlineChangeListener onUnderlineChangeListener;
@@ -102,34 +101,20 @@ public class RichEditText extends EditText {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 saveHistory();
-                checkSetValue();
+                checkBeforeChange();
             }
         });
     }
 
-    protected void endComposeSpan() {
-        if (composeStyleSpan != null) {
-            int spanStart = getText().getSpanStart(composeStyleSpan);
-            int spanEnd = getText().getSpanEnd(composeStyleSpan);
-            getText().removeSpan(composeStyleSpan);
-            if (spanEnd != -1 && spanStart != spanEnd) {
-                Log.i("composeStyleSpan", spanStart + ":" + spanEnd);
-                getText().setSpan(composeStyleSpan, spanStart, spanEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            }
-            composeStyleSpan = null;
-        }
-    }
-
     @Override
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
-        endComposeSpan();
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
     }
 
     @Override
     protected void onSelectionChanged(int selStart, int selEnd) {
         super.onSelectionChanged(selStart, selEnd);
-        checkChanges();
+        checkAfterChange();
 
     }
 
@@ -184,28 +169,28 @@ public class RichEditText extends EditText {
         return type;
     }
 
-    protected void checkSetValue() {
+    protected void checkBeforeChange() {
         StyleSelectionInfo styleSelectionInfo = getStyleSelectionInfo();
-        boldStyle.checkSetValue(getText(), styleSelectionInfo);
-        italicStyle.checkSetValue(getText(), styleSelectionInfo);
-        underlineStyle.checkSetValue(getText(), styleSelectionInfo);
-        sizeStyle.checkSetValue(getText(), styleSelectionInfo);
-        colorStyle.checkSetValue(getText(), styleSelectionInfo);
+        boldStyle.checkBeforeChange(getText(), styleSelectionInfo);
+        italicStyle.checkBeforeChange(getText(), styleSelectionInfo);
+        underlineStyle.checkBeforeChange(getText(), styleSelectionInfo);
+        sizeStyle.checkBeforeChange(getText(), styleSelectionInfo);
+        colorStyle.checkBeforeChange(getText(), styleSelectionInfo);
     }
 
 
-    protected void checkChanges() {
+    protected void checkAfterChange() {
         StyleSelectionInfo styleSelectionInfo = getStyleSelectionInfo();
-        if (onBoldChangeListener != null && boldStyle.checkChange(this, styleSelectionInfo)) {
+        if (onBoldChangeListener != null && boldStyle.checkAfterChange(this, styleSelectionInfo)) {
             onBoldChangeListener.onBoldChange(boldStyle.getValue());
         }
-        if (onItalicChangeListener != null && italicStyle.checkChange(this, styleSelectionInfo)) {
+        if (onItalicChangeListener != null && italicStyle.checkAfterChange(this, styleSelectionInfo)) {
             onItalicChangeListener.onItalicChange(italicStyle.getValue());
         }
-        if (onUnderlineChangeListener != null && underlineStyle.checkChange(this, styleSelectionInfo)) {
+        if (onUnderlineChangeListener != null && underlineStyle.checkAfterChange(this, styleSelectionInfo)) {
             onUnderlineChangeListener.onUnderlineChange(underlineStyle.getValue());
         }
-        if (onSizeChangeListener != null && sizeStyle.checkChange(this, styleSelectionInfo)) {
+        if (onSizeChangeListener != null && sizeStyle.checkAfterChange(this, styleSelectionInfo)) {
             onSizeChangeListener.onSizeChange(sizeStyle.getValue());
         }
 
@@ -239,46 +224,46 @@ public class RichEditText extends EditText {
         setText(editHistory.editable, BufferType.EDITABLE);
         setSelection(editHistory.selectionStart, editHistory.selectionEnd);
         checkHistory();
-        checkChanges();
+        checkAfterChange();
     }
 
     public String getHtml() {
         return Html.toHtml(getText());
     }
 
+    @Override
+    public void setTextSize(int unit, float size) {
+        super.setTextSize(unit, size);
+        checkAfterChange();
+    }
+
     public void boldClick() {
-        endComposeSpan();
-        composeStyleSpan = boldStyle.perform(getText(), getStyleSelectionInfo());
+        boldStyle.perform(getText(), getStyleSelectionInfo());
         saveHistory();
     }
 
     public void underlineClick() {
-        endComposeSpan();
-        composeStyleSpan = underlineStyle.perform(getText(), getStyleSelectionInfo());
+        underlineStyle.perform(getText(), getStyleSelectionInfo());
         saveHistory();
     }
 
     public void italicClick() {
-        endComposeSpan();
-        composeStyleSpan = italicStyle.perform(getText(), getStyleSelectionInfo());
+        italicStyle.perform(getText(), getStyleSelectionInfo());
         saveHistory();
     }
 
     public void sizeClick(float size) {
-        endComposeSpan();
-        composeStyleSpan = sizeStyle.perform(size, getText(), getStyleSelectionInfo());
+        sizeStyle.perform(size, getText(), getStyleSelectionInfo());
         saveHistory();
     }
 
     public void sizeClick(SizeSpanController.Size size) {
-        endComposeSpan();
-        composeStyleSpan = sizeStyle.perform(size.getSize(), getText(), getStyleSelectionInfo());
+        sizeStyle.perform(size.getSize(), getText(), getStyleSelectionInfo());
         saveHistory();
     }
 
     public void colorClick(int color) {
-        endComposeSpan();
-        composeStyleSpan = colorStyle.perform(color, getText(), getStyleSelectionInfo());
+        colorStyle.perform(color, getText(), getStyleSelectionInfo());
         saveHistory();
     }
 

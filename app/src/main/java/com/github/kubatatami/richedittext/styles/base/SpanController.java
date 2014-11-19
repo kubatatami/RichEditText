@@ -31,8 +31,8 @@ public abstract class SpanController<T> {
         return clazz;
     }
 
-    public abstract void checkSetValue(Editable editable, RichEditText.StyleSelectionInfo styleSelectionInfo);
+    public abstract void checkBeforeChange(Editable editable, RichEditText.StyleSelectionInfo styleSelectionInfo);
 
-    public abstract boolean checkChange(EditText editText, RichEditText.StyleSelectionInfo styleSelectionInfo);
+    public abstract boolean checkAfterChange(EditText editText, RichEditText.StyleSelectionInfo styleSelectionInfo);
 
 }

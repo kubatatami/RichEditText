@@ -1,6 +1,7 @@
 package com.github.kubatatami.richedittext.styles.binary;
 
 import android.text.Editable;
+import android.text.Spanned;
 import android.text.style.StyleSpan;
 
 import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
@@ -8,7 +9,7 @@ import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StyleSpanController extends BinaryStyleController<StyleSpan> {
+public abstract class StyleSpanController extends BinaryStyleController<StyleSpan> {
     protected int typeface;
 
 

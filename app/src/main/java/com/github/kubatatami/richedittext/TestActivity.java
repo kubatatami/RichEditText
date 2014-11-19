@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.style.StrikethroughSpan;
 import android.text.style.UnderlineSpan;
 import android.util.TypedValue;
 import android.view.View;
@@ -23,7 +24,7 @@ public class TestActivity extends ActionBarActivity {
 
     RichEditText richEditText;
     TextView htmlView;
-    ToggleButton boldButton, italicButton, underlineButton;
+    ToggleButton boldButton, italicButton, underlineButton,strikethroughButton;
     Button undoButton, redoButton;
     Spinner fontSizeSpinner;
     ArrayAdapter<SizeSpanController.Size> adapter;
@@ -40,6 +41,7 @@ public class TestActivity extends ActionBarActivity {
         boldButton = (ToggleButton) findViewById(R.id.bold_button);
         italicButton = (ToggleButton) findViewById(R.id.italic_button);
         underlineButton = (ToggleButton) findViewById(R.id.underline_button);
+        strikethroughButton = (ToggleButton) findViewById(R.id.strikethrough_button);
         fontSizeSpinner = (Spinner) findViewById(R.id.font_size_spinner);
         colorPicker = (ColorPicker) findViewById(R.id.color_picker);
 
@@ -64,11 +66,25 @@ public class TestActivity extends ActionBarActivity {
                 richEditText.underlineClick();
             }
         });
+        strikethroughButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                richEditText.strikethroughClick();
+            }
+        });
         Spannable spannableString = new SpannableString("U");
         spannableString.setSpan(new UnderlineSpan(), 0, 1, 0);
         underlineButton.setText(spannableString);
         underlineButton.setTextOn(spannableString);
         underlineButton.setTextOff(spannableString);
+
+        spannableString = new SpannableString("S");
+        spannableString.setSpan(new StrikethroughSpan(), 0, 1, 0);
+        strikethroughButton.setText(spannableString);
+        strikethroughButton.setTextOn(spannableString);
+        strikethroughButton.setTextOff(spannableString);
+
+
         adapter = new ArrayAdapter<SizeSpanController.Size>(this, android.R.layout.simple_spinner_item, android.R.id.text1, SizeSpanController.Size.values());
         fontSizeSpinner.setAdapter(adapter);
         fontSizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -103,22 +119,28 @@ public class TestActivity extends ActionBarActivity {
             }
         });
 
-        richEditText.setOnBoldChangeListener(new RichEditText.OnBoldChangeListener() {
+        richEditText.setOnBoldChangeListener(new RichEditText.OnValueChangeListener<Boolean>() {
             @Override
-            public void onBoldChange(boolean bold) {
+            public void onValueChange(Boolean bold) {
                 boldButton.setChecked(bold);
             }
         });
-        richEditText.setOnItalicChangeListener(new RichEditText.OnItalicChangeListener() {
+        richEditText.setOnItalicChangeListener(new RichEditText.OnValueChangeListener<Boolean>() {
             @Override
-            public void onItalicChange(boolean italic) {
+            public void onValueChange(Boolean italic) {
                 italicButton.setChecked(italic);
             }
         });
-        richEditText.setOnUnderlineChangeListener(new RichEditText.OnUnderlineChangeListener() {
+        richEditText.setOnUnderlineChangeListener(new RichEditText.OnValueChangeListener<Boolean>() {
             @Override
-            public void onUnderlineChange(boolean underline) {
+            public void onValueChange(Boolean underline) {
                 underlineButton.setChecked(underline);
+            }
+        });
+        richEditText.setOnStrikethroughChangeListener(new RichEditText.OnValueChangeListener<Boolean>() {
+            @Override
+            public void onValueChange(Boolean strikethroug) {
+                strikethroughButton.setChecked(strikethroug);
             }
         });
         richEditText.setOnHistoryChangeListener(new RichEditText.OnHistoryChangeListener() {
@@ -136,9 +158,9 @@ public class TestActivity extends ActionBarActivity {
                 });
             }
         });
-        richEditText.setOnSizeChangeListener(new RichEditText.OnSizeChangeListener() {
+        richEditText.setOnSizeChangeListener(new RichEditText.OnValueChangeListener<Float>() {
             @Override
-            public void onSizeChange(float size) {
+            public void onValueChange(Float size) {
                 ignoreSizeEvent = true;
                 for (int i = 0; i < adapter.getCount(); i++) {
                     SizeSpanController.Size sizeEnum = adapter.getItem(i);
@@ -150,15 +172,27 @@ public class TestActivity extends ActionBarActivity {
 
             }
         });
-        richEditText.setTextSize(TypedValue.COMPLEX_UNIT_DIP,adapter.getItem(0).getSize());
-        colorPicker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
+        richEditText.setOnColorChangeListener(new RichEditText.OnValueChangeListener<Integer>() {
             @Override
-            public void onColorChanged(int i) {
-                richEditText.colorClick(i);
+            public void onValueChange(Integer value) {
+                ignoreSizeEvent = true;
+                colorPicker.setNewCenterColor(value);
             }
         });
+        richEditText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, adapter.getItem(0).getSize());
+        richEditText.setHistoryLimit(10);
+        colorPicker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
+            boolean first=true;
 
-        //richEditText.colorClick(Color.CYAN);
+            @Override
+            public void onColorChanged(int i) {
+                if (!ignoreSizeEvent && !first) {
+                    richEditText.colorClick(i);
+                }
+                first=false;
+                ignoreSizeEvent = false;
+            }
+        });
     }
 
 

@@ -11,10 +11,4 @@ public class UnderlineSpanController extends BinaryStyleController<UnderlineSpan
         super(UnderlineSpan.class);
     }
 
-    @Override
-    public UnderlineSpan add(Editable editable, int selectionStart, int selectionEnd, int flags) {
-        UnderlineSpan result = new UnderlineSpan();
-        editable.setSpan(result, selectionStart, selectionEnd, flags);
-        return result;
-    }
 }

@@ -41,25 +41,42 @@
                 android:id="@+id/underline_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="10dp"
                 android:textOff="U"
-                android:textOn="U" />
+                android:textOn="U"
+                android:textSize="10dp" />
+
+            <ToggleButton
+                android:id="@+id/strikethrough_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOff="S"
+                android:textOn="S"
+                android:textSize="10dp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/undo_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="10dp"
-                android:text="undo" />
+                android:text="undo"
+                android:textSize="10dp" />
 
             <Button
                 android:id="@+id/redo_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="10dp"
-                android:text="redo" />
+                android:text="redo"
+                android:textSize="10dp" />
 
         </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -83,9 +100,9 @@
 
         <com.github.kubatatami.richedittext.RichEditText
             android:id="@+id/rich_edit_text"
-            android:layout_marginTop="-20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="-20dp"
             android:inputType="textNoSuggestions|textMultiLine">
 
             <requestFocus />

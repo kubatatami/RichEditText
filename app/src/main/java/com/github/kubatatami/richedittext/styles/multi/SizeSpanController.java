@@ -1,24 +1,22 @@
 package com.github.kubatatami.richedittext.styles.multi;
 
-import android.content.res.Resources;
 import android.text.Editable;
 import android.text.style.AbsoluteSizeSpan;
-import android.util.TypedValue;
 import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.other.DimenUtil;
-import com.github.kubatatami.richedittext.styles.base.MultiStyleInfo;
+import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 
-public class SizeSpanInfo extends MultiStyleInfo<AbsoluteSizeSpan,Float> {
+public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan,Float> {
 
 
-    public SizeSpanInfo() {
+    public SizeSpanController() {
         super(AbsoluteSizeSpan.class);
     }
 
 
     @Override
-    protected Float getValueFromSpan(AbsoluteSizeSpan span) {
+    public Float getValueFromSpan(AbsoluteSizeSpan span) {
         return DimenUtil.convertPixelsToDp((span).getSize());
     }
 

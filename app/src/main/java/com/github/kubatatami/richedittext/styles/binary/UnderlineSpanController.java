@@ -3,11 +3,11 @@ package com.github.kubatatami.richedittext.styles.binary;
 import android.text.Editable;
 import android.text.style.UnderlineSpan;
 
-import com.github.kubatatami.richedittext.styles.base.BinaryStyleInfo;
+import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
 
-public class UnderlineSpanInfo extends BinaryStyleInfo<UnderlineSpan> {
+public class UnderlineSpanController extends BinaryStyleController<UnderlineSpan> {
 
-    public UnderlineSpanInfo() {
+    public UnderlineSpanController() {
         super(UnderlineSpan.class);
     }
 

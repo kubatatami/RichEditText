@@ -6,15 +6,20 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.style.AbsoluteSizeSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.other.TextWatcherAdapter;
-import com.github.kubatatami.richedittext.styles.multi.ColorSpanInfo;
-import com.github.kubatatami.richedittext.styles.multi.SizeSpanInfo;
-import com.github.kubatatami.richedittext.styles.binary.StyleSpanInfo;
-import com.github.kubatatami.richedittext.styles.binary.UnderlineSpanInfo;
+import com.github.kubatatami.richedittext.styles.binary.StyleSpanController;
+import com.github.kubatatami.richedittext.styles.multi.ColorSpanController;
+import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
+import com.github.kubatatami.richedittext.styles.binary.UnderlineSpanController;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.LinkedList;
 
 /**
@@ -22,7 +27,7 @@ import java.util.LinkedList;
  */
 public class RichEditText extends EditText {
 
-    protected Object tempStyleSpan;
+    protected Object composeStyleSpan;
     protected OnBoldChangeListener onBoldChangeListener;
     protected OnItalicChangeListener onItalicChangeListener;
     protected OnUnderlineChangeListener onUnderlineChangeListener;
@@ -33,49 +38,91 @@ public class RichEditText extends EditText {
     protected final LinkedList<EditHistory> redoList = new LinkedList<EditHistory>();
     protected boolean ignoreHistory = false;
 
+    protected Editable proxyEditable = (Editable) Proxy.newProxyInstance(
+            Editable.class.getClassLoader(),
+            new Class[]{Editable.class}, new ProxyClass());
 
-
-    protected final StyleSpanInfo boldStyle = new StyleSpanInfo(Typeface.BOLD);
-    protected final StyleSpanInfo italicStyle = new StyleSpanInfo(Typeface.ITALIC);
-    protected final UnderlineSpanInfo underlineStyle = new UnderlineSpanInfo();
-    protected final SizeSpanInfo sizeStyle = new SizeSpanInfo();
-    protected final ColorSpanInfo colorStyle = new ColorSpanInfo();
+    protected final StyleSpanController boldStyle = new StyleSpanController(Typeface.BOLD);
+    protected final StyleSpanController italicStyle = new StyleSpanController(Typeface.ITALIC);
+    protected final UnderlineSpanController underlineStyle = new UnderlineSpanController();
+    protected final SizeSpanController sizeStyle = new SizeSpanController();
+    protected final ColorSpanController colorStyle = new ColorSpanController();
 
 
     public RichEditText(Context context) {
         super(context);
+        init();
     }
 
     public RichEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public RichEditText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        init();
     }
+
+    protected void init() {
+
+    }
+
+    class ProxyClass implements InvocationHandler {
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+            Editable baseEditable = RichEditText.super.getText();
+            if (method.getName().equals("setSpan")) {
+                String stInfo = getExternalStacktrace(Thread.currentThread().getStackTrace());
+                if(stInfo!=null) {
+                    Log.i("setSpan", args[0].getClass().getSimpleName() + " " + getValue(args[0]) + " "
+                            + args[1] + ":" + args[2] + " " + getFlagsAsString((Integer) args[3]) + stInfo);
+                }
+            } else if (method.getName().equals("removeSpan")) {
+                String stInfo = getExternalStacktrace(Thread.currentThread().getStackTrace());
+                int spanStart = baseEditable.getSpanStart(args[0]);
+                int spanEnd = baseEditable.getSpanEnd(args[0]);
+                int spanFlags = baseEditable.getSpanEnd(args[0]);
+                if(stInfo!=null) {
+                    Log.i("removeSpan", args[0].getClass().getSimpleName() + " " + getValue(args[0])
+                            + " " + spanStart + ":" + spanEnd + " " + getFlagsAsString(spanFlags) + stInfo);
+                }
+            }
+            return method.invoke(baseEditable, args);
+        }
+    }
+
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+
         addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 saveHistory();
+                checkSetValue();
             }
         });
     }
 
+    protected void endComposeSpan() {
+        if (composeStyleSpan != null) {
+            int spanStart = getText().getSpanStart(composeStyleSpan);
+            int spanEnd = getText().getSpanEnd(composeStyleSpan);
+            getText().removeSpan(composeStyleSpan);
+            if (spanEnd != -1 && spanStart != spanEnd) {
+                Log.i("composeStyleSpan", spanStart + ":" + spanEnd);
+                getText().setSpan(composeStyleSpan, spanStart, spanEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            }
+            composeStyleSpan = null;
+        }
+    }
+
     @Override
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
-        if (tempStyleSpan != null) {
-            int spanStart = getText().getSpanStart(tempStyleSpan);
-            int spanEnd = getText().getSpanEnd(tempStyleSpan);
-            getText().removeSpan(tempStyleSpan);
-            if (spanEnd != -1) {
-                getText().setSpan(tempStyleSpan, spanStart, spanEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            }
-            tempStyleSpan = null;
-        }
+        endComposeSpan();
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
     }
 
@@ -83,20 +130,82 @@ public class RichEditText extends EditText {
     protected void onSelectionChanged(int selStart, int selEnd) {
         super.onSelectionChanged(selStart, selEnd);
         checkChanges();
+
     }
 
-    protected void checkChanges(){
+    @Override
+    public Editable getText() {
+        return proxyEditable != null ? proxyEditable : super.getText();
+    }
+
+
+    protected String getExternalStacktrace(StackTraceElement[] stackTrace) {
+        String packageName = RichEditText.class.getPackage().getName();
+        for (StackTraceElement element : stackTrace) {
+            if (element.getClassName().contains(packageName) && !element.getClassName().equals(ProxyClass.class.getName())) {
+                return " from " +
+                        element.getClassName() +
+                        "(" + element.getFileName() + ":" + element.getLineNumber() + ")";
+            }
+        }
+        return null;
+    }
+
+    protected String getValue(Object span) {
+        if (span instanceof AbsoluteSizeSpan) {
+            return sizeStyle.getValueFromSpan((AbsoluteSizeSpan) span) + "";
+        } else {
+            return "";
+        }
+    }
+
+    protected String getFlagsAsString(int flags) {
+        String type;
+        switch (flags) {
+            case Spanned.SPAN_INCLUSIVE_EXCLUSIVE:
+                type = "SPAN_INCLUSIVE_EXCLUSIVE";
+                break;
+            case Spanned.SPAN_INCLUSIVE_INCLUSIVE:
+                type = "SPAN_INCLUSIVE_INCLUSIVE";
+                break;
+            case Spanned.SPAN_EXCLUSIVE_EXCLUSIVE:
+                type = "SPAN_EXCLUSIVE_EXCLUSIVE";
+                break;
+            case Spanned.SPAN_EXCLUSIVE_INCLUSIVE:
+                type = "SPAN_EXCLUSIVE_INCLUSIVE";
+                break;
+            case Spanned.SPAN_INCLUSIVE_EXCLUSIVE | Spanned.SPAN_COMPOSING:
+                type = "Spanned.SPAN_INCLUSIVE_EXCLUSIVE | Spanned.SPAN_COMPOSING";
+                break;
+            default:
+                type = "";
+                break;
+        }
+        return type;
+    }
+
+    protected void checkSetValue() {
         StyleSelectionInfo styleSelectionInfo = getStyleSelectionInfo();
-        if (onBoldChangeListener != null && boldStyle.checkChange(this,styleSelectionInfo)) {
+        boldStyle.checkSetValue(getText(), styleSelectionInfo);
+        italicStyle.checkSetValue(getText(), styleSelectionInfo);
+        underlineStyle.checkSetValue(getText(), styleSelectionInfo);
+        sizeStyle.checkSetValue(getText(), styleSelectionInfo);
+        colorStyle.checkSetValue(getText(), styleSelectionInfo);
+    }
+
+
+    protected void checkChanges() {
+        StyleSelectionInfo styleSelectionInfo = getStyleSelectionInfo();
+        if (onBoldChangeListener != null && boldStyle.checkChange(this, styleSelectionInfo)) {
             onBoldChangeListener.onBoldChange(boldStyle.getValue());
         }
-        if (onItalicChangeListener != null && italicStyle.checkChange(this,styleSelectionInfo)) {
+        if (onItalicChangeListener != null && italicStyle.checkChange(this, styleSelectionInfo)) {
             onItalicChangeListener.onItalicChange(italicStyle.getValue());
         }
-        if (onUnderlineChangeListener != null && underlineStyle.checkChange(this,styleSelectionInfo)) {
+        if (onUnderlineChangeListener != null && underlineStyle.checkChange(this, styleSelectionInfo)) {
             onUnderlineChangeListener.onUnderlineChange(underlineStyle.getValue());
         }
-        if (onSizeChangeListener != null && sizeStyle.checkChange(this,styleSelectionInfo)) {
+        if (onSizeChangeListener != null && sizeStyle.checkChange(this, styleSelectionInfo)) {
             onSizeChangeListener.onSizeChange(sizeStyle.getValue());
         }
 
@@ -138,33 +247,45 @@ public class RichEditText extends EditText {
     }
 
     public void boldClick() {
-        tempStyleSpan = boldStyle.perform(getText(),getStyleSelectionInfo());
+        endComposeSpan();
+        composeStyleSpan = boldStyle.perform(getText(), getStyleSelectionInfo());
+        saveHistory();
     }
 
     public void underlineClick() {
-        tempStyleSpan = underlineStyle.perform(getText(),getStyleSelectionInfo());
+        endComposeSpan();
+        composeStyleSpan = underlineStyle.perform(getText(), getStyleSelectionInfo());
+        saveHistory();
     }
 
     public void italicClick() {
-        tempStyleSpan = italicStyle.perform(getText(),getStyleSelectionInfo());
+        endComposeSpan();
+        composeStyleSpan = italicStyle.perform(getText(), getStyleSelectionInfo());
+        saveHistory();
     }
 
     public void sizeClick(float size) {
-        tempStyleSpan = sizeStyle.perform(size, getText(), getStyleSelectionInfo());
+        endComposeSpan();
+        composeStyleSpan = sizeStyle.perform(size, getText(), getStyleSelectionInfo());
+        saveHistory();
     }
 
-    public void sizeClick(SizeSpanInfo.Size size) {
-        tempStyleSpan = sizeStyle.perform(size.getSize(), getText(), getStyleSelectionInfo());
+    public void sizeClick(SizeSpanController.Size size) {
+        endComposeSpan();
+        composeStyleSpan = sizeStyle.perform(size.getSize(), getText(), getStyleSelectionInfo());
+        saveHistory();
     }
 
     public void colorClick(int color) {
-        tempStyleSpan = colorStyle.perform(color, getText(), getStyleSelectionInfo());
+        endComposeSpan();
+        composeStyleSpan = colorStyle.perform(color, getText(), getStyleSelectionInfo());
+        saveHistory();
     }
 
 
     protected void checkHistory() {
         if (onHistoryChangeListener != null) {
-            onHistoryChangeListener.onHistoryChange(!undoList.isEmpty(), !redoList.isEmpty());
+            onHistoryChangeListener.onHistoryChange(undoList.size(), redoList.size());
         }
     }
 
@@ -215,7 +336,7 @@ public class RichEditText extends EditText {
     }
 
     public interface OnHistoryChangeListener {
-        public void onHistoryChange(boolean undo, boolean redo);
+        public void onHistoryChange(int undoSteps, int redoSteps);
     }
 
     public interface OnBoldChangeListener {
@@ -236,7 +357,7 @@ public class RichEditText extends EditText {
 
     public void setOnHistoryChangeListener(OnHistoryChangeListener onHistoryChangeListener) {
         this.onHistoryChangeListener = onHistoryChangeListener;
-        onHistoryChangeListener.onHistoryChange(!undoList.isEmpty(), !redoList.isEmpty());
+        onHistoryChangeListener.onHistoryChange(undoList.size(), redoList.size());
     }
 
     public void setOnSizeChangeListener(OnSizeChangeListener onSizeChangeListener) {

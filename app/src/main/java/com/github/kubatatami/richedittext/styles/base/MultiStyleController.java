@@ -2,26 +2,25 @@ package com.github.kubatatami.richedittext.styles.base;
 
 import android.text.Editable;
 import android.text.Spanned;
-import android.text.style.AbsoluteSizeSpan;
 import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.RichEditText;
-import com.github.kubatatami.richedittext.other.DimenUtil;
 
 import java.util.List;
 
 /**
  * Created by Kuba on 12/11/14.
  */
-public abstract class MultiStyleInfo<T,Z> extends SpanInfo<T>{
+public abstract class MultiStyleController<T,Z> extends SpanController<T> {
 
     protected Z value;
+    protected SpanInfo<Z> spanInfo;
 
-    public MultiStyleInfo(Class<T> clazz) {
+    public MultiStyleController(Class<T> clazz) {
         super(clazz);
     }
 
-    protected abstract Z getValueFromSpan(T span);
+    public abstract Z getValueFromSpan(T span);
 
     public abstract T add(Z value,Editable editable, int selectionStart, int selectionEnd, int flags);
 
@@ -39,7 +38,7 @@ public abstract class MultiStyleInfo<T,Z> extends SpanInfo<T>{
 
     public void selectStyle(Z value, Editable editable, RichEditText.StyleSelectionInfo styleSelectionInfo) {
         if (styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd) {
-            add(value, editable, styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd);
+            spanInfo=new SpanInfo<Z>(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd,Spanned.SPAN_INCLUSIVE_INCLUSIVE,value);
         } else {
             int finalSpanStart = styleSelectionInfo.selectionStart;
             int finalSpanEnd = styleSelectionInfo.selectionEnd;
@@ -61,19 +60,7 @@ public abstract class MultiStyleInfo<T,Z> extends SpanInfo<T>{
 
 
     public T clearStyle(Z value, Editable editable, RichEditText.StyleSelectionInfo styleSelectionInfo) {
-        if (styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd) {
-            List<T> spans =filter(editable.getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, getClazz()));
-            if (spans.size() > 0) {
-                T span = spans.get(0);
-                int spanStart = editable.getSpanStart(span);
-                int spanEnd = editable.getSpanEnd(span);
-                editable.removeSpan(span);
-                if (styleSelectionInfo.selectionStart != 0) {
-                    return add(getValueFromSpan(span), editable, spanStart, spanEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE | Spanned.SPAN_COMPOSING);
-
-                }
-            }
-        } else {
+        if (styleSelectionInfo.selectionStart != styleSelectionInfo.selectionEnd) {
             for (Object span : filter(editable.getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, getClazz()))) {
                 int spanStart = editable.getSpanStart(span);
                 int spanEnd = editable.getSpanEnd(span);
@@ -101,9 +88,11 @@ public abstract class MultiStyleInfo<T,Z> extends SpanInfo<T>{
 
     @Override
     public boolean checkChange(EditText editText, RichEditText.StyleSelectionInfo styleSelectionInfo) {
+        spanInfo=null;
         T[] spans = editText.getText().getSpans(styleSelectionInfo.realSelectionStart, styleSelectionInfo.realSelectionEnd, getClazz());
         Z size = spans.length > 0 ? getValueFromSpan(spans[0]) : getDefaultValue(editText);
         size = spans.length > 1 ? getMultiValue() : size;
+
         if (!size.equals(value)) {
             value = size;
             return true;
@@ -111,7 +100,27 @@ public abstract class MultiStyleInfo<T,Z> extends SpanInfo<T>{
         return false;
     }
 
+    @Override
+    public void checkSetValue(Editable editable, RichEditText.StyleSelectionInfo styleSelectionInfo) {
+        if(spanInfo != null && styleSelectionInfo.selectionStart==styleSelectionInfo.selectionEnd && spanInfo.start == styleSelectionInfo.selectionStart) {
+            List<T> spans = filter(editable.getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, getClazz()));
+            if (spans.size() > 0) {
+                T span = spans.get(0);
+                int spanStart = editable.getSpanStart(span);
+                int spanEnd = editable.getSpanEnd(span);
+                editable.removeSpan(span);
+                if (styleSelectionInfo.selectionStart != 0 && styleSelectionInfo.selectionEnd == styleSelectionInfo.realSelectionEnd) {
+                    add(getValueFromSpan(span), editable, spanStart, spanEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                }
+            }
+
+            add(spanInfo.span, editable, spanInfo.start, spanInfo.end, spanInfo.flags);
+            spanInfo = null;
+        }
+    }
+
     protected abstract Z getDefaultValue(EditText editText);
 
     protected abstract Z getMultiValue();
+
 }

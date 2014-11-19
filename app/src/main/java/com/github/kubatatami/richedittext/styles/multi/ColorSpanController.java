@@ -4,16 +4,16 @@ import android.text.Editable;
 import android.text.style.ForegroundColorSpan;
 import android.widget.EditText;
 
-import com.github.kubatatami.richedittext.styles.base.MultiStyleInfo;
+import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 
-public class ColorSpanInfo extends MultiStyleInfo<ForegroundColorSpan,Integer> {
+public class ColorSpanController extends MultiStyleController<ForegroundColorSpan,Integer> {
 
-    public ColorSpanInfo() {
+    public ColorSpanController() {
         super(ForegroundColorSpan.class);
     }
 
     @Override
-    protected Integer getValueFromSpan(ForegroundColorSpan span) {
+    public Integer getValueFromSpan(ForegroundColorSpan span) {
         return span.getForegroundColor();
     }
 

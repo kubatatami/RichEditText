@@ -1,7 +1,12 @@
 package com.github.kubatatami.richedittext;
 
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannedString;
+import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -10,7 +15,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.github.kubatatami.richedittext.styles.multi.SizeSpanInfo;
+import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
+import com.larswerkman.holocolorpicker.ColorPicker;
 
 
 public class TestActivity extends ActionBarActivity {
@@ -20,8 +26,10 @@ public class TestActivity extends ActionBarActivity {
     ToggleButton boldButton,italicButton,underlineButton;
     Button undoButton, redoButton;
     Spinner fontSizeSpinner;
-    ArrayAdapter<SizeSpanInfo.Size> adapter;
+    ArrayAdapter<SizeSpanController.Size> adapter;
+    ColorPicker colorPicker;
     private boolean ignoreSizeEvent;
+    Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +41,7 @@ public class TestActivity extends ActionBarActivity {
         italicButton = (ToggleButton) findViewById(R.id.italic_button);
         underlineButton = (ToggleButton) findViewById(R.id.underline_button);
         fontSizeSpinner = (Spinner) findViewById(R.id.font_size_spinner);
+        colorPicker = (ColorPicker) findViewById(R.id.color_picker);
 
         undoButton = (Button) findViewById(R.id.undo_button);
         redoButton = (Button) findViewById(R.id.redo_button);
@@ -55,7 +64,12 @@ public class TestActivity extends ActionBarActivity {
                 richEditText.underlineClick();
             }
         });
-        adapter = new ArrayAdapter<SizeSpanInfo.Size>(this,android.R.layout.simple_spinner_item,android.R.id.text1, SizeSpanInfo.Size.values());
+        Spannable spannableString = new SpannableString("U");
+        spannableString.setSpan(new UnderlineSpan(),0,1,0);
+        underlineButton.setText(spannableString);
+        underlineButton.setTextOn(spannableString);
+        underlineButton.setTextOff(spannableString);
+        adapter = new ArrayAdapter<SizeSpanController.Size>(this,android.R.layout.simple_spinner_item,android.R.id.text1, SizeSpanController.Size.values());
         fontSizeSpinner.setAdapter(adapter);
         fontSizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -85,14 +99,6 @@ public class TestActivity extends ActionBarActivity {
             }
         });
 
-
-        findViewById(R.id.to_html).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                htmlView.setText(richEditText.getHtml());
-            }
-        });
-
         richEditText.setOnBoldChangeListener(new RichEditText.OnBoldChangeListener() {
             @Override
             public void onBoldChange(boolean bold) {
@@ -113,9 +119,17 @@ public class TestActivity extends ActionBarActivity {
         });
         richEditText.setOnHistoryChangeListener(new RichEditText.OnHistoryChangeListener() {
             @Override
-            public void onHistoryChange(boolean undo, boolean redo) {
-                undoButton.setEnabled(undo);
-                redoButton.setEnabled(redo);
+            public void onHistoryChange(int undoSteps, int redoSteps) {
+                undoButton.setEnabled(undoSteps > 0);
+                redoButton.setEnabled(redoSteps > 0);
+                undoButton.setText("<-(" + undoSteps + ")");
+                redoButton.setText("->(" + redoSteps + ")");
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        htmlView.setText(richEditText.getHtml());
+                    }
+                });
             }
         });
         richEditText.setOnSizeChangeListener(new RichEditText.OnSizeChangeListener() {
@@ -123,7 +137,7 @@ public class TestActivity extends ActionBarActivity {
             public void onSizeChange(float size) {
                 ignoreSizeEvent = true;
                 for (int i = 0; i < adapter.getCount(); i++) {
-                    SizeSpanInfo.Size sizeEnum = adapter.getItem(i);
+                    SizeSpanController.Size sizeEnum = adapter.getItem(i);
                     if (sizeEnum.getSize() == size) {
                         fontSizeSpinner.setSelection(i);
                         return;
@@ -132,6 +146,13 @@ public class TestActivity extends ActionBarActivity {
 
             }
         });
+        colorPicker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
+            @Override
+            public void onColorChanged(int i) {
+                richEditText.colorClick(i);
+            }
+        });
+
         //richEditText.colorClick(Color.CYAN);
     }
 

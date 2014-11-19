@@ -1,37 +1,16 @@
 package com.github.kubatatami.richedittext.styles.base;
 
-import android.text.Editable;
-import android.text.Spanned;
-import android.widget.EditText;
+public class SpanInfo<T>{
 
-import com.github.kubatatami.richedittext.RichEditText;
+    public int start;
+    public int end;
+    public int flags;
+    public T span;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public abstract class SpanInfo<T> {
-        protected Class<T> clazz;
-
-        public SpanInfo(Class<T> clazz) {
-            this.clazz = clazz;
-        }
-
-
-        public List<T> filter(Object[] spans) {
-            List<T> result = new ArrayList<T>();
-            for (Object span : spans) {
-                if (span.getClass().equals(clazz)) {
-                    result.add((T) span);
-                }
-            }
-            return result;
-        }
-
-
-        public Class<T> getClazz() {
-            return clazz;
-        }
-
-
-    public abstract boolean checkChange(EditText editText, RichEditText.StyleSelectionInfo styleSelectionInfo);
+    public SpanInfo(int start, int end, int flags, T span) {
+        this.start = start;
+        this.end = end;
+        this.flags = flags;
+        this.span = span;
+    }
 }

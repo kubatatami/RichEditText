@@ -12,11 +12,11 @@ import java.util.List;
 /**
  * Created by Kuba on 11/11/14.
  */
-public abstract class BinaryStyleInfo<T> extends SpanInfo<T> {
+public abstract class BinaryStyleController<T> extends SpanController<T> {
 
     protected boolean value;
 
-    public BinaryStyleInfo(Class<T> clazz) {
+    public BinaryStyleController(Class<T> clazz) {
         super(clazz);
     }
 
@@ -125,6 +125,11 @@ public abstract class BinaryStyleInfo<T> extends SpanInfo<T> {
         } else {
             return !isExists(editable,styleSelectionInfo);
         }
+    }
+
+    @Override
+    public void checkSetValue(Editable editable, RichEditText.StyleSelectionInfo styleSelectionInfo) {
+
     }
 
     public boolean getValue() {

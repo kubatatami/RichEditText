@@ -3,16 +3,16 @@ package com.github.kubatatami.richedittext.styles.binary;
 import android.text.Editable;
 import android.text.style.StyleSpan;
 
-import com.github.kubatatami.richedittext.styles.base.BinaryStyleInfo;
+import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StyleSpanInfo extends BinaryStyleInfo<StyleSpan> {
+public class StyleSpanController extends BinaryStyleController<StyleSpan> {
     protected int typeface;
 
 
-    public StyleSpanInfo(int typeface) {
+    public StyleSpanController(int typeface) {
         super(StyleSpan.class);
         this.typeface = typeface;
     }

@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by Kuba on 12/11/14.
  */
-public abstract class MultiStyleController<T,Z> extends SpanController<T> {
+public abstract class MultiStyleController<T, Z> extends SpanController<T> {
 
     protected Z value;
     protected SpanInfo<Z> spanInfo;
@@ -22,7 +22,7 @@ public abstract class MultiStyleController<T,Z> extends SpanController<T> {
 
     public abstract Z getValueFromSpan(T span);
 
-    public abstract T add(Z value,Editable editable, int selectionStart, int selectionEnd, int flags);
+    public abstract T add(Z value, Editable editable, int selectionStart, int selectionEnd, int flags);
 
     public void add(Z value, Editable editable, int selectionStart, int selectionEnd) {
         add(value, editable, selectionStart, selectionEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -32,13 +32,13 @@ public abstract class MultiStyleController<T,Z> extends SpanController<T> {
     public T perform(Z value, Editable editable, RichEditText.StyleSelectionInfo styleSelectionInfo) {
         T tempStyleSpan = clearStyle(value, editable, styleSelectionInfo);
         selectStyle(value, editable, styleSelectionInfo);
-        this.value=value;
+        this.value = value;
         return tempStyleSpan;
     }
 
     public void selectStyle(Z value, Editable editable, RichEditText.StyleSelectionInfo styleSelectionInfo) {
         if (styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd) {
-            spanInfo=new SpanInfo<Z>(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd,Spanned.SPAN_INCLUSIVE_INCLUSIVE,value);
+            spanInfo = new SpanInfo<Z>(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE, value);
         } else {
             int finalSpanStart = styleSelectionInfo.selectionStart;
             int finalSpanEnd = styleSelectionInfo.selectionEnd;
@@ -88,7 +88,7 @@ public abstract class MultiStyleController<T,Z> extends SpanController<T> {
 
     @Override
     public boolean checkChange(EditText editText, RichEditText.StyleSelectionInfo styleSelectionInfo) {
-        spanInfo=null;
+        spanInfo = null;
         T[] spans = editText.getText().getSpans(styleSelectionInfo.realSelectionStart, styleSelectionInfo.realSelectionEnd, getClazz());
         Z size = spans.length > 0 ? getValueFromSpan(spans[0]) : getDefaultValue(editText);
         size = spans.length > 1 ? getMultiValue() : size;
@@ -102,7 +102,7 @@ public abstract class MultiStyleController<T,Z> extends SpanController<T> {
 
     @Override
     public void checkSetValue(Editable editable, RichEditText.StyleSelectionInfo styleSelectionInfo) {
-        if(spanInfo != null && styleSelectionInfo.selectionStart==styleSelectionInfo.selectionEnd && spanInfo.start == styleSelectionInfo.selectionStart) {
+        if (spanInfo != null && styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd && spanInfo.start == styleSelectionInfo.selectionStart) {
             List<T> spans = filter(editable.getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, getClazz()));
             if (spans.size() > 0) {
                 T span = spans.get(0);

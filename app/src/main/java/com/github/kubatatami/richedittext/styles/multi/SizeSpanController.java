@@ -7,7 +7,7 @@ import android.widget.EditText;
 import com.github.kubatatami.richedittext.other.DimenUtil;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 
-public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan,Float> {
+public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, Float> {
 
 
     public SizeSpanController() {
@@ -37,7 +37,7 @@ public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan,Fl
         return 0f;
     }
 
-    public enum Size{
+    public enum Size {
         XX_SMALL(12),
         X_SMALL(15),
         SMALL(18),
@@ -59,7 +59,7 @@ public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan,Fl
 
         @Override
         public String toString() {
-            return size+"";
+            return size + "";
         }
     }
 }

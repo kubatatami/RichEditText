@@ -6,7 +6,7 @@ import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 
-public class ColorSpanController extends MultiStyleController<ForegroundColorSpan,Integer> {
+public class ColorSpanController extends MultiStyleController<ForegroundColorSpan, Integer> {
 
     public ColorSpanController() {
         super(ForegroundColorSpan.class);

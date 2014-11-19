@@ -13,7 +13,7 @@ public class DimenUtil {
         return px / (metrics.densityDpi / 160f);
     }
 
-    public static float convertDpToPixel(float dp){
+    public static float convertDpToPixel(float dp) {
         Resources resources = Resources.getSystem();
         DisplayMetrics metrics = resources.getDisplayMetrics();
         return dp * (metrics.densityDpi / 160f);

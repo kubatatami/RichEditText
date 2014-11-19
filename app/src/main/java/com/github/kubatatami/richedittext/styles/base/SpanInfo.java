@@ -1,6 +1,6 @@
 package com.github.kubatatami.richedittext.styles.base;
 
-public class SpanInfo<T>{
+public class SpanInfo<T> {
 
     public int start;
     public int end;

@@ -13,9 +13,9 @@ import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.other.TextWatcherAdapter;
 import com.github.kubatatami.richedittext.styles.binary.StyleSpanController;
+import com.github.kubatatami.richedittext.styles.binary.UnderlineSpanController;
 import com.github.kubatatami.richedittext.styles.multi.ColorSpanController;
 import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
-import com.github.kubatatami.richedittext.styles.binary.UnderlineSpanController;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -75,7 +75,7 @@ public class RichEditText extends EditText {
             Editable baseEditable = RichEditText.super.getText();
             if (method.getName().equals("setSpan")) {
                 String stInfo = getExternalStacktrace(Thread.currentThread().getStackTrace());
-                if(stInfo!=null) {
+                if (stInfo != null) {
                     Log.i("setSpan", args[0].getClass().getSimpleName() + " " + getValue(args[0]) + " "
                             + args[1] + ":" + args[2] + " " + getFlagsAsString((Integer) args[3]) + stInfo);
                 }
@@ -84,7 +84,7 @@ public class RichEditText extends EditText {
                 int spanStart = baseEditable.getSpanStart(args[0]);
                 int spanEnd = baseEditable.getSpanEnd(args[0]);
                 int spanFlags = baseEditable.getSpanEnd(args[0]);
-                if(stInfo!=null) {
+                if (stInfo != null) {
                     Log.i("removeSpan", args[0].getClass().getSimpleName() + " " + getValue(args[0])
                             + " " + spanStart + ":" + spanEnd + " " + getFlagsAsString(spanFlags) + stInfo);
                 }

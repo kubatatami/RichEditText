@@ -1,11 +1,10 @@
 package com.github.kubatatami.richedittext;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.SpannedString;
 import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,7 +22,7 @@ public class TestActivity extends ActionBarActivity {
 
     RichEditText richEditText;
     TextView htmlView;
-    ToggleButton boldButton,italicButton,underlineButton;
+    ToggleButton boldButton, italicButton, underlineButton;
     Button undoButton, redoButton;
     Spinner fontSizeSpinner;
     ArrayAdapter<SizeSpanController.Size> adapter;
@@ -35,7 +34,7 @@ public class TestActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        richEditText= (RichEditText) findViewById(R.id.rich_edit_text);
+        richEditText = (RichEditText) findViewById(R.id.rich_edit_text);
         htmlView = (TextView) findViewById(R.id.html);
         boldButton = (ToggleButton) findViewById(R.id.bold_button);
         italicButton = (ToggleButton) findViewById(R.id.italic_button);
@@ -65,19 +64,19 @@ public class TestActivity extends ActionBarActivity {
             }
         });
         Spannable spannableString = new SpannableString("U");
-        spannableString.setSpan(new UnderlineSpan(),0,1,0);
+        spannableString.setSpan(new UnderlineSpan(), 0, 1, 0);
         underlineButton.setText(spannableString);
         underlineButton.setTextOn(spannableString);
         underlineButton.setTextOff(spannableString);
-        adapter = new ArrayAdapter<SizeSpanController.Size>(this,android.R.layout.simple_spinner_item,android.R.id.text1, SizeSpanController.Size.values());
+        adapter = new ArrayAdapter<SizeSpanController.Size>(this, android.R.layout.simple_spinner_item, android.R.id.text1, SizeSpanController.Size.values());
         fontSizeSpinner.setAdapter(adapter);
         fontSizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(!ignoreSizeEvent) {
+                if (!ignoreSizeEvent) {
                     richEditText.sizeClick(adapter.getItem(position));
                 }
-                ignoreSizeEvent=false;
+                ignoreSizeEvent = false;
             }
 
             @Override
@@ -155,7 +154,6 @@ public class TestActivity extends ActionBarActivity {
 
         //richEditText.colorClick(Color.CYAN);
     }
-
 
 
 }

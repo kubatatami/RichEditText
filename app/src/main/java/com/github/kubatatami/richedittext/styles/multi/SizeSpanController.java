@@ -37,6 +37,17 @@ public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, F
         return 0f;
     }
 
+    @Override
+    public String beginTag(Object span) {
+        float spanValue=getValueFromSpan((AbsoluteSizeSpan)span);
+        return "<span style=\"font-size: " + spanValue + "pt;\">";
+    }
+
+    @Override
+    public String endTag() {
+        return "</span>";
+    }
+
     public enum Size {
         XX_SMALL(12),
         X_SMALL(15),

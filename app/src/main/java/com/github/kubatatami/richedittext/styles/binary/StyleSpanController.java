@@ -1,7 +1,6 @@
 package com.github.kubatatami.richedittext.styles.binary;
 
 import android.text.Editable;
-import android.text.Spanned;
 import android.text.style.StyleSpan;
 
 import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
@@ -18,17 +17,8 @@ public abstract class StyleSpanController extends BinaryStyleController<StyleSpa
         this.typeface = typeface;
     }
 
-    @Override
-    public List<StyleSpan> filter(Object[] spans) {
-        List<StyleSpan> result = new ArrayList<StyleSpan>();
-        for (Object span : spans) {
-            if (span instanceof StyleSpan) {
-                if (((StyleSpan) span).getStyle() == typeface) {
-                    result.add((StyleSpan) span);
-                }
-            }
-        }
-        return result;
+    public boolean acceptSpan(Object span){
+        return span instanceof StyleSpan && ((StyleSpan) span).getStyle() == typeface;
     }
 
     @Override

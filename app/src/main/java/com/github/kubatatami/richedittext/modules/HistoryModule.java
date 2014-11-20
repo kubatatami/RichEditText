@@ -4,7 +4,7 @@ import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.widget.TextView;
 
-import com.github.kubatatami.richedittext.RichEditText;
+import com.github.kubatatami.richedittext.BaseRichEditText;
 
 import java.util.LinkedList;
 
@@ -13,13 +13,13 @@ import java.util.LinkedList;
  */
 public class HistoryModule {
 
-    protected RichEditText richEditText;
+    protected BaseRichEditText richEditText;
     protected final LimitedQueue<EditHistory> undoList = new LimitedQueue<EditHistory>(Integer.MAX_VALUE);
     protected final LimitedQueue<EditHistory> redoList = new LimitedQueue<EditHistory>(Integer.MAX_VALUE);
     protected boolean ignoreHistory = false;
-    protected RichEditText.OnHistoryChangeListener onHistoryChangeListener;
+    protected BaseRichEditText.OnHistoryChangeListener onHistoryChangeListener;
 
-    public HistoryModule(RichEditText richEditText) {
+    public HistoryModule(BaseRichEditText richEditText) {
         this.richEditText = richEditText;
     }
 
@@ -34,7 +34,7 @@ public class HistoryModule {
         }
     }
 
-    public void setLimit(int limit){
+    public void setLimit(int limit) {
         undoList.setLimit(limit);
         redoList.setLimit(limit);
     }
@@ -67,7 +67,7 @@ public class HistoryModule {
         }
     }
 
-    public void setOnHistoryChangeListener(RichEditText.OnHistoryChangeListener onHistoryChangeListener) {
+    public void setOnHistoryChangeListener(BaseRichEditText.OnHistoryChangeListener onHistoryChangeListener) {
         this.onHistoryChangeListener = onHistoryChangeListener;
         onHistoryChangeListener.onHistoryChange(undoList.size(), redoList.size());
     }

@@ -5,26 +5,32 @@ import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
 import android.util.Log;
 
-import com.github.kubatatami.richedittext.RichEditText;
+import com.github.kubatatami.richedittext.BaseRichEditText;
+import com.github.kubatatami.richedittext.other.SpanUtil;
+import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
+import com.github.kubatatami.richedittext.styles.base.SpanController;
 import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DebugProxyClass implements InvocationHandler {
 
-    protected RichEditText richEditText;
+    protected BaseRichEditText richEditText;
     protected final SizeSpanController sizeStyle = new SizeSpanController();
+    protected final Map<Class<?>, SpanController<?>> spanControllerMap;
 
-    protected DebugProxyClass(RichEditText richEditText) {
+    protected DebugProxyClass(BaseRichEditText richEditText,Map<Class<?>, SpanController<?>> spanControllerMap) {
         this.richEditText = richEditText;
+        this.spanControllerMap=spanControllerMap;
     }
-
-    public static Editable getEditable(RichEditText richEditText){
+    public static Editable getEditable(BaseRichEditText richEditText,Map<Class<?>, SpanController<?>> spanControllerMap) {
         return (Editable) Proxy.newProxyInstance(
                 Editable.class.getClassLoader(),
-                new Class[]{Editable.class}, new DebugProxyClass(richEditText));
+                new Class[]{Editable.class}, new DebugProxyClass(richEditText,spanControllerMap));
     }
 
     @Override
@@ -51,7 +57,7 @@ public class DebugProxyClass implements InvocationHandler {
     }
 
     protected String getExternalStacktrace(StackTraceElement[] stackTrace) {
-        String packageName = RichEditText.class.getPackage().getName();
+        String packageName = BaseRichEditText.class.getPackage().getName();
         for (StackTraceElement element : stackTrace) {
             if (element.getClassName().contains(packageName) && !element.getClassName().equals(DebugProxyClass.class.getName())) {
                 return " from " +
@@ -63,8 +69,9 @@ public class DebugProxyClass implements InvocationHandler {
     }
 
     protected String getValue(Object span) {
-        if (span instanceof AbsoluteSizeSpan) {
-            return sizeStyle.getValueFromSpan((AbsoluteSizeSpan) span) + "";
+        SpanController spanController = SpanUtil.acceptController(spanControllerMap.values(),span);
+        if (spanController!=null && spanController instanceof MultiStyleController) {
+            return ((MultiStyleController)spanController).getDebugValueFromSpan(span);
         } else {
             return "";
         }

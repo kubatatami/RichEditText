@@ -1,5 +1,6 @@
 package com.github.kubatatami.richedittext.styles.multi;
 
+import android.graphics.Color;
 import android.text.Editable;
 import android.text.style.ForegroundColorSpan;
 import android.widget.EditText;
@@ -35,4 +36,20 @@ public class ColorSpanController extends MultiStyleController<ForegroundColorSpa
     }
 
 
+    @Override
+    public String beginTag(Object span) {
+        int spanValue=getValueFromSpan((ForegroundColorSpan)span);
+        return "<span style=\"color: "+ "rgb("+Color.red(spanValue)+","+Color.green(spanValue)+","+Color.blue(spanValue)+");\">";
+    }
+
+    @Override
+    public String endTag() {
+        return "</span>";
+    }
+
+    @Override
+    public String getDebugValueFromSpan(ForegroundColorSpan span) {
+        int spanValue=getValueFromSpan(span);
+        return "rgb("+Color.red(spanValue)+","+Color.green(spanValue)+","+Color.blue(spanValue)+")";
+    }
 }

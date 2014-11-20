@@ -9,4 +9,14 @@ public class BoldSpanController extends StyleSpanController {
     public BoldSpanController() {
         super(Typeface.BOLD);
     }
+
+    @Override
+    public String beginTag(Object span) {
+        return "<b>";
+    }
+
+    @Override
+    public String endTag() {
+        return "</b>";
+    }
 }

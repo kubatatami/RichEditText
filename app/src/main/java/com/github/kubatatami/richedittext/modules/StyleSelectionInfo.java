@@ -1,6 +1,6 @@
 package com.github.kubatatami.richedittext.modules;
 
-import com.github.kubatatami.richedittext.RichEditText;
+import com.github.kubatatami.richedittext.BaseRichEditText;
 
 public class StyleSelectionInfo {
     public int selectionStart;
@@ -9,7 +9,7 @@ public class StyleSelectionInfo {
     public int realSelectionEnd;
     public boolean selection;
 
-    public static StyleSelectionInfo getStyleSelectionInfo(RichEditText richEditText) {
+    public static StyleSelectionInfo getStyleSelectionInfo(BaseRichEditText richEditText) {
         StyleSelectionInfo result = new StyleSelectionInfo();
         int selectionStart = richEditText.getSelectionStart();
         int selectionEnd = richEditText.getSelectionEnd();

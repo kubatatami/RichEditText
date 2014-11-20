@@ -4,7 +4,6 @@ import android.text.Editable;
 import android.text.Spanned;
 import android.widget.EditText;
 
-import com.github.kubatatami.richedittext.RichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ import java.util.List;
 
 public abstract class SpanController<T> {
     protected Class<T> clazz;
-    protected final static int defaultFlags= Spanned.SPAN_INCLUSIVE_INCLUSIVE;
+    protected final static int defaultFlags = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
 
     public SpanController(Class<T> clazz) {
         this.clazz = clazz;
@@ -22,11 +21,15 @@ public abstract class SpanController<T> {
     public List<T> filter(Object[] spans) {
         List<T> result = new ArrayList<T>();
         for (Object span : spans) {
-            if (span.getClass().equals(clazz)) {
+            if (acceptSpan(span)) {
                 result.add((T) span);
             }
         }
         return result;
+    }
+
+    public boolean acceptSpan(Object span){
+        return span.getClass().equals(clazz);
     }
 
 
@@ -37,5 +40,9 @@ public abstract class SpanController<T> {
     public abstract void checkBeforeChange(Editable editable, StyleSelectionInfo styleSelectionInfo);
 
     public abstract void checkAfterChange(EditText editText, StyleSelectionInfo styleSelectionInfo);
+
+    public abstract String beginTag(Object span);
+
+    public abstract String endTag();
 
 }

@@ -32,10 +32,13 @@ public abstract class SpanController<T> {
         return span.getClass().equals(clazz);
     }
 
-
     public Class<T> getClazz() {
         return clazz;
     }
+
+    public abstract void clearStyle(Editable editable,Object span, StyleSelectionInfo styleSelectionInfo);
+
+    public abstract boolean clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo);
 
     public abstract void checkBeforeChange(Editable editable, StyleSelectionInfo styleSelectionInfo);
 

@@ -39,7 +39,7 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
     }
 
     public boolean perform(Z value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
-        boolean result = clearStyle(value, editable, styleSelectionInfo);
+        boolean result = clearStyles(editable, styleSelectionInfo);
         result = selectStyle(value, editable, styleSelectionInfo) || result;
         this.value = value;
         return result;
@@ -68,25 +68,30 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
         }
     }
 
+    @Override
+    public void clearStyle(Editable editable,Object span, StyleSelectionInfo styleSelectionInfo) {
+        int spanStart = editable.getSpanStart(span);
+        int spanEnd = editable.getSpanEnd(span);
+        if (spanStart >= styleSelectionInfo.selectionStart && spanEnd <= styleSelectionInfo.selectionEnd) {
+            editable.removeSpan(span);
+        } else if (spanStart < styleSelectionInfo.selectionStart && spanEnd <= styleSelectionInfo.selectionEnd) {
+            editable.removeSpan(span);
+            add(getValueFromSpan((T) span), editable, spanStart, styleSelectionInfo.selectionStart);
+        } else if (spanStart >= styleSelectionInfo.selectionStart && spanEnd > styleSelectionInfo.selectionEnd) {
+            editable.removeSpan(span);
+            add(getValueFromSpan((T) span), editable, styleSelectionInfo.selectionEnd, spanEnd);
+        } else {
+            editable.removeSpan(span);
+            add(getValueFromSpan((T) span), editable, spanStart, styleSelectionInfo.selectionStart);
+            add(getValueFromSpan((T) span), editable, styleSelectionInfo.selectionEnd, spanEnd);
+        }
+    }
 
-    public boolean clearStyle(Z value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
+        @Override
+    public boolean clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         if (styleSelectionInfo.selectionStart != styleSelectionInfo.selectionEnd) {
             for (T span : filter(editable.getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, getClazz()))) {
-                int spanStart = editable.getSpanStart(span);
-                int spanEnd = editable.getSpanEnd(span);
-                if (spanStart >= styleSelectionInfo.selectionStart && spanEnd <= styleSelectionInfo.selectionEnd) {
-                    editable.removeSpan(span);
-                } else if (spanStart < styleSelectionInfo.selectionStart && spanEnd <= styleSelectionInfo.selectionEnd) {
-                    editable.removeSpan(span);
-                    add(getValueFromSpan(span), editable, spanStart, styleSelectionInfo.selectionStart);
-                } else if (spanStart >= styleSelectionInfo.selectionStart && spanEnd > styleSelectionInfo.selectionEnd) {
-                    editable.removeSpan(span);
-                    add(getValueFromSpan(span), editable, styleSelectionInfo.selectionEnd, spanEnd);
-                } else {
-                    editable.removeSpan(span);
-                    add(getValueFromSpan(span), editable, spanStart, styleSelectionInfo.selectionStart);
-                    add(getValueFromSpan(span), editable, styleSelectionInfo.selectionEnd, spanEnd);
-                }
+                clearStyle(editable,span,styleSelectionInfo);
             }
             return true;
         }
@@ -115,7 +120,7 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
             }
         }
         if (spanInfo != null) {
-            add(spanInfo.span, editText.getText(), spanInfo.start, Math.min(spanInfo.end,editText.getText().length()), spanInfo.flags);
+            add(spanInfo.span, editText.getText(), spanInfo.start, Math.min(spanInfo.end, editText.getText().length()), spanInfo.flags);
         }
         spanInfo = null;
 

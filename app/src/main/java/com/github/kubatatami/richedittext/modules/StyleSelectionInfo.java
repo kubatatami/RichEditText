@@ -9,6 +9,7 @@ public class StyleSelectionInfo {
     public int realSelectionEnd;
     public boolean selection;
 
+
     public static StyleSelectionInfo getStyleSelectionInfo(BaseRichEditText richEditText) {
         StyleSelectionInfo result = new StyleSelectionInfo();
         int selectionStart = richEditText.getSelectionStart();

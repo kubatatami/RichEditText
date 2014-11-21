@@ -54,12 +54,22 @@ public class BaseRichEditText extends EditText {
     protected void onFinishInflate() {
         super.onFinishInflate();
         addTextChangedListener(new TextWatcherAdapter() {
+
+            boolean removed;
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Editable editable = getText();
                 historyModule.saveHistory();
                 checkBeforeChange();
-                SpanUtil.removeUnusedSpans(editable, spanControllerMap.values(), start, count, after);
+                removed=SpanUtil.removeUnusedSpans(BaseRichEditText.this, spanControllerMap.values(), start, count, after);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                super.afterTextChanged(s);
+                if(removed){
+                    SpanUtil.inclusiveSpans(BaseRichEditText.this, spanControllerMap.values());
+                }
             }
         });
         inflateFinished = true;

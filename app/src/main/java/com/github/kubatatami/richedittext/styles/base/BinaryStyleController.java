@@ -58,7 +58,7 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
         if (value) {
             result=selectStyle(editable, styleSelectionInfo);
         } else {
-            result=clearStyle(editable, styleSelectionInfo);
+            result= clearStyles(editable, styleSelectionInfo);
         }
         return result;
     }
@@ -89,25 +89,33 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
     }
 
 
-    public boolean clearStyle(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+    @Override
+    public void clearStyle(Editable editable,Object span, StyleSelectionInfo styleSelectionInfo) {
+        int spanStart = editable.getSpanStart(span);
+        int spanEnd = editable.getSpanEnd(span);
+        if (spanStart >= styleSelectionInfo.selectionStart && spanEnd <= styleSelectionInfo.selectionEnd) {
+            editable.removeSpan(span);
+        } else if (spanStart < styleSelectionInfo.selectionStart && spanEnd <= styleSelectionInfo.selectionEnd) {
+            editable.removeSpan(span);
+            add(editable, spanStart, styleSelectionInfo.selectionStart);
+        } else if (spanStart >= styleSelectionInfo.selectionStart && spanEnd > styleSelectionInfo.selectionEnd) {
+            editable.removeSpan(span);
+            add(editable, styleSelectionInfo.selectionEnd, spanEnd);
+        } else {
+            editable.removeSpan(span);
+            add(editable, spanStart, styleSelectionInfo.selectionStart);
+            add(editable, styleSelectionInfo.selectionEnd, spanEnd);
+        }
+    }
+
+
+
+    @Override
+    public boolean clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         List<T> spans = filter(editable.getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, getClazz()));
         if (styleSelectionInfo.selectionStart != styleSelectionInfo.selectionEnd) {
             for (T span : spans) {
-                int spanStart = editable.getSpanStart(span);
-                int spanEnd = editable.getSpanEnd(span);
-                if (spanStart >= styleSelectionInfo.selectionStart && spanEnd <= styleSelectionInfo.selectionEnd) {
-                    editable.removeSpan(span);
-                } else if (spanStart < styleSelectionInfo.selectionStart && spanEnd <= styleSelectionInfo.selectionEnd) {
-                    editable.removeSpan(span);
-                    add(editable, spanStart, styleSelectionInfo.selectionStart);
-                } else if (spanStart >= styleSelectionInfo.selectionStart && spanEnd > styleSelectionInfo.selectionEnd) {
-                    editable.removeSpan(span);
-                    add(editable, styleSelectionInfo.selectionEnd, spanEnd);
-                } else {
-                    editable.removeSpan(span);
-                    add(editable, spanStart, styleSelectionInfo.selectionStart);
-                    add(editable, styleSelectionInfo.selectionEnd, spanEnd);
-                }
+                clearStyle(editable,span,styleSelectionInfo);
             }
             return true;
         } else if (spans.size() > 0) {

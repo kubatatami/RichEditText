@@ -4,7 +4,10 @@ import android.text.Editable;
 import android.text.Selection;
 import android.text.Spanned;
 import android.util.Log;
+import android.util.Pair;
 
+import com.github.kubatatami.richedittext.BaseRichEditText;
+import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 
@@ -20,32 +23,54 @@ import java.util.List;
  */
 public class SpanUtil {
 
-    public static void removeUnusedSpans(Editable editable, Collection<SpanController<?>> controllers, int start, int count, int after) {
+    public static boolean removeUnusedSpans(BaseRichEditText richEditText, Collection<SpanController<?>> controllers, int start, int count, int after) {
+        boolean result=false;
+        Editable editable = richEditText.getText();
         if (after == 0) {
+            Log.i("removeUnusedSpansStart", start + "");
+            List<Pair<SpanController<?>, Object>> spansToRemove = new ArrayList<Pair<SpanController<?>, Object>>();
             Object[] spans = editable.getSpans(start, start + count, Object.class);
             for (Object span : spans) {
-                if(acceptController(controllers,span)!=null) {
+                SpanController<?> controller = acceptController(controllers, span);
+                if (controller != null) {
                     int spanStart = editable.getSpanStart(span);
                     int spanEnd = editable.getSpanEnd(span);
-                    editable.removeSpan(span);
-
-                    if (!span.equals(Selection.SELECTION_START)
-                            && !span.equals(Selection.SELECTION_END)
-                            && spanStart == spanEnd) {
-                        Object[] sameSpans = editable.getSpans(spanStart, spanEnd, span.getClass());
-                        if (sameSpans.length > 0) {
-                            spanStart = editable.getSpanStart(sameSpans[0]);
-                            spanEnd = editable.getSpanEnd(sameSpans[0]);
-                            editable.removeSpan(sameSpans[0]);
-                            editable.setSpan(sameSpans[0], spanStart, spanEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                        }
+                    if (spanStart == spanEnd || start != spanEnd - 1) {
+                        Log.i("removeUnusedSpans", spanStart + " " + spanEnd);
+                        spansToRemove.add(new Pair<SpanController<?>, Object>(controller, span));
                     }
+                }
+
+            }
+            for (Pair<SpanController<?>, Object> spanToRemove : spansToRemove) {
+                result=true;
+                spanToRemove.first.clearStyle(editable, spanToRemove.second, StyleSelectionInfo.getStyleSelectionInfo(richEditText));
+            }
+        }
+
+        return result;
+    }
+
+    public static void inclusiveSpans(BaseRichEditText richEditText, Collection<SpanController<?>> controllers){
+        Editable editable = richEditText.getText();
+        int start = richEditText.getSelectionStart();
+        Object[]spans = editable.getSpans(start, start, Object.class);
+        for (Object span : spans) {
+            SpanController<?> controller = acceptController(controllers, span);
+            if (controller != null) {
+                int spanStart = editable.getSpanStart(span);
+                int spanEnd = editable.getSpanEnd(span);
+                int spanFlags = editable.getSpanFlags(span);
+                Log.i("removeUnusedSpansInclusive", spanStart + " " + spanEnd + " " + spanFlags);
+                if ((spanFlags & Spanned.SPAN_INCLUSIVE_EXCLUSIVE) == Spanned.SPAN_INCLUSIVE_EXCLUSIVE && editable.getSpans(start, start, span.getClass()).length==1) {
+                    editable.removeSpan(span);
+                    editable.setSpan(span, spanStart, spanEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 }
             }
         }
     }
 
-    public static void logSpans(final Editable editable, Collection<SpanController<?>> controllers){
+    public static void logSpans(final Editable editable, Collection<SpanController<?>> controllers) {
         List<Object> spans = Arrays.asList(editable.getSpans(0, editable.length(), Object.class));
         Collections.sort(spans, new Comparator<Object>() {
             @Override
@@ -54,19 +79,19 @@ public class SpanUtil {
             }
         });
         for (Object span : spans) {
-            SpanController<?> controller = acceptController(controllers,span);
-            if (controller!=null) {
+            SpanController<?> controller = acceptController(controllers, span);
+            if (controller != null) {
                 int spanStart = editable.getSpanStart(span);
                 int spanEnd = editable.getSpanEnd(span);
-                Object value = controller instanceof MultiStyleController ? ((MultiStyleController)controller).getDebugValueFromSpan(span) : true;
-                Log.i("SpanLog",controller.getClazz().getSimpleName() + " "+spanStart+":"+spanEnd + " value: " + value.toString());
+                Object value = controller instanceof MultiStyleController ? ((MultiStyleController) controller).getDebugValueFromSpan(span) : true;
+                Log.i("SpanLog", controller.getClazz().getSimpleName() + " " + spanStart + ":" + spanEnd + " value: " + value.toString());
             }
         }
     }
 
-    public static SpanController<?> acceptController(Collection<SpanController<?>> controllers, Object span){
-        for(SpanController<?> controller : controllers){
-            if(controller.acceptSpan(span)){
+    public static SpanController<?> acceptController(Collection<SpanController<?>> controllers, Object span) {
+        for (SpanController<?> controller : controllers) {
+            if (controller.acceptSpan(span)) {
                 return controller;
             }
         }

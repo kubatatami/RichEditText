@@ -3,6 +3,7 @@ package com.github.kubatatami.richedittext;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -33,7 +34,7 @@ public class TestActivity extends ActionBarActivity {
     ArrayAdapter<SizeSpanController.Size> adapter;
     ColorPicker colorPicker;
     WebView webView;
-    private boolean ignoreSizeEvent;
+    private boolean ignoreSizeEvent, ignoreColorEvent;
     Handler handler = new Handler();
 
     @Override
@@ -160,7 +161,8 @@ public class TestActivity extends ActionBarActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        String html=richEditText.getHtml();
+                        String html=Html.toHtml(richEditText.getText());
+//                        String html= richEditText.getHtml();
                         htmlView.setText(html);
                         webView.getSettings().setDefaultTextEncodingName("utf-8");
                         webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
@@ -185,7 +187,7 @@ public class TestActivity extends ActionBarActivity {
         richEditText.setOnColorChangeListener(new BaseRichEditText.OnValueChangeListener<Integer>() {
             @Override
             public void onValueChange(Integer value) {
-                ignoreSizeEvent = true;
+                ignoreColorEvent = true;
                 colorPicker.setNewCenterColor(value);
             }
         });
@@ -196,11 +198,11 @@ public class TestActivity extends ActionBarActivity {
 
             @Override
             public void onColorChanged(int i) {
-                if (!ignoreSizeEvent && !first) {
+                if (!ignoreColorEvent && !first) {
                     richEditText.colorClick(i);
                 }
                 first = false;
-                ignoreSizeEvent = false;
+                ignoreColorEvent = false;
             }
         });
     }

@@ -2,6 +2,7 @@ package com.github.kubatatami.richedittext;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.text.Spannable;
@@ -29,7 +30,7 @@ public class TestActivity extends ActionBarActivity {
     RichEditText richEditText;
     TextView htmlView;
     ToggleButton boldButton, italicButton, underlineButton, strikethroughButton;
-    Button undoButton, redoButton;
+    Button undoButton, redoButton, sendButton;
     Spinner fontSizeSpinner;
     ArrayAdapter<SizeSpanController.Size> adapter;
     ColorPicker colorPicker;
@@ -53,6 +54,7 @@ public class TestActivity extends ActionBarActivity {
 
         undoButton = (Button) findViewById(R.id.undo_button);
         redoButton = (Button) findViewById(R.id.redo_button);
+        sendButton = (Button) findViewById(R.id.send_button);
 
         boldButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,6 +205,16 @@ public class TestActivity extends ActionBarActivity {
                 }
                 first = false;
                 ignoreColorEvent = false;
+            }
+        });
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShareCompat.IntentBuilder builder = ShareCompat.IntentBuilder.from(TestActivity.this);
+                builder.setType("text/plain");
+                builder.setText(richEditText.getHtml());
+                builder.startChooser();
             }
         });
     }

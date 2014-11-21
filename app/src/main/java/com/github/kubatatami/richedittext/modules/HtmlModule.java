@@ -6,8 +6,10 @@ import android.text.Spanned;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.other.SpanUtil;
+import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 
 import java.util.ArrayList;
@@ -22,14 +24,25 @@ public class HtmlModule {
 
 
 
-    public String getHtml(Editable text, Map<Class<?>, SpanController<?>> spanControllerMap) {
+    public String getHtml(EditText editText, Map<Class<?>, SpanController<?>> spanControllerMap) {
         StringBuilder out = new StringBuilder();
-        withinParagraph(out,text,spanControllerMap);
+        out.append("<html>");
+        out.append("<body>");
+        withinParagraph(out, editText, spanControllerMap);
+        out.append("</html>");
+        out.append("</body>");
         return out.toString();
     }
 
-    private static void withinParagraph(StringBuilder out, Spanned text, Map<Class<?>, SpanController<?>> spanControllerMap) {
+    private static void withinParagraph(StringBuilder out, EditText editText, Map<Class<?>, SpanController<?>> spanControllerMap) {
         int next;
+        Editable text = editText.getText();
+        for(SpanController spanController : spanControllerMap.values()){
+            if(spanController instanceof MultiStyleController){
+                MultiStyleController multiStyleController = (MultiStyleController)spanController;
+                out.append(multiStyleController.beginValueTag(multiStyleController.getDefaultValue(editText)));
+            }
+        }
         for (int i = 0; i < text.length(); i = next) {
             next = text.nextSpanTransition(i, text.length(), CharacterStyle.class);
             CharacterStyle[] style = text.getSpans(i, next,
@@ -51,6 +64,11 @@ public class HtmlModule {
                 }
             }
         }
+        for(SpanController spanController : spanControllerMap.values()){
+            if(spanController instanceof MultiStyleController){
+                out.append(spanController.endTag());
+            }
+        }
     }
 
 
@@ -65,6 +83,8 @@ public class HtmlModule {
                 out.append("&gt;");
             } else if (c == '&') {
                 out.append("&amp;");
+            }else if (c == '\n') {
+                out.append("<br/>");
             } else if (c >= 0xD800 && c <= 0xDFFF) {
                 if (c < 0xDC00 && i + 1 < end) {
                     char d = text.charAt(i + 1);

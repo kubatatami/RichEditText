@@ -134,7 +134,7 @@ public class BaseRichEditText extends EditText {
     }
 
     public String getHtml(){
-        return htmlModule.getHtml(getText(),spanControllerMap);
+        return htmlModule.getHtml(this,spanControllerMap);
     }
 
     public void undo() {

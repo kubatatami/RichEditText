@@ -145,7 +145,10 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
         }
     }
 
-    protected abstract Z getDefaultValue(EditText editText);
+
+    public abstract String beginValueTag(Z value);
+
+    public abstract Z getDefaultValue(EditText editText);
 
     protected abstract Z getMultiValue();
 

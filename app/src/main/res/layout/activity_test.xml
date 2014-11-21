@@ -21,7 +21,7 @@
 
             <ToggleButton
                 android:id="@+id/bold_button"
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:textOff="B"
                 android:textOn="B"
@@ -30,7 +30,7 @@
 
             <ToggleButton
                 android:id="@+id/italic_button"
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:textOff="I"
                 android:textOn="I"
@@ -39,7 +39,7 @@
 
             <ToggleButton
                 android:id="@+id/underline_button"
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:textOff="U"
                 android:textOn="U"
@@ -47,12 +47,19 @@
 
             <ToggleButton
                 android:id="@+id/strikethrough_button"
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:textOff="S"
                 android:textOn="S"
                 android:textSize="10dp" />
 
+            <Button
+                android:id="@+id/send_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="send"
+                android:textSize="10dp" />
 
         </LinearLayout>
 

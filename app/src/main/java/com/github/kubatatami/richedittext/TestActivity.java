@@ -161,8 +161,8 @@ public class TestActivity extends ActionBarActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        String html=Html.toHtml(richEditText.getText());
-//                        String html= richEditText.getHtml();
+//                        String html=Html.toHtml(richEditText.getText());
+                        String html= richEditText.getHtml();
                         htmlView.setText(html);
                         webView.getSettings().setDefaultTextEncodingName("utf-8");
                         webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);

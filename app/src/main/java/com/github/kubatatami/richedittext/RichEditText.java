@@ -36,6 +36,8 @@ public class RichEditText extends BaseRichEditText {
         registerController(StrikethroughSpanController.class, new StrikethroughSpanController());
         registerController(SizeSpanController.class, new SizeSpanController());
         registerController(ColorSpanController.class, new ColorSpanController());
+        setHorizontallyScrolling(true);
+        setHorizontalScrollBarEnabled(true);
     }
 
     public void boldClick() {

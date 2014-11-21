@@ -40,12 +40,12 @@ public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, F
     @Override
     public String beginTag(Object span) {
         float spanValue=getValueFromSpan((AbsoluteSizeSpan)span);
-        return "<div style=\"font-size: " + spanValue + "pt;\">";
+        return "<span style=\"font-size: " + spanValue + "pt;\">";
     }
 
     @Override
     public String endTag() {
-        return "</div>";
+        return "</span>";
     }
 
     public enum Size {

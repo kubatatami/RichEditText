@@ -44,7 +44,7 @@ public class SpanUtil {
             }
             for (Pair<SpanController<?>, Object> spanToRemove : spansToRemove) {
                 result=true;
-                spanToRemove.first.clearStyle(editable, spanToRemove.second, StyleSelectionInfo.getStyleSelectionInfo(richEditText));
+                spanToRemove.first.clearStyle(editable, spanToRemove.second, new StyleSelectionInfo(start,start+count,start,start+count,count>0));
             }
         }
 

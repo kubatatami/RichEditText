@@ -10,6 +10,17 @@ public class StyleSelectionInfo {
     public boolean selection;
 
 
+    public StyleSelectionInfo() {
+    }
+
+    public StyleSelectionInfo(int selectionStart, int selectionEnd, int realSelectionStart, int realSelectionEnd, boolean selection) {
+        this.selectionStart = selectionStart;
+        this.selectionEnd = selectionEnd;
+        this.realSelectionStart = realSelectionStart;
+        this.realSelectionEnd = realSelectionEnd;
+        this.selection = selection;
+    }
+
     public static StyleSelectionInfo getStyleSelectionInfo(BaseRichEditText richEditText) {
         StyleSelectionInfo result = new StyleSelectionInfo();
         int selectionStart = richEditText.getSelectionStart();

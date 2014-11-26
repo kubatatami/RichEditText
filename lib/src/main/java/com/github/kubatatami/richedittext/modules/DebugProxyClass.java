@@ -2,7 +2,6 @@ package com.github.kubatatami.richedittext.modules;
 
 import android.text.Editable;
 import android.text.Spanned;
-import android.text.style.AbsoluteSizeSpan;
 import android.util.Log;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
@@ -14,7 +13,6 @@ import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
 import java.util.Map;
 
 public class DebugProxyClass implements InvocationHandler {

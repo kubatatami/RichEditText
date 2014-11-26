@@ -1,7 +1,6 @@
 package com.github.kubatatami.richedittext.other;
 
 import android.text.Editable;
-import android.text.Selection;
 import android.text.Spanned;
 import android.util.Log;
 import android.util.Pair;

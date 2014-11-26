@@ -3,7 +3,9 @@ package com.github.kubatatami.richedittext;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.modules.DebugProxyClass;
@@ -16,7 +18,11 @@ import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -128,7 +134,7 @@ public class BaseRichEditText extends EditText {
     }
 
     public String getHtml(){
-        return htmlModule.getHtml(this,spanControllerMap.values());
+        return htmlModule.getHtml(this,spanControllerMap);
     }
 
     public void undo() {
@@ -157,13 +163,15 @@ public class BaseRichEditText extends EditText {
         }
     }
 
-    public void addOnHistoryChangeListener(HistoryModule.OnHistoryChangeListener onHistoryChangeListener) {
-        historyModule.addOnHistoryChangeListener(onHistoryChangeListener);
+    public void setOnHistoryChangeListener(OnHistoryChangeListener onHistoryChangeListener) {
+        historyModule.setOnHistoryChangeListener(onHistoryChangeListener);
     }
 
     public interface OnValueChangeListener<T> {
         public void onValueChange(T value);
     }
 
-
+    public interface OnHistoryChangeListener {
+        public void onHistoryChange(int undoSteps, int redoSteps);
+    }
 }

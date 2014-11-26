@@ -103,19 +103,13 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
     public void checkAfterChange(EditText editText, StyleSelectionInfo styleSelectionInfo) {
         T[] spans = editText.getText().getSpans(styleSelectionInfo.realSelectionStart, styleSelectionInfo.realSelectionEnd, getClazz());
         Z newValue = spans.length > 0 ? getValueFromSpan(spans[0]) : getDefaultValue(editText);
-        if (spans.length > 1 && styleSelectionInfo.realSelectionStart == styleSelectionInfo.realSelectionEnd) {
+        if (spans.length > 2) {
+            newValue = getMultiValue();
+        } else if (spans.length > 1 && styleSelectionInfo.realSelectionStart == styleSelectionInfo.realSelectionEnd) {
             if (editText.getText().getSpanFlags(spans[0]) == Spanned.SPAN_INCLUSIVE_EXCLUSIVE) {
                 newValue = getValueFromSpan(spans[1]);
             } else {
                 newValue = getValueFromSpan(spans[0]);
-            }
-        } else if (spans.length > 1) {
-            newValue = getMultiValue();
-        } else if (spans.length == 1 && !getValueFromSpan(spans[0]).equals(getDefaultValue(editText))) {
-            int spanStart = editText.getText().getSpanStart(spans[0]);
-            int spanEnd = editText.getText().getSpanEnd(spans[0]);
-            if(spanStart>styleSelectionInfo.realSelectionStart || spanEnd < styleSelectionInfo.realSelectionEnd) {
-                newValue = getMultiValue();
             }
         }
 
@@ -151,9 +145,8 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
         }
     }
 
-    public abstract String defaultStyle(EditText editText);
 
-
+    public abstract String beginValueTag(Z value);
 
     public abstract Z getDefaultValue(EditText editText);
 

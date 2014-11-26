@@ -1,77 +1,57 @@
-package com.github.kubatatami.richedittext.views;
+package com.github.kubatatami.richedittext;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.ShareCompat;
+import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StrikethroughSpan;
 import android.text.style.UnderlineSpan;
-import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.github.kubatatami.richedittext.BaseRichEditText;
-import com.github.kubatatami.richedittext.R;
-import com.github.kubatatami.richedittext.RichEditText;
-import com.github.kubatatami.richedittext.modules.HistoryModule;
+import com.github.kubatatami.richedittext.styles.multi.AlignmentSpanController;
 import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
 import com.larswerkman.holocolorpicker.ColorPicker;
 
 import java.lang.reflect.Field;
 
-/**
- * Created by Kuba on 26/11/14.
- */
-public class DefaultPanelView extends LinearLayout {
 
+public class TestActivity extends ActionBarActivity {
+
+    RichEditText richEditText;
+    TextView htmlView;
     ToggleButton boldButton, italicButton, underlineButton, strikethroughButton;
     ToggleButton leftButton, centerButton, rightButton;
-    Button undoButton, redoButton;
+    Button undoButton, redoButton, sendButton;
     Spinner fontSizeSpinner;
     ArrayAdapter<SizeSpanController.Size> adapter;
     ColorPicker colorPicker;
+    WebView webView;
     boolean ignoreSizeEvent, ignoreColorEvent;
+    Handler handler = new Handler();
 
-
-    public DefaultPanelView(Context context) {
-        super(context);
-        init();
-    }
-
-    public DefaultPanelView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public DefaultPanelView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public DefaultPanelView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init();
-    }
-
-    protected void init() {
-        setOrientation(VERTICAL);
-        inflate(getContext(), R.layout.default_panel, this);
-    }
-
-    public void connectWithRichEditText(final RichEditText richEditText){
-
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_test);
+        richEditText = (RichEditText) findViewById(R.id.rich_edit_text);
+        htmlView = (TextView) findViewById(R.id.html);
         boldButton = (ToggleButton) findViewById(R.id.bold_button);
         italicButton = (ToggleButton) findViewById(R.id.italic_button);
         underlineButton = (ToggleButton) findViewById(R.id.underline_button);
@@ -84,10 +64,11 @@ public class DefaultPanelView extends LinearLayout {
 
         fontSizeSpinner = (Spinner) findViewById(R.id.font_size_spinner);
         colorPicker = (ColorPicker) findViewById(R.id.color_picker);
+        webView = (WebView) findViewById(R.id.webview);
 
         undoButton = (Button) findViewById(R.id.undo_button);
         redoButton = (Button) findViewById(R.id.redo_button);
-
+        sendButton = (Button) findViewById(R.id.send_button);
 
         boldButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +107,7 @@ public class DefaultPanelView extends LinearLayout {
         strikethroughButton.setTextOff(spannableString);
 
 
-        adapter = new ArrayAdapter<SizeSpanController.Size>(getContext(), android.R.layout.simple_spinner_item,
+        adapter = new ArrayAdapter<SizeSpanController.Size>(this, android.R.layout.simple_spinner_item,
                 android.R.id.text1, SizeSpanController.Size.values());
         fontSizeSpinner.setAdapter(adapter);
         fontSizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -185,13 +166,25 @@ public class DefaultPanelView extends LinearLayout {
                 strikethroughButton.setChecked(strikethroug);
             }
         });
-        richEditText.addOnHistoryChangeListener(new HistoryModule.OnHistoryChangeListener() {
+        webView.setWebChromeClient(new WebChromeClient());
+        webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+        richEditText.setOnHistoryChangeListener(new BaseRichEditText.OnHistoryChangeListener() {
             @Override
             public void onHistoryChange(int undoSteps, int redoSteps) {
                 undoButton.setEnabled(undoSteps > 0);
                 redoButton.setEnabled(redoSteps > 0);
                 undoButton.setText("<-(" + undoSteps + ")");
                 redoButton.setText("->(" + redoSteps + ")");
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+//                        String html=Html.toHtml(richEditText.getText());
+                        String html = richEditText.getHtml();
+                        htmlView.setText(html);
+                        webView.getSettings().setDefaultTextEncodingName("utf-8");
+                        webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
+                    }
+                });
             }
         });
         richEditText.setOnSizeChangeListener(new BaseRichEditText.OnValueChangeListener<Float>() {
@@ -265,7 +258,15 @@ public class DefaultPanelView extends LinearLayout {
                 ignoreColorEvent = false;
             }
         });
-
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShareCompat.IntentBuilder builder = ShareCompat.IntentBuilder.from(TestActivity.this);
+                builder.setType("text/plain");
+                builder.setText(richEditText.getHtml());
+                builder.startChooser();
+            }
+        });
     }
 
     protected void setChecked(CompoundButton checkBox, boolean checked) {
@@ -282,4 +283,5 @@ public class DefaultPanelView extends LinearLayout {
             e.printStackTrace();
         }
     }
+
 }

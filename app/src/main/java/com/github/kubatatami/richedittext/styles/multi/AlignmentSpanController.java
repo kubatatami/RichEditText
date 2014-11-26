@@ -2,11 +2,13 @@ package com.github.kubatatami.richedittext.styles.multi;
 
 import android.text.Editable;
 import android.text.Layout;
+import android.text.style.AbsoluteSizeSpan;
 import android.text.style.AlignmentSpan;
 import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.other.DimenUtil;
 import com.github.kubatatami.richedittext.styles.base.LineStyleController;
+import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 
 public class AlignmentSpanController extends LineStyleController<AlignmentSpan.Standard, Layout.Alignment> {
 
@@ -29,8 +31,21 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpan.S
     }
 
     @Override
-    public String defaultStyle(EditText editText) {
-        return "";
+    public String beginValueTag(Layout.Alignment value) {
+        String alignValue;
+        switch (value){
+            case ALIGN_CENTER:
+                alignValue="center";
+                break;
+            case ALIGN_OPPOSITE:
+                alignValue="right";
+                break;
+            default:
+            case ALIGN_NORMAL:
+                alignValue="left";
+                break;
+        }
+        return "<div style=\"text-align:"+alignValue+";\">";
     }
 
     @Override
@@ -46,25 +61,12 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpan.S
     @Override
     public String beginTag(Object span) {
         Layout.Alignment spanValue=getValueFromSpan((AlignmentSpan.Standard)span);
-        String alignValue;
-        switch (spanValue){
-            case ALIGN_CENTER:
-                alignValue="center";
-                break;
-            case ALIGN_OPPOSITE:
-                alignValue="right";
-                break;
-            default:
-            case ALIGN_NORMAL:
-                alignValue="left";
-                break;
-        }
-        return "<p style=\"text-align: "+alignValue+";\">";
+        return beginValueTag(spanValue);
     }
 
     @Override
     public String endTag() {
-        return "</p>";
+        return "</div>";
     }
 
 

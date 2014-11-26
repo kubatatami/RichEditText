@@ -48,6 +48,4 @@ public abstract class SpanController<T> {
 
     public abstract String endTag();
 
-
-
 }

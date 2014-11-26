@@ -5,6 +5,9 @@ import android.text.style.StyleSpan;
 
 import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class StyleSpanController extends BinaryStyleController<StyleSpan> {
     protected int typeface;
 

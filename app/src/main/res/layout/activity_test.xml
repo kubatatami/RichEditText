@@ -13,128 +13,24 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         tools:context=".TestActivity">
 
+        <com.github.kubatatami.richedittext.views.DefaultPanelView
+            android:id="@+id/panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-        <LinearLayout
+        <Button
+            android:layout_marginTop="-20dp"
+            android:id="@+id/send_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ToggleButton
-                android:id="@+id/bold_button"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:textOff="B"
-                android:textOn="B"
-                android:textSize="10dp"
-                android:textStyle="bold" />
-
-            <ToggleButton
-                android:id="@+id/italic_button"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:textOff="I"
-                android:textOn="I"
-                android:textSize="10dp"
-                android:textStyle="italic" />
-
-            <ToggleButton
-                android:id="@+id/underline_button"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:textOff="U"
-                android:textOn="U"
-                android:textSize="10dp" />
-
-            <ToggleButton
-                android:id="@+id/strikethrough_button"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:textOff="S"
-                android:textOn="S"
-                android:textSize="10dp" />
-
-            <ToggleButton
-                android:id="@+id/left_button"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:textOff="&#60;-"
-                android:textOn="&#60;-"
-                android:checked="true"
-                android:textSize="10dp" />
-
-            <ToggleButton
-                android:id="@+id/center_button"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:textOff="||"
-                android:textOn="||"
-                android:textSize="10dp" />
-
-            <ToggleButton
-                android:id="@+id/right_button"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:textOff="-&#62;"
-                android:textOn="-&#62;"
-                android:textSize="10dp" />
-
-            <Button
-                android:id="@+id/send_button"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="send"
-                android:textSize="10dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/undo_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="undo"
-                android:textSize="10dp" />
-
-            <Button
-                android:id="@+id/redo_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="redo"
-                android:textSize="10dp" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Spinner
-                android:id="@+id/font_size_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:focusable="false"
-                android:focusableInTouchMode="false" />
-
-            <com.larswerkman.holocolorpicker.ColorPicker
-                android:id="@+id/color_picker"
-                android:layout_width="110dp"
-                android:layout_height="110dp" />
-
-        </LinearLayout>
+            android:text="send"
+            android:textSize="10dp" />
 
         <com.github.kubatatami.richedittext.RichEditText
             android:id="@+id/rich_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-20dp"
+
             android:inputType="textNoSuggestions|textMultiLine">
 
             <requestFocus />
@@ -144,7 +40,7 @@
             android:id="@+id/html"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <WebView
             android:id="@+id/webview"

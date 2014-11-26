@@ -28,8 +28,8 @@ public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, F
     }
 
     @Override
-    public String beginValueTag(Float value) {
-        return "<span style=\"font-size: " + Size.getTag(value) + ";\">";
+    public String defaultStyle(EditText editText) {
+        return "font-size: " + Size.getTag(getDefaultValue(editText)) + ";";
     }
 
     @Override
@@ -45,7 +45,7 @@ public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, F
     @Override
     public String beginTag(Object span) {
         float spanValue=getValueFromSpan((AbsoluteSizeSpan)span);
-        return beginValueTag(spanValue);
+        return "<span style=\"font-size: " + Size.getTag(spanValue) + ";\">";
     }
 
     @Override

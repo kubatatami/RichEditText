@@ -2,7 +2,6 @@ package com.github.kubatatami.richedittext.styles.base;
 
 import android.text.Editable;
 import android.text.Spanned;
-import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 

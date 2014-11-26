@@ -6,7 +6,9 @@ import android.widget.TextView;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Kuba on 19/11/14.
@@ -17,7 +19,7 @@ public class HistoryModule {
     protected final LimitedQueue<EditHistory> undoList = new LimitedQueue<EditHistory>(Integer.MAX_VALUE);
     protected final LimitedQueue<EditHistory> redoList = new LimitedQueue<EditHistory>(Integer.MAX_VALUE);
     protected boolean ignoreHistory = false;
-    protected BaseRichEditText.OnHistoryChangeListener onHistoryChangeListener;
+    protected List<OnHistoryChangeListener> onHistoryChangeListeners = new ArrayList<OnHistoryChangeListener>();
 
     public HistoryModule(BaseRichEditText richEditText) {
         this.richEditText = richEditText;
@@ -62,13 +64,13 @@ public class HistoryModule {
     }
 
     protected void checkHistory() {
-        if (onHistoryChangeListener != null) {
+        for(OnHistoryChangeListener onHistoryChangeListener : onHistoryChangeListeners) {
             onHistoryChangeListener.onHistoryChange(undoList.size(), redoList.size());
         }
     }
 
-    public void setOnHistoryChangeListener(BaseRichEditText.OnHistoryChangeListener onHistoryChangeListener) {
-        this.onHistoryChangeListener = onHistoryChangeListener;
+    public void addOnHistoryChangeListener(OnHistoryChangeListener onHistoryChangeListener) {
+        onHistoryChangeListeners.add(onHistoryChangeListener);
         onHistoryChangeListener.onHistoryChange(undoList.size(), redoList.size());
     }
 
@@ -103,6 +105,10 @@ public class HistoryModule {
         public void setLimit(int limit) {
             this.limit = limit;
         }
+    }
+
+    public interface OnHistoryChangeListener {
+        public void onHistoryChange(int undoSteps, int redoSteps);
     }
 
 }

@@ -1,0 +1,120 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ToggleButton
+            android:id="@+id/bold_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textOff="B"
+            android:textOn="B"
+            android:textSize="10dp"
+            android:textStyle="bold" />
+
+        <ToggleButton
+            android:id="@+id/italic_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textOff="I"
+            android:textOn="I"
+            android:textSize="10dp"
+            android:textStyle="italic" />
+
+        <ToggleButton
+            android:id="@+id/underline_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textOff="U"
+            android:textOn="U"
+            android:textSize="10dp" />
+
+        <ToggleButton
+            android:id="@+id/strikethrough_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textOff="S"
+            android:textOn="S"
+            android:textSize="10dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ToggleButton
+            android:id="@+id/left_button"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:textOff="&#60;-"
+            android:textOn="&#60;-"
+            android:textSize="10dp" />
+
+        <ToggleButton
+            android:id="@+id/center_button"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:textOff="||"
+            android:textOn="||"
+            android:textSize="10dp" />
+
+        <ToggleButton
+            android:id="@+id/right_button"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:textOff="-&#62;"
+            android:textOn="-&#62;"
+            android:textSize="10dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/undo_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="undo"
+            android:textSize="10dp" />
+
+        <Button
+            android:id="@+id/redo_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="redo"
+            android:textSize="10dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/font_size_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+
+        <com.larswerkman.holocolorpicker.ColorPicker
+            android:id="@+id/color_picker"
+            android:layout_width="110dp"
+            android:layout_height="110dp" />
+
+    </LinearLayout>
+
+</merge>

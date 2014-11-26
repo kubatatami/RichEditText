@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
+import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -13,16 +14,22 @@ import android.text.style.UnderlineSpan;
 import android.util.TypedValue;
 import android.view.View;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.github.kubatatami.richedittext.styles.multi.AlignmentSpanController;
 import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
 import com.larswerkman.holocolorpicker.ColorPicker;
+
+import java.lang.reflect.Field;
 
 
 public class TestActivity extends ActionBarActivity {
@@ -30,12 +37,13 @@ public class TestActivity extends ActionBarActivity {
     RichEditText richEditText;
     TextView htmlView;
     ToggleButton boldButton, italicButton, underlineButton, strikethroughButton;
+    ToggleButton leftButton, centerButton, rightButton;
     Button undoButton, redoButton, sendButton;
     Spinner fontSizeSpinner;
     ArrayAdapter<SizeSpanController.Size> adapter;
     ColorPicker colorPicker;
     WebView webView;
-    private boolean ignoreSizeEvent, ignoreColorEvent;
+    boolean ignoreSizeEvent, ignoreColorEvent;
     Handler handler = new Handler();
 
     @Override
@@ -48,6 +56,12 @@ public class TestActivity extends ActionBarActivity {
         italicButton = (ToggleButton) findViewById(R.id.italic_button);
         underlineButton = (ToggleButton) findViewById(R.id.underline_button);
         strikethroughButton = (ToggleButton) findViewById(R.id.strikethrough_button);
+
+        leftButton = (ToggleButton) findViewById(R.id.left_button);
+        centerButton = (ToggleButton) findViewById(R.id.center_button);
+        rightButton = (ToggleButton) findViewById(R.id.right_button);
+
+
         fontSizeSpinner = (Spinner) findViewById(R.id.font_size_spinner);
         colorPicker = (ColorPicker) findViewById(R.id.color_picker);
         webView = (WebView) findViewById(R.id.webview);
@@ -153,6 +167,7 @@ public class TestActivity extends ActionBarActivity {
             }
         });
         webView.setWebChromeClient(new WebChromeClient());
+        webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
         richEditText.setOnHistoryChangeListener(new BaseRichEditText.OnHistoryChangeListener() {
             @Override
             public void onHistoryChange(int undoSteps, int redoSteps) {
@@ -164,7 +179,7 @@ public class TestActivity extends ActionBarActivity {
                     @Override
                     public void run() {
 //                        String html=Html.toHtml(richEditText.getText());
-                        String html= richEditText.getHtml();
+                        String html = richEditText.getHtml();
                         htmlView.setText(html);
                         webView.getSettings().setDefaultTextEncodingName("utf-8");
                         webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
@@ -193,6 +208,42 @@ public class TestActivity extends ActionBarActivity {
                 colorPicker.setNewCenterColor(value);
             }
         });
+        richEditText.setOnAlignmentChangeListener(new BaseRichEditText.OnValueChangeListener<Layout.Alignment>() {
+
+            @Override
+            public void onValueChange(Layout.Alignment value) {
+                setChecked(leftButton, value!=null && value.equals(Layout.Alignment.ALIGN_NORMAL));
+                setChecked(centerButton, value!=null && value.equals(Layout.Alignment.ALIGN_CENTER));
+                setChecked(rightButton, value!=null && value.equals(Layout.Alignment.ALIGN_OPPOSITE));
+            }
+        });
+        leftButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setChecked(centerButton, false);
+                setChecked(rightButton, false);
+                richEditText.alignmentClick(Layout.Alignment.ALIGN_NORMAL);
+                setChecked(buttonView, true);
+            }
+        });
+        centerButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setChecked(leftButton, false);
+                setChecked(rightButton, false);
+                richEditText.alignmentClick(Layout.Alignment.ALIGN_CENTER);
+                setChecked(buttonView, true);
+            }
+        });
+        rightButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setChecked(leftButton, false);
+                setChecked(centerButton, false);
+                richEditText.alignmentClick(Layout.Alignment.ALIGN_OPPOSITE);
+                setChecked(buttonView, true);
+            }
+        });
         richEditText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, adapter.getItem(0).getSize());
         richEditText.setHistoryLimit(20);
         colorPicker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
@@ -207,7 +258,6 @@ public class TestActivity extends ActionBarActivity {
                 ignoreColorEvent = false;
             }
         });
-
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -219,5 +269,19 @@ public class TestActivity extends ActionBarActivity {
         });
     }
 
+    protected void setChecked(CompoundButton checkBox, boolean checked) {
+        try {
+            Field field = CompoundButton.class.getDeclaredField("mBroadcasting");
+            field.setAccessible(true);
+            field.setBoolean(checkBox, true);
+            checkBox.setChecked(checked);
+            field.setBoolean(checkBox, false);
+
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

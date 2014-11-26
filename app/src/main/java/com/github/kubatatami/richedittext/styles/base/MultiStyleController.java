@@ -24,7 +24,7 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
 
     public abstract Z getValueFromSpan(T span);
 
-    public String getDebugValueFromSpan(T span){
+    public String getDebugValueFromSpan(T span) {
         return getValueFromSpan(span).toString();
     }
 
@@ -69,7 +69,7 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
     }
 
     @Override
-    public void clearStyle(Editable editable,Object span, StyleSelectionInfo styleSelectionInfo) {
+    public void clearStyle(Editable editable, Object span, StyleSelectionInfo styleSelectionInfo) {
         int spanStart = editable.getSpanStart(span);
         int spanEnd = editable.getSpanEnd(span);
         if (spanStart >= styleSelectionInfo.selectionStart && spanEnd <= styleSelectionInfo.selectionEnd) {
@@ -87,11 +87,11 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
         }
     }
 
-        @Override
+    @Override
     public boolean clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         if (styleSelectionInfo.selectionStart != styleSelectionInfo.selectionEnd) {
             for (T span : filter(editable.getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, getClazz()))) {
-                clearStyle(editable,span,styleSelectionInfo);
+                clearStyle(editable, span, styleSelectionInfo);
             }
             return true;
         }
@@ -102,19 +102,19 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
     @Override
     public void checkAfterChange(EditText editText, StyleSelectionInfo styleSelectionInfo) {
         T[] spans = editText.getText().getSpans(styleSelectionInfo.realSelectionStart, styleSelectionInfo.realSelectionEnd, getClazz());
-        Z size = spans.length > 0 ? getValueFromSpan(spans[0]) : getDefaultValue(editText);
-        if(spans.length > 2){
-            size=getMultiValue();
-        }else if(spans.length > 1 && styleSelectionInfo.realSelectionStart==styleSelectionInfo.realSelectionEnd){
-            if(editText.getText().getSpanFlags(spans[0])==Spanned.SPAN_INCLUSIVE_EXCLUSIVE){
-                size=getValueFromSpan(spans[1]);
-            }else{
-                size=getValueFromSpan(spans[0]);
+        Z newValue = spans.length > 0 ? getValueFromSpan(spans[0]) : getDefaultValue(editText);
+        if (spans.length > 2) {
+            newValue = getMultiValue();
+        } else if (spans.length > 1 && styleSelectionInfo.realSelectionStart == styleSelectionInfo.realSelectionEnd) {
+            if (editText.getText().getSpanFlags(spans[0]) == Spanned.SPAN_INCLUSIVE_EXCLUSIVE) {
+                newValue = getValueFromSpan(spans[1]);
+            } else {
+                newValue = getValueFromSpan(spans[0]);
             }
         }
 
-        if (!size.equals(value)) {
-            value = size;
+        if ((newValue == null && value!=null) || (newValue != null && value==null) || (value!=null && !newValue.equals(value))) {
+            value = newValue;
             if (onValueChangeListener != null) {
                 onValueChangeListener.onValueChange(value);
             }

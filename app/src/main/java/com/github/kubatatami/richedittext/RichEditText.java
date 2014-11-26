@@ -1,12 +1,14 @@
 package com.github.kubatatami.richedittext;
 
 import android.content.Context;
+import android.text.Layout;
 import android.util.AttributeSet;
 
 import com.github.kubatatami.richedittext.styles.binary.BoldSpanController;
 import com.github.kubatatami.richedittext.styles.binary.ItalicSpanController;
 import com.github.kubatatami.richedittext.styles.binary.StrikethroughSpanController;
 import com.github.kubatatami.richedittext.styles.binary.UnderlineSpanController;
+import com.github.kubatatami.richedittext.styles.multi.AlignmentSpanController;
 import com.github.kubatatami.richedittext.styles.multi.ColorSpanController;
 import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
 
@@ -36,8 +38,7 @@ public class RichEditText extends BaseRichEditText {
         registerController(StrikethroughSpanController.class, new StrikethroughSpanController());
         registerController(SizeSpanController.class, new SizeSpanController());
         registerController(ColorSpanController.class, new ColorSpanController());
-        setHorizontallyScrolling(true);
-        setHorizontalScrollBarEnabled(true);
+        registerController(AlignmentSpanController.class, new AlignmentSpanController());
     }
 
     public void boldClick() {
@@ -66,6 +67,14 @@ public class RichEditText extends BaseRichEditText {
 
     public void colorClick(int color) {
         multiClick(color, ColorSpanController.class);
+    }
+
+    public void alignmentClick(Layout.Alignment alignment) {
+        multiClick(alignment, AlignmentSpanController.class);
+    }
+
+    public void setOnAlignmentChangeListener(OnValueChangeListener<Layout.Alignment> onAlignmentChangeListener) {
+        getModule(AlignmentSpanController.class).setOnValueChangeListener(onAlignmentChangeListener);
     }
 
     public void setOnSizeChangeListener(OnValueChangeListener<Float> onSizeChangeListener) {

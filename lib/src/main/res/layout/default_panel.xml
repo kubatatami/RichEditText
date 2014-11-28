@@ -1,120 +1,276 @@
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
+        android:id="@+id/main_panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <ToggleButton
-            android:id="@+id/bold_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textOff="B"
-            android:textOn="B"
-            android:textSize="10dp"
-            android:textStyle="bold" />
 
-        <ToggleButton
-            android:id="@+id/italic_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textOff="I"
-            android:textOn="I"
-            android:textSize="10dp"
-            android:textStyle="italic" />
 
-        <ToggleButton
-            android:id="@+id/underline_button"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textOff="U"
-            android:textOn="U"
-            android:textSize="10dp" />
+            android:orientation="horizontal">
 
-        <ToggleButton
-            android:id="@+id/strikethrough_button"
-            android:layout_width="0dp"
+            <ToggleButton
+                android:id="@+id/bold_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:background="@drawable/style_button_background"
+                android:textOff="B"
+                android:textOn="B"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <ToggleButton
+                android:id="@+id/italic_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:background="@drawable/style_button_background"
+                android:textOff="I"
+                android:textOn="I"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+
+            <ToggleButton
+                android:id="@+id/underline_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:background="@drawable/style_button_background"
+                android:textOff="U"
+                android:textOn="U"
+                android:textSize="20sp" />
+
+            <ToggleButton
+                android:id="@+id/strikethrough_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:background="@drawable/style_button_background"
+                android:textOff="S"
+                android:textOn="S"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/gray" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textOff="S"
-            android:textOn="S"
-            android:textSize="10dp" />
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.github.kubatatami.richedittext.views.ToggleImageButton
+                android:id="@+id/left_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:padding="7dp"
+                android:background="@drawable/style_button_background"
+                android:checked="true"
+                android:gravity="center"
+                android:src="@drawable/left_align" />
+
+            <com.github.kubatatami.richedittext.views.ToggleImageButton
+                android:id="@+id/center_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:padding="7dp"
+                android:background="@drawable/style_button_background"
+                android:src="@drawable/center_align" />
+
+            <com.github.kubatatami.richedittext.views.ToggleImageButton
+                android:id="@+id/right_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:padding="7dp"
+                android:background="@drawable/style_button_background"
+                android:src="@drawable/right_align" />
+
+
+            <ImageView
+                android:id="@+id/undo_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:scaleType="centerInside"
+                android:src="@drawable/undo_arrow"
+                android:background="@drawable/style_button_background"/>
+
+            <ImageView
+                android:id="@+id/redo_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:scaleType="centerInside"
+                android:background="@drawable/style_button_background"
+                android:src="@drawable/redo_arrow" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/gray" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="@string/size"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/normal_font" />
+
+            <ImageView
+                android:id="@+id/font_size_value_right_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:paddingLeft="7dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/up_arrow"/>
+
+            <TextView
+                android:id="@+id/font_size_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/font_size_value_right_arrow"
+                android:layout_centerVertical="true" />
+
+
+            <ImageView
+                android:id="@+id/font_size_value_left_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="7dp"
+                android:layout_toLeftOf="@id/font_size_value"
+                android:layout_centerVertical="true"
+                android:src="@drawable/down_arrow"/>
+
+
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/gray" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="@string/color"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/normal_font" />
+
+
+            <FrameLayout
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/black"
+                android:padding="1px">
+
+                <View
+                    android:id="@+id/color_picker_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </FrameLayout>
+
+        </RelativeLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/gray" />
+
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/color_picker_panel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ToggleButton
-            android:id="@+id/left_button"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:textOff="&#60;-"
-            android:textOn="&#60;-"
-            android:textSize="10dp" />
-
-        <ToggleButton
-            android:id="@+id/center_button"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:textOff="||"
-            android:textOn="||"
-            android:textSize="10dp" />
-
-        <ToggleButton
-            android:id="@+id/right_button"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:textOff="-&#62;"
-            android:textOn="-&#62;"
-            android:textSize="10dp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="0dp"
+        android:layout_alignTop="@+id/main_panel"
+        android:layout_alignBottom="@id/main_panel"
+        android:padding="5dp"
+        android:background="@android:color/white"
+        android:visibility="gone">
 
         <Button
-            android:id="@+id/undo_button"
+            android:id="@+id/color_ok"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/ok_button_background"
+            android:text="@android:string/ok"
+            android:textSize="@dimen/normal_font" />
+
+        <com.larswerkman.holocolorpicker.SaturationBar
+            android:id="@+id/color_saturation_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="undo"
-            android:textSize="10dp" />
+            app:bar_orientation_horizontal="false"
+            android:layout_above="@+id/color_ok"
+            android:layout_alignParentRight="true" />
 
-        <Button
-            android:id="@+id/redo_button"
+        <com.larswerkman.holocolorpicker.ValueBar
+            android:id="@+id/color_value_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="redo"
-            android:textSize="10dp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Spinner
-            android:id="@+id/font_size_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:focusable="false"
-            android:focusableInTouchMode="false" />
+            app:bar_orientation_horizontal="false"
+            android:layout_above="@+id/color_ok"
+            android:layout_toLeftOf="@+id/color_saturation_bar" />
 
         <com.larswerkman.holocolorpicker.ColorPicker
             android:id="@+id/color_picker"
-            android:layout_width="110dp"
-            android:layout_height="110dp" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@+id/color_value_bar"
+            android:layout_alignBottom="@+id/color_value_bar"
+            android:layout_toLeftOf="@+id/color_value_bar" />
 
-    </LinearLayout>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/gray" />
 
 </merge>

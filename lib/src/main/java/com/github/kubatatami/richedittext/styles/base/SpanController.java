@@ -28,7 +28,7 @@ public abstract class SpanController<T> {
         return result;
     }
 
-    public boolean acceptSpan(Object span){
+    public boolean acceptSpan(Object span) {
         return span.getClass().equals(clazz);
     }
 
@@ -36,7 +36,7 @@ public abstract class SpanController<T> {
         return clazz;
     }
 
-    public abstract void clearStyle(Editable editable,Object span, StyleSelectionInfo styleSelectionInfo);
+    public abstract void clearStyle(Editable editable, Object span, StyleSelectionInfo styleSelectionInfo);
 
     public abstract boolean clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo);
 
@@ -47,7 +47,6 @@ public abstract class SpanController<T> {
     public abstract String beginTag(Object span);
 
     public abstract String endTag();
-
 
 
 }

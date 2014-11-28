@@ -14,7 +14,7 @@ public abstract class StyleSpanController extends BinaryStyleController<StyleSpa
         this.typeface = typeface;
     }
 
-    public boolean acceptSpan(Object span){
+    public boolean acceptSpan(Object span) {
         return span instanceof StyleSpan && ((StyleSpan) span).getStyle() == typeface;
     }
 

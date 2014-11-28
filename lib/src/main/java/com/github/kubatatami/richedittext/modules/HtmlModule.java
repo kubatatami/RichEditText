@@ -17,10 +17,9 @@ import java.util.Collection;
 public class HtmlModule {
 
 
-
     public String getHtml(EditText editText, Collection<SpanController<?>> spanControllers) {
         StringBuilder out = new StringBuilder();
-        String styles=getDefaultStyles(editText, spanControllers);
+        String styles = getDefaultStyles(editText, spanControllers);
         out.append("<html>");
         out.append("<body style=\"");
         out.append(styles);
@@ -31,7 +30,7 @@ public class HtmlModule {
                 within(CharacterStyle.class, out, editText, start, end, spanControllers, new WithinCallback() {
                     @Override
                     public void nextWithin(Class<?> clazz, StringBuilder out, EditText editText, int start, int end, Collection<SpanController<?>> spanControllers) {
-                        withinStyle(out,editText.getText(),start,end);
+                        withinStyle(out, editText.getText(), start, end);
                     }
                 });
             }
@@ -41,18 +40,18 @@ public class HtmlModule {
         return out.toString();
     }
 
-    private static String getDefaultStyles(EditText editText, Collection<SpanController<?>> spanControllers){
+    private static String getDefaultStyles(EditText editText, Collection<SpanController<?>> spanControllers) {
         StringBuilder out = new StringBuilder();
-        for(SpanController<?> spanController : spanControllers){
-            if(spanController instanceof MultiStyleController){
-                out.append(((MultiStyleController)spanController).defaultStyle(editText));
+        for (SpanController<?> spanController : spanControllers) {
+            if (spanController instanceof MultiStyleController) {
+                out.append(((MultiStyleController) spanController).defaultStyle(editText));
             }
         }
         return out.toString();
     }
 
 
-    private static void within(Class<?> clazz, StringBuilder out, EditText editText,int start, int end,
+    private static void within(Class<?> clazz, StringBuilder out, EditText editText, int start, int end,
                                Collection<SpanController<?>> spanControllers, WithinCallback withinCallback) {
         Editable text = editText.getText();
 
@@ -68,21 +67,21 @@ public class HtmlModule {
                     out.append(controller.beginTag(aStyle));
                 }
             }
-            if(withinCallback!=null) {
-                withinCallback.nextWithin(clazz,out, editText, i, next, spanControllers);
+            if (withinCallback != null) {
+                withinCallback.nextWithin(clazz, out, editText, i, next, spanControllers);
             }
 
             for (int j = style.length - 1; j >= 0; j--) {
-                SpanController<?> controller = SpanUtil.acceptController(spanControllers,style[j]);
-                if (controller!=null) {
+                SpanController<?> controller = SpanUtil.acceptController(spanControllers, style[j]);
+                if (controller != null) {
                     out.append(controller.endTag());
                 }
             }
         }
     }
 
-    interface WithinCallback{
-        public void nextWithin(Class<?> clazz, StringBuilder out, EditText editText,int start, int end, Collection<SpanController<?>> spanControllers);
+    interface WithinCallback {
+        public void nextWithin(Class<?> clazz, StringBuilder out, EditText editText, int start, int end, Collection<SpanController<?>> spanControllers);
     }
 
     private static void withinStyle(StringBuilder out, CharSequence text,
@@ -96,7 +95,7 @@ public class HtmlModule {
                 out.append("&gt;");
             } else if (c == '&') {
                 out.append("&amp;");
-            }else if (c == '\n') {
+            } else if (c == '\n') {
                 out.append("<br/>");
             } else if (c >= 0xD800 && c <= 0xDFFF) {
                 if (c < 0xDC00 && i + 1 < end) {

@@ -21,14 +21,15 @@ public class DebugProxyClass implements InvocationHandler {
     protected final SizeSpanController sizeStyle = new SizeSpanController();
     protected final Map<Class<?>, SpanController<?>> spanControllerMap;
 
-    protected DebugProxyClass(BaseRichEditText richEditText,Map<Class<?>, SpanController<?>> spanControllerMap) {
+    protected DebugProxyClass(BaseRichEditText richEditText, Map<Class<?>, SpanController<?>> spanControllerMap) {
         this.richEditText = richEditText;
-        this.spanControllerMap=spanControllerMap;
+        this.spanControllerMap = spanControllerMap;
     }
-    public static Editable getEditable(BaseRichEditText richEditText,Map<Class<?>, SpanController<?>> spanControllerMap) {
+
+    public static Editable getEditable(BaseRichEditText richEditText, Map<Class<?>, SpanController<?>> spanControllerMap) {
         return (Editable) Proxy.newProxyInstance(
                 Editable.class.getClassLoader(),
-                new Class[]{Editable.class}, new DebugProxyClass(richEditText,spanControllerMap));
+                new Class[]{Editable.class}, new DebugProxyClass(richEditText, spanControllerMap));
     }
 
     @Override
@@ -67,9 +68,9 @@ public class DebugProxyClass implements InvocationHandler {
     }
 
     protected String getValue(Object span) {
-        SpanController spanController = SpanUtil.acceptController(spanControllerMap.values(),span);
-        if (spanController!=null && spanController instanceof MultiStyleController) {
-            return ((MultiStyleController)spanController).getDebugValueFromSpan(span);
+        SpanController spanController = SpanUtil.acceptController(spanControllerMap.values(), span);
+        if (spanController != null && spanController instanceof MultiStyleController) {
+            return ((MultiStyleController) spanController).getDebugValueFromSpan(span);
         } else {
             return "";
         }

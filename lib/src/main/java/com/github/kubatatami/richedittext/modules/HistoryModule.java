@@ -64,7 +64,7 @@ public class HistoryModule {
     }
 
     protected void checkHistory() {
-        for(OnHistoryChangeListener onHistoryChangeListener : onHistoryChangeListeners) {
+        for (OnHistoryChangeListener onHistoryChangeListener : onHistoryChangeListeners) {
             onHistoryChangeListener.onHistoryChange(undoList.size(), redoList.size());
         }
     }

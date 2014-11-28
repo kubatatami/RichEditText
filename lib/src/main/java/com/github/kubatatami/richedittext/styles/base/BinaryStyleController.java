@@ -57,9 +57,9 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
         Log.i("add", value + "");
         boolean result;
         if (value) {
-            result=selectStyle(editable, styleSelectionInfo);
+            result = selectStyle(editable, styleSelectionInfo);
         } else {
-            result= clearStyles(editable, styleSelectionInfo);
+            result = clearStyles(editable, styleSelectionInfo);
         }
         return result;
     }
@@ -91,7 +91,7 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
 
 
     @Override
-    public void clearStyle(Editable editable,Object span, StyleSelectionInfo styleSelectionInfo) {
+    public void clearStyle(Editable editable, Object span, StyleSelectionInfo styleSelectionInfo) {
         int spanStart = editable.getSpanStart(span);
         int spanEnd = editable.getSpanEnd(span);
         if (spanStart >= styleSelectionInfo.selectionStart && spanEnd <= styleSelectionInfo.selectionEnd) {
@@ -110,13 +110,12 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
     }
 
 
-
     @Override
     public boolean clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         List<T> spans = filter(editable.getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, getClazz()));
         if (styleSelectionInfo.selectionStart != styleSelectionInfo.selectionEnd) {
             for (T span : spans) {
-                clearStyle(editable,span,styleSelectionInfo);
+                clearStyle(editable, span, styleSelectionInfo);
             }
             return true;
         } else if (spans.size() > 0) {
@@ -170,10 +169,10 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
     @Override
     public void checkAfterChange(EditText editText, StyleSelectionInfo styleSelectionInfo) {
         if (spanInfo != null && !spanInfo.span) {
-            if(spanInfo.end==styleSelectionInfo.realSelectionEnd-1) {
+            if (spanInfo.end == styleSelectionInfo.realSelectionEnd - 1) {
                 add(editText.getText(), spanInfo.start, spanInfo.end, spanInfo.flags);
-            }else{
-                add(editText.getText(), spanInfo.start, styleSelectionInfo.realSelectionEnd-1, spanInfo.flags);
+            } else {
+                add(editText.getText(), spanInfo.start, styleSelectionInfo.realSelectionEnd - 1, spanInfo.flags);
                 add(editText.getText(), styleSelectionInfo.realSelectionEnd, spanInfo.end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
             }
         }

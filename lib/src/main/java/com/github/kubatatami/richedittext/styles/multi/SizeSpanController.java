@@ -44,7 +44,7 @@ public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, F
 
     @Override
     public String beginTag(Object span) {
-        float spanValue=getValueFromSpan((AbsoluteSizeSpan)span);
+        float spanValue = getValueFromSpan((AbsoluteSizeSpan) span);
         return "<span style=\"font-size: " + Size.getTag(spanValue) + ";\">";
     }
 
@@ -54,18 +54,18 @@ public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, F
     }
 
     public enum Size {
-        XX_SMALL(12,"xx-small"),
-        X_SMALL(15,"x-small"),
-        SMALL(18,"small"),
-        MEDIUM(20,"medium"),
-        LARGE(24,"large"),
-        X_LARGE(30,"x-large"),
-        XX_LARGE(40,"xx-large");
+        XX_SMALL(12, "xx-small"),
+        X_SMALL(15, "x-small"),
+        SMALL(18, "small"),
+        MEDIUM(20, "medium"),
+        LARGE(24, "large"),
+        X_LARGE(30, "x-large"),
+        XX_LARGE(40, "xx-large");
 
         private String name;
         private float size;
 
-        Size(float size,String name) {
+        Size(float size, String name) {
             this.name = name;
             this.size = size;
         }
@@ -80,16 +80,15 @@ public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, F
             return size + "";
         }
 
-        public static String getTag(float size){
-            for(Size sizeEnum : values()){
-                if(Float.compare(sizeEnum.size,size)==0){
+        public static String getTag(float size) {
+            for (Size sizeEnum : values()) {
+                if (Float.compare(sizeEnum.size, size) == 0) {
                     return sizeEnum.name;
                 }
             }
-            return size+"pt";
+            return size + "pt";
         }
     }
-
 
 
 }

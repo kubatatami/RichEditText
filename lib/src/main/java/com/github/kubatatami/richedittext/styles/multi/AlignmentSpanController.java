@@ -5,7 +5,6 @@ import android.text.Layout;
 import android.text.style.AlignmentSpan;
 import android.widget.EditText;
 
-import com.github.kubatatami.richedittext.other.DimenUtil;
 import com.github.kubatatami.richedittext.styles.base.LineStyleController;
 
 public class AlignmentSpanController extends LineStyleController<AlignmentSpan.Standard, Layout.Alignment> {
@@ -45,29 +44,27 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpan.S
 
     @Override
     public String beginTag(Object span) {
-        Layout.Alignment spanValue=getValueFromSpan((AlignmentSpan.Standard)span);
+        Layout.Alignment spanValue = getValueFromSpan((AlignmentSpan.Standard) span);
         String alignValue;
-        switch (spanValue){
+        switch (spanValue) {
             case ALIGN_CENTER:
-                alignValue="center";
+                alignValue = "center";
                 break;
             case ALIGN_OPPOSITE:
-                alignValue="right";
+                alignValue = "right";
                 break;
             default:
             case ALIGN_NORMAL:
-                alignValue="left";
+                alignValue = "left";
                 break;
         }
-        return "<p style=\"text-align: "+alignValue+";\">";
+        return "<p style=\"text-align: " + alignValue + ";\">";
     }
 
     @Override
     public String endTag() {
         return "</p>";
     }
-
-
 
 
 }

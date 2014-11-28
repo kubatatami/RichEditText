@@ -3,6 +3,7 @@ package com.github.kubatatami.richedittext.views;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.os.Handler;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -12,12 +13,11 @@ import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
@@ -32,16 +32,25 @@ import java.lang.reflect.Field;
 /**
  * Created by Kuba on 26/11/14.
  */
-public class DefaultPanelView extends LinearLayout {
+public class DefaultPanelView extends RelativeLayout {
 
-    ToggleButton boldButton, italicButton, underlineButton, strikethroughButton;
-    ToggleButton leftButton, centerButton, rightButton;
-    Button undoButton, redoButton;
-    Spinner fontSizeSpinner;
-    ArrayAdapter<SizeSpanController.Size> adapter;
-    ColorPicker colorPicker;
-    boolean ignoreSizeEvent, ignoreColorEvent;
+    protected final static int ANIM_DURATION = 250;
 
+    protected ToggleButton boldButton, italicButton, underlineButton, strikethroughButton;
+    protected ToggleImageButton leftButton, centerButton, rightButton;
+    protected ImageView undoButton, redoButton;
+    protected View colorOk;
+    protected TextView fontSizeSpinner;
+    protected ArrayAdapter<SizeSpanController.Size> adapter;
+    protected ColorPicker colorPicker;
+    protected View colorValue, colorPanel;
+    protected View fontSizeValueLeftArrow, fontSizeValueRightArrow;
+    protected boolean ignoreSizeEvent, ignoreColorEvent, visible;
+    protected boolean firstLayout = true;
+    protected InputMethodManager inputManager;
+    protected Handler handler = new Handler();
+    protected RichEditText richEditText;
+    protected int currentSizeItem = 0;
 
     public DefaultPanelView(Context context) {
         super(context);
@@ -66,27 +75,85 @@ public class DefaultPanelView extends LinearLayout {
     }
 
     protected void init() {
-        setOrientation(VERTICAL);
         inflate(getContext(), R.layout.default_panel, this);
+        inputManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
-    public void connectWithRichEditText(final RichEditText richEditText){
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        if (firstLayout) {
+            toggle(false, false);
+            firstLayout = false;
+        }
+    }
 
+    public void toggle(boolean anim) {
+        toggle(anim, !visible);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void toggle(final boolean anim, final boolean visible) {
+        if (!visible) {
+            int newTop = (((View) getParent()).getMeasuredHeight());
+            if (anim) {
+                animate().y(newTop).setDuration(ANIM_DURATION).start();
+            } else {
+                setY(newTop);
+            }
+            richEditText.setShowSoftInputOnFocus(true);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    inputManager.showSoftInput(richEditText, 0);
+                }
+            }, anim ? ANIM_DURATION : 0);
+
+        } else {
+            inputManager.hideSoftInputFromWindow(getWindowToken(), 0);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    int newTop = ((View) getParent()).getHeight() - getMeasuredHeight();
+                    if (anim) {
+                        animate().y(newTop).setDuration(ANIM_DURATION).start();
+                    } else {
+                        setY(newTop);
+                    }
+                }
+            }, 300);
+            richEditText.setShowSoftInputOnFocus(false);
+        }
+        this.visible = visible;
+    }
+
+
+    public void connectWithRichEditText(final RichEditText richEditText) {
+        this.richEditText = richEditText;
         boldButton = (ToggleButton) findViewById(R.id.bold_button);
         italicButton = (ToggleButton) findViewById(R.id.italic_button);
         underlineButton = (ToggleButton) findViewById(R.id.underline_button);
         strikethroughButton = (ToggleButton) findViewById(R.id.strikethrough_button);
 
-        leftButton = (ToggleButton) findViewById(R.id.left_button);
-        centerButton = (ToggleButton) findViewById(R.id.center_button);
-        rightButton = (ToggleButton) findViewById(R.id.right_button);
+        leftButton = (ToggleImageButton) findViewById(R.id.left_button);
+        centerButton = (ToggleImageButton) findViewById(R.id.center_button);
+        rightButton = (ToggleImageButton) findViewById(R.id.right_button);
 
 
-        fontSizeSpinner = (Spinner) findViewById(R.id.font_size_spinner);
+        fontSizeSpinner = (TextView) findViewById(R.id.font_size_value);
         colorPicker = (ColorPicker) findViewById(R.id.color_picker);
+        colorValue = findViewById(R.id.color_picker_value);
+        colorPanel = findViewById(R.id.color_picker_panel);
 
-        undoButton = (Button) findViewById(R.id.undo_button);
-        redoButton = (Button) findViewById(R.id.redo_button);
+        undoButton = (ImageView) findViewById(R.id.undo_button);
+        redoButton = (ImageView) findViewById(R.id.redo_button);
+        colorOk = findViewById(R.id.color_ok);
+        fontSizeValueLeftArrow = findViewById(R.id.font_size_value_left_arrow);
+        fontSizeValueRightArrow = findViewById(R.id.font_size_value_right_arrow);
+
+        colorPicker.setShowOldCenterColor(false);
+        colorPicker.addSaturationBar((com.larswerkman.holocolorpicker.SaturationBar) findViewById(R.id.color_saturation_bar));
+        colorPicker.addValueBar((com.larswerkman.holocolorpicker.ValueBar) findViewById(R.id.color_value_bar));
 
 
         boldButton.setOnClickListener(new View.OnClickListener() {
@@ -128,23 +195,26 @@ public class DefaultPanelView extends LinearLayout {
 
         adapter = new ArrayAdapter<SizeSpanController.Size>(getContext(), android.R.layout.simple_spinner_item,
                 android.R.id.text1, SizeSpanController.Size.values());
-        fontSizeSpinner.setAdapter(adapter);
-        fontSizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-            boolean first = true;
-
+        fontSizeValueLeftArrow.setOnClickListener(new OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (!ignoreSizeEvent && !first) {
-                    richEditText.sizeClick(adapter.getItem(position));
+            public void onClick(View v) {
+                if (currentSizeItem > 0) {
+                    currentSizeItem--;
+                    fontSizeSpinner.setText(adapter.getItem(currentSizeItem).getSize() + "");
+                    richEditText.sizeClick(adapter.getItem(currentSizeItem));
                 }
-                first = false;
-                ignoreSizeEvent = false;
             }
+        });
 
+        fontSizeValueRightArrow.setOnClickListener(new OnClickListener() {
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            public void onClick(View v) {
+                if (currentSizeItem < adapter.getCount() - 1) {
+                    currentSizeItem++;
+                    fontSizeSpinner.setText(adapter.getItem(currentSizeItem).getSize() + "");
+                    richEditText.sizeClick(adapter.getItem(currentSizeItem));
+                }
             }
         });
 
@@ -190,8 +260,8 @@ public class DefaultPanelView extends LinearLayout {
             public void onHistoryChange(int undoSteps, int redoSteps) {
                 undoButton.setEnabled(undoSteps > 0);
                 redoButton.setEnabled(redoSteps > 0);
-                undoButton.setText("<-(" + undoSteps + ")");
-                redoButton.setText("->(" + redoSteps + ")");
+                undoButton.setColorFilter(getResources().getColor(undoSteps > 0 ? android.R.color.black : R.color.gray));
+                redoButton.setColorFilter(getResources().getColor(redoSteps > 0 ? android.R.color.black : R.color.gray));
             }
         });
         richEditText.setOnSizeChangeListener(new BaseRichEditText.OnValueChangeListener<Float>() {
@@ -201,7 +271,8 @@ public class DefaultPanelView extends LinearLayout {
                 for (int i = 0; i < adapter.getCount(); i++) {
                     SizeSpanController.Size sizeEnum = adapter.getItem(i);
                     if (sizeEnum.getSize() == size) {
-                        fontSizeSpinner.setSelection(i);
+                        fontSizeSpinner.setText(size + "");
+                        currentSizeItem = i;
                         return;
                     }
                 }
@@ -213,38 +284,39 @@ public class DefaultPanelView extends LinearLayout {
             public void onValueChange(Integer value) {
                 ignoreColorEvent = true;
                 colorPicker.setNewCenterColor(value);
+                colorValue.setBackgroundColor(value);
             }
         });
         richEditText.setOnAlignmentChangeListener(new BaseRichEditText.OnValueChangeListener<Layout.Alignment>() {
 
             @Override
             public void onValueChange(Layout.Alignment value) {
-                setChecked(leftButton, value!=null && value.equals(Layout.Alignment.ALIGN_NORMAL));
-                setChecked(centerButton, value!=null && value.equals(Layout.Alignment.ALIGN_CENTER));
-                setChecked(rightButton, value!=null && value.equals(Layout.Alignment.ALIGN_OPPOSITE));
+                setChecked(leftButton, value != null && value.equals(Layout.Alignment.ALIGN_NORMAL));
+                setChecked(centerButton, value != null && value.equals(Layout.Alignment.ALIGN_CENTER));
+                setChecked(rightButton, value != null && value.equals(Layout.Alignment.ALIGN_OPPOSITE));
             }
         });
-        leftButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        leftButton.setOnCheckedChangeListener(new ToggleImageButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(ToggleImageButton buttonView, boolean isChecked) {
                 setChecked(centerButton, false);
                 setChecked(rightButton, false);
                 richEditText.alignmentClick(Layout.Alignment.ALIGN_NORMAL);
                 setChecked(buttonView, true);
             }
         });
-        centerButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        centerButton.setOnCheckedChangeListener(new ToggleImageButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(ToggleImageButton buttonView, boolean isChecked) {
                 setChecked(leftButton, false);
                 setChecked(rightButton, false);
                 richEditText.alignmentClick(Layout.Alignment.ALIGN_CENTER);
                 setChecked(buttonView, true);
             }
         });
-        rightButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        rightButton.setOnCheckedChangeListener(new ToggleImageButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(ToggleImageButton buttonView, boolean isChecked) {
                 setChecked(leftButton, false);
                 setChecked(centerButton, false);
                 richEditText.alignmentClick(Layout.Alignment.ALIGN_OPPOSITE);
@@ -260,17 +332,42 @@ public class DefaultPanelView extends LinearLayout {
             public void onColorChanged(int i) {
                 if (!ignoreColorEvent && !first) {
                     richEditText.colorClick(i);
+                    colorValue.setBackgroundColor(i);
                 }
                 first = false;
                 ignoreColorEvent = false;
             }
         });
-
+        colorValue.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                colorPanel.setVisibility(View.VISIBLE);
+            }
+        });
+        colorOk.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                colorPanel.setVisibility(View.GONE);
+            }
+        });
     }
 
-    protected void setChecked(CompoundButton checkBox, boolean checked) {
+    public boolean onBack() {
+        if (colorPanel.getVisibility() == View.VISIBLE) {
+            colorPanel.setVisibility(View.GONE);
+            return true;
+        } else if (visible) {
+            toggle(true, false);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    protected void setChecked(ToggleImageButton checkBox, boolean checked) {
         try {
-            Field field = CompoundButton.class.getDeclaredField("mBroadcasting");
+            Field field = ToggleImageButton.class.getDeclaredField("isBroadCasting");
             field.setAccessible(true);
             field.setBoolean(checkBox, true);
             checkBox.setChecked(checked);

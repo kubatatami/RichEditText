@@ -69,10 +69,10 @@ public abstract class LineStyleController<T, Z> extends MultiStyleController<T, 
         while (end < editable.length() && editable.charAt(end) != '\n') {
             end++;
         }
-        if(start!=end) {
+        if (start != end) {
             return new LineInfo(start > 0 ? start + 1 : start, end - 1);
-        }else{
-            return new LineInfo(start,end);
+        } else {
+            return new LineInfo(start, end);
         }
     }
 

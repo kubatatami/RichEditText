@@ -29,7 +29,7 @@ public class BaseRichEditText extends EditText {
     protected final HistoryModule historyModule = new HistoryModule(this);
     protected final HtmlModule htmlModule = new HtmlModule();
     protected final Map<Class<?>, SpanController<?>> spanControllerMap = new HashMap<Class<?>, SpanController<?>>();
-    protected Editable proxyEditable = DebugProxyClass.getEditable(this,spanControllerMap);
+    protected Editable proxyEditable = DebugProxyClass.getEditable(this, spanControllerMap);
 
 
     public BaseRichEditText(Context context) {
@@ -55,13 +55,13 @@ public class BaseRichEditText extends EditText {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 historyModule.saveHistory();
                 checkBeforeChange();
-                removed=SpanUtil.removeUnusedSpans(BaseRichEditText.this, spanControllerMap.values(), start, count, after);
+                removed = SpanUtil.removeUnusedSpans(BaseRichEditText.this, spanControllerMap.values(), start, count, after);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 super.afterTextChanged(s);
-                if(removed){
+                if (removed) {
                     SpanUtil.inclusiveSpans(BaseRichEditText.this, spanControllerMap.values());
                 }
             }
@@ -121,14 +121,14 @@ public class BaseRichEditText extends EditText {
             for (SpanController<?> controller : spanControllerMap.values()) {
                 controller.checkAfterChange(this, styleSelectionInfo);
             }
-            if(DEBUG){
+            if (DEBUG) {
                 SpanUtil.logSpans(getText(), spanControllerMap.values());
             }
         }
     }
 
-    public String getHtml(){
-        return htmlModule.getHtml(this,spanControllerMap.values());
+    public String getHtml() {
+        return htmlModule.getHtml(this, spanControllerMap.values());
     }
 
     public void undo() {
@@ -142,7 +142,6 @@ public class BaseRichEditText extends EditText {
     public void setHistoryLimit(int limit) {
         historyModule.setLimit(limit);
     }
-
 
 
     public void binaryClick(Class<? extends BinaryStyleController<?>> clazz) {

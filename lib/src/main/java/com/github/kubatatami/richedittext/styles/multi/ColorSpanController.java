@@ -43,12 +43,12 @@ public class ColorSpanController extends MultiStyleController<ForegroundColorSpa
 
     @Override
     public String beginTag(Object span) {
-        int spanValue=getValueFromSpan((ForegroundColorSpan)span);
+        int spanValue = getValueFromSpan((ForegroundColorSpan) span);
         String color = Integer.toHexString(spanValue + 0x01000000);
         while (color.length() < 6) {
             color = "0" + color;
         }
-        return "<span style=\"color: "+ "#"+color+";\">";
+        return "<span style=\"color: " + "#" + color + ";\">";
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ColorSpanController extends MultiStyleController<ForegroundColorSpa
 
     @Override
     public String getDebugValueFromSpan(ForegroundColorSpan span) {
-        int spanValue=getValueFromSpan(span);
-        return "rgb("+Color.red(spanValue)+","+Color.green(spanValue)+","+Color.blue(spanValue)+")";
+        int spanValue = getValueFromSpan(span);
+        return "rgb(" + Color.red(spanValue) + "," + Color.green(spanValue) + "," + Color.blue(spanValue) + ")";
     }
 }

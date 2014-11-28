@@ -23,7 +23,7 @@ import java.util.List;
 public class SpanUtil {
 
     public static boolean removeUnusedSpans(BaseRichEditText richEditText, Collection<SpanController<?>> controllers, int start, int count, int after) {
-        boolean result=false;
+        boolean result = false;
         Editable editable = richEditText.getText();
         if (after == 0) {
             Log.i("removeUnusedSpansStart", start + "");
@@ -42,18 +42,18 @@ public class SpanUtil {
 
             }
             for (Pair<SpanController<?>, Object> spanToRemove : spansToRemove) {
-                result=true;
-                spanToRemove.first.clearStyle(editable, spanToRemove.second, new StyleSelectionInfo(start,start+count,start,start+count,count>0));
+                result = true;
+                spanToRemove.first.clearStyle(editable, spanToRemove.second, new StyleSelectionInfo(start, start + count, start, start + count, count > 0));
             }
         }
 
         return result;
     }
 
-    public static void inclusiveSpans(BaseRichEditText richEditText, Collection<SpanController<?>> controllers){
+    public static void inclusiveSpans(BaseRichEditText richEditText, Collection<SpanController<?>> controllers) {
         Editable editable = richEditText.getText();
         int start = richEditText.getSelectionStart();
-        Object[]spans = editable.getSpans(start, start, Object.class);
+        Object[] spans = editable.getSpans(start, start, Object.class);
         for (Object span : spans) {
             SpanController<?> controller = acceptController(controllers, span);
             if (controller != null) {
@@ -61,7 +61,7 @@ public class SpanUtil {
                 int spanEnd = editable.getSpanEnd(span);
                 int spanFlags = editable.getSpanFlags(span);
                 Log.i("removeUnusedSpansInclusive", spanStart + " " + spanEnd + " " + spanFlags);
-                if ((spanFlags & Spanned.SPAN_INCLUSIVE_EXCLUSIVE) == Spanned.SPAN_INCLUSIVE_EXCLUSIVE && editable.getSpans(start, start, span.getClass()).length==1) {
+                if ((spanFlags & Spanned.SPAN_INCLUSIVE_EXCLUSIVE) == Spanned.SPAN_INCLUSIVE_EXCLUSIVE && editable.getSpans(start, start, span.getClass()).length == 1) {
                     editable.removeSpan(span);
                     editable.setSpan(span, spanStart, spanEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 }

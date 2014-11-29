@@ -2,6 +2,7 @@ package com.github.kubatatami.richedittext.views;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.text.Layout;
@@ -44,13 +45,14 @@ public class DefaultPanelView extends RelativeLayout {
     protected ArrayAdapter<SizeSpanController.Size> adapter;
     protected ColorPicker colorPicker;
     protected View colorValue, colorPanel;
-    protected View fontSizeValueLeftArrow, fontSizeValueRightArrow;
+    protected ImageView fontSizeValueLeftArrow, fontSizeValueRightArrow;
     protected boolean ignoreSizeEvent, ignoreColorEvent, visible;
     protected boolean firstLayout = true;
     protected InputMethodManager inputManager;
     protected Handler handler = new Handler();
     protected RichEditText richEditText;
     protected int currentSizeItem = 0;
+    protected int grayColor, blackColor;
 
     public DefaultPanelView(Context context) {
         super(context);
@@ -77,6 +79,8 @@ public class DefaultPanelView extends RelativeLayout {
     protected void init() {
         inflate(getContext(), R.layout.default_panel, this);
         inputManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        grayColor = getResources().getColor(R.color.gray);
+        blackColor = Color.BLACK;
     }
 
     @Override
@@ -148,8 +152,8 @@ public class DefaultPanelView extends RelativeLayout {
         undoButton = (ImageView) findViewById(R.id.undo_button);
         redoButton = (ImageView) findViewById(R.id.redo_button);
         colorOk = findViewById(R.id.color_ok);
-        fontSizeValueLeftArrow = findViewById(R.id.font_size_value_left_arrow);
-        fontSizeValueRightArrow = findViewById(R.id.font_size_value_right_arrow);
+        fontSizeValueLeftArrow = (ImageView) findViewById(R.id.font_size_value_left_arrow);
+        fontSizeValueRightArrow = (ImageView) findViewById(R.id.font_size_value_right_arrow);
 
         colorPicker.setShowOldCenterColor(false);
         colorPicker.addSaturationBar((com.larswerkman.holocolorpicker.SaturationBar) findViewById(R.id.color_saturation_bar));
@@ -201,7 +205,7 @@ public class DefaultPanelView extends RelativeLayout {
             public void onClick(View v) {
                 if (currentSizeItem > 0) {
                     currentSizeItem--;
-                    fontSizeSpinner.setText(adapter.getItem(currentSizeItem).getSize() + "");
+                    setFontSize();
                     richEditText.sizeClick(adapter.getItem(currentSizeItem));
                 }
             }
@@ -212,7 +216,7 @@ public class DefaultPanelView extends RelativeLayout {
             public void onClick(View v) {
                 if (currentSizeItem < adapter.getCount() - 1) {
                     currentSizeItem++;
-                    fontSizeSpinner.setText(adapter.getItem(currentSizeItem).getSize() + "");
+                    setFontSize();
                     richEditText.sizeClick(adapter.getItem(currentSizeItem));
                 }
             }
@@ -260,8 +264,8 @@ public class DefaultPanelView extends RelativeLayout {
             public void onHistoryChange(int undoSteps, int redoSteps) {
                 undoButton.setEnabled(undoSteps > 0);
                 redoButton.setEnabled(redoSteps > 0);
-                undoButton.setColorFilter(getResources().getColor(undoSteps > 0 ? android.R.color.black : R.color.gray));
-                redoButton.setColorFilter(getResources().getColor(redoSteps > 0 ? android.R.color.black : R.color.gray));
+                undoButton.setColorFilter(undoSteps > 0 ? blackColor : grayColor);
+                redoButton.setColorFilter(redoSteps > 0 ? blackColor : grayColor);
             }
         });
         richEditText.setOnSizeChangeListener(new BaseRichEditText.OnValueChangeListener<Float>() {
@@ -271,8 +275,8 @@ public class DefaultPanelView extends RelativeLayout {
                 for (int i = 0; i < adapter.getCount(); i++) {
                     SizeSpanController.Size sizeEnum = adapter.getItem(i);
                     if (sizeEnum.getSize() == size) {
-                        fontSizeSpinner.setText(size + "");
                         currentSizeItem = i;
+                        setFontSize();
                         return;
                     }
                 }
@@ -361,6 +365,20 @@ public class DefaultPanelView extends RelativeLayout {
             return true;
         } else {
             return false;
+        }
+    }
+
+    protected void setFontSize() {
+        fontSizeSpinner.setText(adapter.getItem(currentSizeItem).getSize() + "");
+        if (currentSizeItem == 0) {
+            fontSizeValueLeftArrow.setColorFilter(grayColor);
+            fontSizeValueRightArrow.setColorFilter(blackColor);
+        } else if (currentSizeItem + 1 == adapter.getCount()) {
+            fontSizeValueLeftArrow.setColorFilter(blackColor);
+            fontSizeValueRightArrow.setColorFilter(grayColor);
+        } else {
+            fontSizeValueLeftArrow.setColorFilter(blackColor);
+            fontSizeValueRightArrow.setColorFilter(blackColor);
         }
     }
 

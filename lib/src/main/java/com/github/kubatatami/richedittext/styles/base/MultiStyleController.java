@@ -101,6 +101,25 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
 
     @Override
     public void checkAfterChange(EditText editText, StyleSelectionInfo styleSelectionInfo) {
+        Z newValue = getCurrentValue(editText, styleSelectionInfo);
+        onValueChange(newValue);
+
+        if (spanInfo != null) {
+            add(spanInfo.span, editText.getText(), spanInfo.start, Math.min(spanInfo.end, editText.getText().length()), spanInfo.flags);
+        }
+        spanInfo = null;
+    }
+
+    protected void onValueChange(Z newValue){
+        if ((newValue == null && value != null) || (newValue != null && value == null) || (value != null && !newValue.equals(value))) {
+            value = newValue;
+            if (onValueChangeListener != null) {
+                onValueChangeListener.onValueChange(value);
+            }
+        }
+    }
+
+    protected Z getCurrentValue(EditText editText, StyleSelectionInfo styleSelectionInfo){
         T[] spans = editText.getText().getSpans(styleSelectionInfo.realSelectionStart, styleSelectionInfo.realSelectionEnd, getClazz());
         Z newValue = spans.length > 0 ? getValueFromSpan(spans[0]) : getDefaultValue(editText);
         if (spans.length > 1 && styleSelectionInfo.realSelectionStart == styleSelectionInfo.realSelectionEnd) {
@@ -118,18 +137,7 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
                 newValue = getMultiValue();
             }
         }
-
-        if ((newValue == null && value != null) || (newValue != null && value == null) || (value != null && !newValue.equals(value))) {
-            value = newValue;
-            if (onValueChangeListener != null) {
-                onValueChangeListener.onValueChange(value);
-            }
-        }
-        if (spanInfo != null) {
-            add(spanInfo.span, editText.getText(), spanInfo.start, Math.min(spanInfo.end, editText.getText().length()), spanInfo.flags);
-        }
-        spanInfo = null;
-
+        return newValue;
     }
 
     @Override

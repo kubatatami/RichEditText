@@ -72,6 +72,26 @@
             android:gravity="center"
             android:orientation="horizontal">
 
+            <ImageView
+                android:id="@+id/undo_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:scaleType="centerInside"
+                android:src="@drawable/undo_arrow"
+                android:background="@drawable/style_button_background"/>
+
+            <ImageView
+                android:id="@+id/redo_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:scaleType="centerInside"
+                android:background="@drawable/style_button_background"
+                android:src="@drawable/redo_arrow" />
+
             <com.github.kubatatami.richedittext.views.ToggleImageButton
                 android:id="@+id/left_button"
                 android:layout_width="0dp"
@@ -105,25 +125,7 @@
                 android:src="@drawable/right_align" />
 
 
-            <ImageView
-                android:id="@+id/undo_button"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:scaleType="centerInside"
-                android:src="@drawable/undo_arrow"
-                android:background="@drawable/style_button_background"/>
 
-            <ImageView
-                android:id="@+id/redo_button"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:scaleType="centerInside"
-                android:background="@drawable/style_button_background"
-                android:src="@drawable/redo_arrow" />
 
         </LinearLayout>
 
@@ -152,7 +154,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:paddingLeft="7dp"
+                android:padding="7dp"
+                android:layout_marginRight="-7dp"
                 android:layout_centerVertical="true"
                 android:src="@drawable/up_arrow"/>
 
@@ -168,7 +171,7 @@
                 android:id="@+id/font_size_value_left_arrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingRight="7dp"
+                android:padding="7dp"
                 android:layout_toLeftOf="@id/font_size_value"
                 android:layout_centerVertical="true"
                 android:src="@drawable/down_arrow"/>

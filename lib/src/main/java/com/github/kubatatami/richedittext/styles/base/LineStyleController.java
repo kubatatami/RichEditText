@@ -20,7 +20,7 @@ public abstract class LineStyleController<T, Z> extends MultiStyleController<T, 
     }
 
     @Override
-    public void checkBeforeChange(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+    public void checkBeforeChange(Editable editable, StyleSelectionInfo styleSelectionInfo,boolean added) {
         //super.checkBeforeChange(editable, styleSelectionInfo);
     }
 
@@ -28,7 +28,7 @@ public abstract class LineStyleController<T, Z> extends MultiStyleController<T, 
     public boolean selectStyle(Z value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
         LineInfo lineInfo = getLineInfo(editable, styleSelectionInfo);
         if(lineInfo.start==lineInfo.end){
-            spanInfo = new SpanInfo<Z>(lineInfo.start, lineInfo.end, Spanned.SPAN_INCLUSIVE_INCLUSIVE, value);
+            spanInfo = new SpanInfo<Z>(lineInfo.start, lineInfo.end,editable.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE, value);
         }else {
             add(value, editable, lineInfo.start, lineInfo.end);
         }

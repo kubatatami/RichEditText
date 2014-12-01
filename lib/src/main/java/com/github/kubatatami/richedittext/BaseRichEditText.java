@@ -54,7 +54,7 @@ public class BaseRichEditText extends EditText {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 historyModule.saveHistory();
-                checkBeforeChange();
+                checkBeforeChange(after>0);
                 removed = SpanUtil.removeUnusedSpans(BaseRichEditText.this, spanControllerMap.values(), start, count, after);
             }
 
@@ -106,11 +106,11 @@ public class BaseRichEditText extends EditText {
         return (T) spanControllerMap.get(clazz);
     }
 
-    protected void checkBeforeChange() {
+    protected void checkBeforeChange(boolean added) {
         if (inflateFinished) {
             StyleSelectionInfo styleSelectionInfo = StyleSelectionInfo.getStyleSelectionInfo(this);
             for (SpanController<?> controller : spanControllerMap.values()) {
-                controller.checkBeforeChange(getText(), styleSelectionInfo);
+                controller.checkBeforeChange(getText(), styleSelectionInfo,added);
             }
         }
     }
@@ -143,6 +143,21 @@ public class BaseRichEditText extends EditText {
         historyModule.setLimit(limit);
     }
 
+    public boolean isStyled(){
+        Object[] spans = getText().getSpans(0,getText().length(),Object.class);
+        for(Object span : spans){
+            for (SpanController<?> controller : spanControllerMap.values()) {
+                if(controller.acceptSpan(span)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public String getTextOrHtml(){
+        return isStyled() ? getHtml() : getText().toString();
+    }
 
     public void binaryClick(Class<? extends BinaryStyleController<?>> clazz) {
         if (getModule(clazz).perform(getText(), StyleSelectionInfo.getStyleSelectionInfo(this))) {

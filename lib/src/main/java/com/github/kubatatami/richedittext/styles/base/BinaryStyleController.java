@@ -67,7 +67,7 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
     public boolean selectStyle(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         if (styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd) {
             spanInfo = new SpanInfo<Boolean>(styleSelectionInfo.selectionStart,
-                    styleSelectionInfo.selectionEnd, defaultFlags, true);
+                    styleSelectionInfo.selectionEnd,editable.length(), defaultFlags, true);
             return false;
         } else {
             int finalSpanStart = styleSelectionInfo.selectionStart;
@@ -149,16 +149,16 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
     }
 
     @Override
-    public void checkBeforeChange(Editable editable, StyleSelectionInfo styleSelectionInfo) {
-        if (composeStyleSpan != null) {
+    public void checkBeforeChange(Editable editable, StyleSelectionInfo styleSelectionInfo,boolean added) {
+        if (composeStyleSpan != null && added) {
             int spanStart = editable.getSpanStart(composeStyleSpan);
             int spanEnd = editable.getSpanEnd(composeStyleSpan);
             editable.removeSpan(composeStyleSpan);
             if (spanEnd != -1 && spanStart != spanEnd) {
-                spanInfo = new SpanInfo<Boolean>(spanStart, spanEnd, defaultFlags, false);
+                spanInfo = new SpanInfo<Boolean>(spanStart, spanEnd,editable.length(), defaultFlags, false);
             }
-            composeStyleSpan = null;
         }
+        composeStyleSpan = null;
         if (spanInfo != null && spanInfo.span && styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd
                 && spanInfo.start == styleSelectionInfo.selectionStart) {
             add(editable, spanInfo.start, spanInfo.end, spanInfo.flags);

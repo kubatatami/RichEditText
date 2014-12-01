@@ -47,7 +47,7 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
 
     public boolean selectStyle(Z value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
         if (styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd) {
-            spanInfo = new SpanInfo<Z>(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, defaultFlags, value);
+            spanInfo = new SpanInfo<Z>(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd,editable.length(), defaultFlags, value);
             return false;
         } else {
             int finalSpanStart = styleSelectionInfo.selectionStart;
@@ -141,20 +141,28 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
     }
 
     @Override
-    public void checkBeforeChange(final Editable editable, StyleSelectionInfo styleSelectionInfo) {
+    public void checkBeforeChange(final Editable editable, StyleSelectionInfo styleSelectionInfo,boolean added) {
         if (spanInfo != null && styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd
                 && spanInfo.start == styleSelectionInfo.selectionStart) {
             List<T> spans = filter(editable.getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, getClazz()));
             add(spanInfo.span, editable, spanInfo.start, spanInfo.end, spanInfo.flags);
-            spanInfo = null;
+
             if (spans.size() > 0) {
                 final T span = spans.get(0);
-                final int spanStart = editable.getSpanStart(span);
-                final int spanEnd = editable.getSpanEnd(span);
+                int spanStart = editable.getSpanStart(span);
+                int spanEnd = editable.getSpanEnd(span);
                 editable.removeSpan(span);
-                if (styleSelectionInfo.selectionStart != 0 && styleSelectionInfo.selectionEnd == styleSelectionInfo.realSelectionEnd) {
-                    spanInfo = new SpanInfo<Z>(spanStart, spanEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE, getValueFromSpan(span));
+                if(spanInfo.start>spanStart && spanInfo.start < spanEnd){
+                    add(getValueFromSpan(span),editable,spanInfo.start, spanEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+                    spanEnd=spanInfo.start;
                 }
+                if (styleSelectionInfo.selectionStart != 0 && styleSelectionInfo.selectionEnd == styleSelectionInfo.realSelectionEnd) {
+                    spanInfo = new SpanInfo<Z>(spanStart, spanEnd,editable.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE, getValueFromSpan(span));
+                }else{
+                    spanInfo = null;
+                }
+            }else{
+                spanInfo = null;
             }
         }
     }

@@ -63,7 +63,7 @@ public class HtmlModule {
 
             for (Object aStyle : style) {
                 SpanController<?> controller = SpanUtil.acceptController(spanControllers, aStyle);
-                if (controller != null) {
+                if (controller != null && text.getSpanStart(aStyle)!=text.getSpanEnd(aStyle)) {
                     out.append(controller.beginTag(aStyle));
                 }
             }

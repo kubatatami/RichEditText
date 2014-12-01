@@ -40,7 +40,7 @@ public abstract class SpanController<T> {
 
     public abstract boolean clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo);
 
-    public abstract void checkBeforeChange(Editable editable, StyleSelectionInfo styleSelectionInfo);
+    public abstract void checkBeforeChange(Editable editable, StyleSelectionInfo styleSelectionInfo, boolean added);
 
     public abstract void checkAfterChange(EditText editText, StyleSelectionInfo styleSelectionInfo);
 

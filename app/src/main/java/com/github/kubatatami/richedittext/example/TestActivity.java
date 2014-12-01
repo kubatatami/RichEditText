@@ -59,7 +59,7 @@ public class TestActivity extends ActionBarActivity {
             public void onClick(View v) {
                 ShareCompat.IntentBuilder builder = ShareCompat.IntentBuilder.from(TestActivity.this);
                 builder.setType("text/plain");
-                builder.setText(richEditText.getHtml());
+                builder.setText(richEditText.getTextOrHtml());
                 builder.startChooser();
             }
         });

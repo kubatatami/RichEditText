@@ -20,8 +20,7 @@ public class HtmlModule {
     public String getHtml(EditText editText, Collection<SpanController<?>> spanControllers) {
         StringBuilder out = new StringBuilder();
         String styles = getDefaultStyles(editText, spanControllers);
-        out.append("<html>");
-        out.append("<body style=\"");
+        out.append("<p style=\"");
         out.append(styles);
         out.append("\">");
         within(ParagraphStyle.class, out, editText, 0, editText.getText().length(), spanControllers, new WithinCallback() {
@@ -35,8 +34,7 @@ public class HtmlModule {
                 });
             }
         });
-        out.append("</html>");
-        out.append("</body>");
+        out.append("</p>");
         return out.toString();
     }
 

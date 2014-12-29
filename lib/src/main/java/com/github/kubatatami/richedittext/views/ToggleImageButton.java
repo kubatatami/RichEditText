@@ -11,7 +11,7 @@ import android.widget.ImageButton;
 
 import com.github.kubatatami.richedittext.R;
 
-class ToggleImageButton extends ImageButton implements Checkable {
+public class ToggleImageButton extends ImageButton implements Checkable {
 
     private static final int[] CHECKED_STATE_SET = {
             android.R.attr.state_checked
@@ -63,7 +63,7 @@ class ToggleImageButton extends ImageButton implements Checkable {
 
     @Override
     public boolean isChecked() {
-        return isChecked;  //To change body of implemented methods use File | Settings | File Templates.
+        return isChecked;
     }
 
     @Override

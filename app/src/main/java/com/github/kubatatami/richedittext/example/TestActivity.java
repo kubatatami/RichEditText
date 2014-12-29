@@ -78,7 +78,7 @@ public class TestActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_show_panel:
-                panelView.toggle(true);
+                panelView.toggle(false);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -86,7 +86,7 @@ public class TestActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        if (!panelView.onBack()) {
+        if (!panelView.onBack(false)) {
             super.onBackPressed();
         }
     }

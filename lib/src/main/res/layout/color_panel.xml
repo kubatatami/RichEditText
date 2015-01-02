@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/color_picker_panel"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_alignTop="@+id/main_panel"
+    android:layout_alignBottom="@id/main_panel"
+    android:padding="5dp"
+    android:background="@android:color/white">
+
+    <Button
+        android:id="@+id/color_ok"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/ok_button_background"
+        android:text="@android:string/ok"
+        android:textSize="@dimen/normal_font" />
+
+    <com.larswerkman.holocolorpicker.SaturationBar
+        android:id="@+id/color_saturation_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:bar_orientation_horizontal="false"
+        android:layout_above="@+id/color_ok"
+        android:layout_alignParentRight="true" />
+
+    <com.larswerkman.holocolorpicker.ValueBar
+        android:id="@+id/color_value_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:bar_orientation_horizontal="false"
+        android:layout_above="@+id/color_ok"
+        android:layout_toLeftOf="@+id/color_saturation_bar" />
+
+    <com.larswerkman.holocolorpicker.ColorPicker
+        android:id="@+id/color_picker"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignTop="@+id/color_value_bar"
+        android:layout_alignBottom="@+id/color_value_bar"
+        android:layout_toLeftOf="@+id/color_value_bar" />
+
+</RelativeLayout>

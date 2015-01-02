@@ -15,6 +15,7 @@ import android.text.style.StrikethroughSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
@@ -50,7 +51,7 @@ public class DefaultPanelView extends RelativeLayout {
     protected ColorPicker colorPicker;
     protected View colorValue, colorPanel;
     protected ImageView fontSizeValueLeftArrow, fontSizeValueRightArrow;
-    protected boolean ignoreSizeEvent, ignoreColorEvent, visible = false;
+    protected boolean ignoreSizeEvent, ignoreColorEvent, visible = false,colorPanelVisible;
     protected boolean changeState = false;
     protected InputMethodManager inputManager;
     protected Handler handler = new Handler();
@@ -83,8 +84,11 @@ public class DefaultPanelView extends RelativeLayout {
     }
 
     protected void init() {
-        View view = inflate(getContext(), R.layout.default_panel, this);
-        mainPanel = view.findViewById(R.id.main_panel);
+        inflate(getContext(), R.layout.default_panel, this);
+        mainPanel = findViewById(R.id.main_panel);
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        colorPanel=inflater.inflate(R.layout.color_panel,this,false);
+
         inputManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         grayColor = getResources().getColor(R.color.gray);
         blackColor = Color.BLACK;
@@ -92,14 +96,27 @@ public class DefaultPanelView extends RelativeLayout {
     }
 
     public void hideAdditionalView() {
-        if (getChildCount() > 1) {
+        hideAdditionalView(richEditText);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void hideAdditionalView(TextView currentTextView) {
+        if (getChildCount() > 2) {
             removeViewAt(1);
         }
+        colorPanelVisible=false;
         mainPanel.setVisibility(View.VISIBLE);
+
+        currentTextView.setShowSoftInputOnFocus(true);
     }
 
     public void showAdditionalView(boolean anim, View view) {
-        hideAdditionalView();
+        showAdditionalView(anim,view,richEditText);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void showAdditionalView(boolean anim, View view, TextView currentTextView) {
+        hideAdditionalView(currentTextView);
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.addRule(ALIGN_TOP, R.id.main_panel);
         layoutParams.addRule(ALIGN_BOTTOM, R.id.main_panel);
@@ -107,6 +124,7 @@ public class DefaultPanelView extends RelativeLayout {
         addView(view, 1);
         toggle(anim, true);
         mainPanel.setVisibility(View.INVISIBLE);
+        currentTextView.setShowSoftInputOnFocus(false);
     }
 
     public void showPanel(boolean anim) {
@@ -115,25 +133,33 @@ public class DefaultPanelView extends RelativeLayout {
     }
 
     public void toggle(boolean anim) {
-        toggle(anim, !visible);
+        toggle(anim, !visible,richEditText);
+    }
+
+    public void toggle(boolean anim, TextView currentView) {
+        toggle(anim, !visible,currentView);
     }
 
     public void toggle(final boolean anim, final boolean show) {
+        toggle(anim,show,richEditText);
+    }
+
+    public void toggle(final boolean anim, final boolean show, TextView currentView) {
         if (this.visible == show || changeState) {
             return;
         }
 
         changeState = true;
         if (!show) {
-            hide(anim);
+            hide(anim,currentView);
         } else {
-            show(anim);
+            show(anim,currentView);
         }
         this.visible = show;
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    protected void show(final boolean anim) {
+    protected void show(final boolean anim, TextView currentView) {
         if (animator != null) {
             animator.cancel();
         }
@@ -148,11 +174,11 @@ public class DefaultPanelView extends RelativeLayout {
                 }
             }, ANIM_DURATION);
         }
-        richEditText.setShowSoftInputOnFocus(false);
+        currentView.setShowSoftInputOnFocus(false);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    protected void hide(final boolean anim) {
+    protected void hide(final boolean anim, final TextView currentView) {
         if (animator != null) {
             animator.cancel();
         }
@@ -165,17 +191,17 @@ public class DefaultPanelView extends RelativeLayout {
                     changeState = false;
                     setVisibility(View.GONE);
                     animator.setListener(null);
-                    inputManager.showSoftInput(richEditText, 0);
+                    inputManager.showSoftInput(currentView, 0);
                 }
             });
             animator.start();
         } else {
-            inputManager.showSoftInput(richEditText, 0);
+            inputManager.showSoftInput(currentView, 0);
             setY(newTop);
             setVisibility(View.GONE);
             changeState = false;
         }
-        richEditText.setShowSoftInputOnFocus(true);
+        currentView.setShowSoftInputOnFocus(true);
     }
 
 
@@ -217,19 +243,21 @@ public class DefaultPanelView extends RelativeLayout {
 
 
         fontSizeSpinner = (TextView) findViewById(R.id.font_size_value);
-        colorPicker = (ColorPicker) findViewById(R.id.color_picker);
         colorValue = findViewById(R.id.color_picker_value);
-        colorPanel = findViewById(R.id.color_picker_panel);
 
         undoButton = (ImageView) findViewById(R.id.undo_button);
         redoButton = (ImageView) findViewById(R.id.redo_button);
-        colorOk = findViewById(R.id.color_ok);
         fontSizeValueLeftArrow = (ImageView) findViewById(R.id.font_size_value_left_arrow);
         fontSizeValueRightArrow = (ImageView) findViewById(R.id.font_size_value_right_arrow);
 
+
+        colorPicker = (ColorPicker) colorPanel.findViewById(R.id.color_picker);
+        colorOk = colorPanel.findViewById(R.id.color_ok);
+
+
         colorPicker.setShowOldCenterColor(false);
-        colorPicker.addSaturationBar((com.larswerkman.holocolorpicker.SaturationBar) findViewById(R.id.color_saturation_bar));
-        colorPicker.addValueBar((com.larswerkman.holocolorpicker.ValueBar) findViewById(R.id.color_value_bar));
+        colorPicker.addSaturationBar((com.larswerkman.holocolorpicker.SaturationBar) colorPanel.findViewById(R.id.color_saturation_bar));
+        colorPicker.addValueBar((com.larswerkman.holocolorpicker.ValueBar) colorPanel.findViewById(R.id.color_value_bar));
 
 
         boldButton.setOnClickListener(new View.OnClickListener() {
@@ -417,20 +445,22 @@ public class DefaultPanelView extends RelativeLayout {
         colorValue.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                colorPanel.setVisibility(View.VISIBLE);
+                showAdditionalView(false,colorPanel);
+                colorPanelVisible=true;
             }
         });
         colorOk.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                colorPanel.setVisibility(View.GONE);
+                hideAdditionalView();
+                colorPanelVisible=false;
             }
         });
     }
 
     public boolean onBack(boolean anim) {
-        if (colorPanel.getVisibility() == View.VISIBLE) {
-            colorPanel.setVisibility(View.GONE);
+        if (colorPanelVisible) {
+            hideAdditionalView();
             return true;
         } else if (visible) {
             toggle(anim, false);

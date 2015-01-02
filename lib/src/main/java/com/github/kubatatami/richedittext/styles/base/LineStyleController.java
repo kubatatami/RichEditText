@@ -68,15 +68,19 @@ public abstract class LineStyleController<T, Z> extends MultiStyleController<T, 
     protected LineInfo getLineInfo(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         int start = Math.max(0, Math.min(styleSelectionInfo.realSelectionStart, editable.length() - 1));
         int end = Math.max(0, Math.min(styleSelectionInfo.realSelectionEnd, editable.length() - 1));
-        if(start!=end || editable.charAt(start) != '\n') {
-            while (start - 1 >= 0 && editable.charAt(start - 1) != '\n') {
-                start--;
+        if(editable.length()>0) {
+            if (start != end || editable.charAt(start) != '\n') {
+                while (start - 1 >= 0 && editable.charAt(start - 1) != '\n') {
+                    start--;
+                }
+                while (end + 1 < editable.length() && editable.charAt(end + 1) != '\n') {
+                    end++;
+                }
             }
-            while (end + 1 < editable.length() && editable.charAt(end + 1) != '\n') {
-                end++;
-            }
+            return new LineInfo(start, end + 1);
+        }else{
+            return new LineInfo(0,0);
         }
-        return new LineInfo(start, end+1);
     }
 
     class LineInfo {

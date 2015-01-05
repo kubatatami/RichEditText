@@ -1,17 +1,21 @@
 package com.github.kubatatami.richedittext.styles.multi;
 
+import android.graphics.Color;
 import android.text.Editable;
 import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
 import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.other.DimenUtil;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 
+import java.util.Map;
+
 public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, Float> {
 
 
     public SizeSpanController() {
-        super(AbsoluteSizeSpan.class);
+        super(AbsoluteSizeSpan.class,"span");
     }
 
 
@@ -49,9 +53,14 @@ public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, F
     }
 
     @Override
-    public String endTag() {
-        return "</span>";
+    public Object createSpanFromTag(String tag, Map<String, String> styleMap) {
+        if(tag.equals(tagName) && styleMap.containsKey("font-size")){
+            float value = Size.getByName(styleMap.get("font-size")).size;
+            return new AbsoluteSizeSpan((int) DimenUtil.convertDpToPixel(value));
+        }
+        return null;
     }
+
 
     public enum Size {
         XX_SMALL(12, "xx-small"),
@@ -87,6 +96,15 @@ public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, F
                 }
             }
             return size + "pt";
+        }
+
+        public static Size getByName(String name){
+            for(Size size : values()){
+                if(size.name.equals(name)){
+                    return size;
+                }
+            }
+            return SMALL;
         }
     }
 

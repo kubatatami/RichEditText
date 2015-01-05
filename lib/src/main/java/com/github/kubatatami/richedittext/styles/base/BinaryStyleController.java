@@ -2,6 +2,7 @@ package com.github.kubatatami.richedittext.styles.base;
 
 import android.text.Editable;
 import android.text.Spanned;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.widget.EditText;
 
@@ -9,6 +10,7 @@ import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Kuba on 11/11/14.
@@ -20,8 +22,8 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
     protected Object composeStyleSpan;
     protected BaseRichEditText.OnValueChangeListener<Boolean> onValueChangeListener;
 
-    public BinaryStyleController(Class<T> clazz) {
-        super(clazz);
+    public BinaryStyleController(Class<T> clazz, String tagName) {
+        super(clazz, tagName);
     }
 
     public void setOnValueChangeListener(BaseRichEditText.OnValueChangeListener<Boolean> onValueChangeListener) {
@@ -66,7 +68,7 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
 
     public boolean selectStyle(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         if (styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd) {
-            spanInfo = new SpanInfo<Boolean>(styleSelectionInfo.selectionStart,
+            spanInfo = new SpanInfo<>(styleSelectionInfo.selectionStart,
                     styleSelectionInfo.selectionEnd,editable.length(), defaultFlags, true);
             return false;
         } else {
@@ -155,7 +157,7 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
             int spanEnd = editable.getSpanEnd(composeStyleSpan);
             editable.removeSpan(composeStyleSpan);
             if (spanEnd != -1 && spanStart != spanEnd) {
-                spanInfo = new SpanInfo<Boolean>(spanStart, spanEnd,editable.length(), defaultFlags, false);
+                spanInfo = new SpanInfo<>(spanStart, spanEnd,editable.length(), defaultFlags, false);
             }
         }
         composeStyleSpan = null;
@@ -190,4 +192,24 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
     public boolean getValue() {
         return value;
     }
+
+
+    @Override
+    public Object createSpanFromTag(String tag, Map<String, String> styleMap) {
+        if(tag.equals(tagName)){
+            try {
+                return clazz.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String beginTag(Object span) {
+        return "<"+tagName+">";
+    }
+
+
 }

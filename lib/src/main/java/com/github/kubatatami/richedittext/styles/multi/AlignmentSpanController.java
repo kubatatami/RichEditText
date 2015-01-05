@@ -1,17 +1,21 @@
 package com.github.kubatatami.richedittext.styles.multi;
 
+import android.graphics.Color;
 import android.text.Editable;
 import android.text.Layout;
 import android.text.style.AlignmentSpan;
+import android.text.style.ForegroundColorSpan;
 import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.styles.base.LineStyleController;
+
+import java.util.Map;
 
 public class AlignmentSpanController extends LineStyleController<AlignmentSpan.Standard, Layout.Alignment> {
 
 
     public AlignmentSpanController() {
-        super(AlignmentSpan.Standard.class);
+        super(AlignmentSpan.Standard.class,"p");
     }
 
 
@@ -62,8 +66,19 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpan.S
     }
 
     @Override
-    public String endTag() {
-        return "</p>";
+    public Object createSpanFromTag(String tag, Map<String, String> styleMap) {
+        if(tag.equals(tagName) && styleMap.containsKey("text-align")){
+            switch (styleMap.get("text-align")) {
+                case "center":
+                    return new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER);
+                case "right":
+                    return new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE);
+                default:
+                case "left":
+                    return new AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL);
+            }
+        }
+        return null;
     }
 
 

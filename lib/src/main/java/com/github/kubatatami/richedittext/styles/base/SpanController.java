@@ -2,19 +2,24 @@ package com.github.kubatatami.richedittext.styles.base;
 
 import android.text.Editable;
 import android.text.Spanned;
+import android.text.style.StyleSpan;
 import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public abstract class SpanController<T> {
     protected Class<T> clazz;
-    protected final static int defaultFlags = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
+    protected String tagName;
 
-    public SpanController(Class<T> clazz) {
+    public final static int defaultFlags = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
+
+    public SpanController(Class<T> clazz, String tagName) {
         this.clazz = clazz;
+        this.tagName = tagName;
     }
 
 
@@ -46,7 +51,16 @@ public abstract class SpanController<T> {
 
     public abstract String beginTag(Object span);
 
-    public abstract String endTag();
+    public abstract Object createSpanFromTag(String tag, Map<String,String> styleMap);
 
+    public Class<?> spanFromEndTag(String tag) {
+        if(tag.equals(tagName)){
+            return clazz;
+        }
+        return null;
+    }
 
+    public String endTag() {
+        return "</"+tagName+">";
+    }
 }

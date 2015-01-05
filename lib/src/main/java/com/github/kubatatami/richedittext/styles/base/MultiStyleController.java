@@ -18,8 +18,8 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
     protected SpanInfo<Z> spanInfo;
     protected BaseRichEditText.OnValueChangeListener<Z> onValueChangeListener;
 
-    public MultiStyleController(Class<T> clazz) {
-        super(clazz);
+    public MultiStyleController(Class<T> clazz,String tagName) {
+        super(clazz,tagName);
     }
 
     public abstract Z getValueFromSpan(T span);

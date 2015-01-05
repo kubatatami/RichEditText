@@ -3,12 +3,14 @@ package com.github.kubatatami.richedittext;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.text.Editable;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.modules.DebugProxyClass;
 import com.github.kubatatami.richedittext.modules.HistoryModule;
-import com.github.kubatatami.richedittext.modules.HtmlModule;
+import com.github.kubatatami.richedittext.modules.HtmlExportModule;
+import com.github.kubatatami.richedittext.modules.HtmlImportModule;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.other.SpanUtil;
 import com.github.kubatatami.richedittext.other.TextWatcherAdapter;
@@ -27,7 +29,6 @@ public class BaseRichEditText extends EditText {
     protected static final boolean DEBUG = true;
     protected boolean inflateFinished;
     protected final HistoryModule historyModule = new HistoryModule(this);
-    protected final HtmlModule htmlModule = new HtmlModule();
     protected final Map<Class<?>, SpanController<?>> spanControllerMap = new HashMap<Class<?>, SpanController<?>>();
     protected Editable proxyEditable = DebugProxyClass.getEditable(this, spanControllerMap);
 
@@ -93,6 +94,11 @@ public class BaseRichEditText extends EditText {
         checkAfterChange();
     }
 
+    public void setHtml(String html){
+        //TODO
+        setText(HtmlImportModule.fromHtml(html,spanControllerMap.values()));
+    }
+
     @Override
     public Editable getText() {
         return DEBUG && proxyEditable != null ? proxyEditable : super.getText();
@@ -128,7 +134,7 @@ public class BaseRichEditText extends EditText {
     }
 
     public String getHtml() {
-        return htmlModule.getHtml(this, spanControllerMap.values());
+        return HtmlExportModule.getHtml(this, spanControllerMap.values());
     }
 
     public void undo() {

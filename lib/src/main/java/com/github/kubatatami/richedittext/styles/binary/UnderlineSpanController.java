@@ -7,16 +7,7 @@ import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
 public class UnderlineSpanController extends BinaryStyleController<UnderlineSpan> {
 
     public UnderlineSpanController() {
-        super(UnderlineSpan.class);
+        super(UnderlineSpan.class,"u");
     }
 
-    @Override
-    public String beginTag(Object span) {
-        return "<u>";
-    }
-
-    @Override
-    public String endTag() {
-        return "</u>";
-    }
 }

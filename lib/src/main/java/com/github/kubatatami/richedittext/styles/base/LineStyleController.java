@@ -10,8 +10,8 @@ import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
  */
 public abstract class LineStyleController<T, Z> extends MultiStyleController<T, Z> {
 
-    public LineStyleController(Class<T> clazz) {
-        super(clazz);
+    public LineStyleController(Class<T> clazz,String tagName) {
+        super(clazz,tagName);
     }
 
     @Override

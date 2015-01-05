@@ -14,10 +14,10 @@ import java.util.Collection;
 /**
  * Created by Kuba on 20/11/14.
  */
-public class HtmlModule {
+public abstract class HtmlExportModule {
 
 
-    public String getHtml(EditText editText, Collection<SpanController<?>> spanControllers) {
+    public static String getHtml(EditText editText, Collection<SpanController<?>> spanControllers) {
         StringBuilder out = new StringBuilder();
         String styles = getDefaultStyles(editText, spanControllers);
         out.append("<p style=\"");

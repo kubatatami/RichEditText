@@ -5,15 +5,24 @@ import android.text.style.StyleSpan;
 
 import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
 
+import java.util.Map;
+
 public abstract class StyleSpanController extends BinaryStyleController<StyleSpan> {
     protected int typeface;
 
 
-    public StyleSpanController(int typeface) {
-        super(StyleSpan.class);
+    public StyleSpanController(int typeface, String tagName) {
+        super(StyleSpan.class,tagName);
         this.typeface = typeface;
     }
 
+    @Override
+    public Object createSpanFromTag(String tag, Map<String, String> styleMap) {
+        if(tag.equals(tagName)){
+            return new StyleSpan(typeface);
+        }
+        return null;
+    }
     public boolean acceptSpan(Object span) {
         return span instanceof StyleSpan && ((StyleSpan) span).getStyle() == typeface;
     }

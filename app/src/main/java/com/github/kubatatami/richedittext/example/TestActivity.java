@@ -21,7 +21,7 @@ import com.github.kubatatami.richedittext.views.DefaultPanelView;
 
 public class TestActivity extends ActionBarActivity {
 
-    RichEditText richEditText;
+    RichEditText richEditText,richEditTextPreview;
     DefaultPanelView panelView;
     TextView htmlView;
     Button sendButton;
@@ -33,6 +33,7 @@ public class TestActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
         richEditText = (RichEditText) findViewById(R.id.rich_edit_text);
+        richEditTextPreview = (RichEditText) findViewById(R.id.rich_edit_text_preview);
         panelView = (DefaultPanelView) findViewById(R.id.panel);
         webView = (WebView) findViewById(R.id.webview);
         htmlView = (TextView) findViewById(R.id.html);
@@ -49,6 +50,7 @@ public class TestActivity extends ActionBarActivity {
                         htmlView.setText(html);
                         webView.getSettings().setDefaultTextEncodingName("utf-8");
                         webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
+                        richEditTextPreview.setHtml(html);
                     }
                 });
             }

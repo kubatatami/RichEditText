@@ -3,6 +3,7 @@ package com.github.kubatatami.richedittext.views;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
@@ -51,7 +52,7 @@ public class DefaultPanelView extends RelativeLayout {
     protected ColorPicker colorPicker;
     protected View colorValue, colorPanel;
     protected ImageView fontSizeValueLeftArrow, fontSizeValueRightArrow;
-    protected boolean ignoreSizeEvent, ignoreColorEvent, visible = false,colorPanelVisible;
+    protected boolean ignoreSizeEvent, ignoreColorEvent, visible = false, colorPanelVisible;
     protected boolean changeState = false;
     protected InputMethodManager inputManager;
     protected Handler handler = new Handler();
@@ -87,7 +88,7 @@ public class DefaultPanelView extends RelativeLayout {
         inflate(getContext(), R.layout.default_panel, this);
         mainPanel = findViewById(R.id.main_panel);
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        colorPanel=inflater.inflate(R.layout.color_panel,this,false);
+        colorPanel = inflater.inflate(R.layout.color_panel, this, false);
 
         inputManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         grayColor = getResources().getColor(R.color.gray);
@@ -104,14 +105,14 @@ public class DefaultPanelView extends RelativeLayout {
         if (getChildCount() > 2) {
             removeViewAt(1);
         }
-        colorPanelVisible=false;
+        colorPanelVisible = false;
         mainPanel.setVisibility(View.VISIBLE);
 
         currentTextView.setShowSoftInputOnFocus(true);
     }
 
     public void showAdditionalView(boolean anim, View view) {
-        showAdditionalView(anim,view,richEditText);
+        showAdditionalView(anim, view, richEditText);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -133,33 +134,35 @@ public class DefaultPanelView extends RelativeLayout {
     }
 
     public void toggle(boolean anim) {
-        toggle(anim, !visible,richEditText);
-    }
-
-    public void toggle(boolean anim, TextView currentView) {
-        toggle(anim, !visible,currentView);
+        toggle(anim, !visible);
     }
 
     public void toggle(final boolean anim, final boolean show) {
-        toggle(anim,show,richEditText);
-    }
-
-    public void toggle(final boolean anim, final boolean show, TextView currentView) {
         if (this.visible == show || changeState) {
             return;
         }
 
         changeState = true;
         if (!show) {
-            hide(anim,currentView);
+            hide(anim);
         } else {
-            show(anim,currentView);
+            show(anim);
         }
         this.visible = show;
     }
 
+    protected TextView getCurrentTextView() {
+        if (getContext() instanceof Activity) {
+            View view = ((Activity) getContext()).getCurrentFocus();
+            if (view != null && view instanceof TextView) {
+                return (TextView) view;
+            }
+        }
+        return richEditText;
+    }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    protected void show(final boolean anim, TextView currentView) {
+    protected void show(final boolean anim) {
         if (animator != null) {
             animator.cancel();
         }
@@ -174,11 +177,11 @@ public class DefaultPanelView extends RelativeLayout {
                 }
             }, ANIM_DURATION);
         }
-        currentView.setShowSoftInputOnFocus(false);
+        getCurrentTextView().setShowSoftInputOnFocus(false);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    protected void hide(final boolean anim, final TextView currentView) {
+    protected void hide(final boolean anim) {
         if (animator != null) {
             animator.cancel();
         }
@@ -191,17 +194,17 @@ public class DefaultPanelView extends RelativeLayout {
                     changeState = false;
                     setVisibility(View.GONE);
                     animator.setListener(null);
-                    inputManager.showSoftInput(currentView, 0);
+                    inputManager.showSoftInput(getCurrentTextView(), 0);
                 }
             });
             animator.start();
         } else {
-            inputManager.showSoftInput(currentView, 0);
+            inputManager.showSoftInput(getCurrentTextView(), 0);
             setY(newTop);
             setVisibility(View.GONE);
             changeState = false;
         }
-        currentView.setShowSoftInputOnFocus(true);
+        getCurrentTextView().setShowSoftInputOnFocus(true);
     }
 
 
@@ -445,15 +448,15 @@ public class DefaultPanelView extends RelativeLayout {
         colorValue.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAdditionalView(false,colorPanel);
-                colorPanelVisible=true;
+                showAdditionalView(false, colorPanel);
+                colorPanelVisible = true;
             }
         });
         colorOk.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 hideAdditionalView();
-                colorPanelVisible=false;
+                colorPanelVisible = false;
             }
         });
     }

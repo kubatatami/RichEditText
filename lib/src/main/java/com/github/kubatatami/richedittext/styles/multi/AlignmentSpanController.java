@@ -9,6 +9,8 @@ import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.styles.base.LineStyleController;
 
+import org.xml.sax.Attributes;
+
 import java.util.Map;
 
 public class AlignmentSpanController extends LineStyleController<AlignmentSpan.Standard, Layout.Alignment> {
@@ -66,7 +68,7 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpan.S
     }
 
     @Override
-    public Object createSpanFromTag(String tag, Map<String, String> styleMap) {
+    public Object createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
         if(tag.equals(tagName) && styleMap.containsKey("text-align")){
             switch (styleMap.get("text-align")) {
                 case "center":

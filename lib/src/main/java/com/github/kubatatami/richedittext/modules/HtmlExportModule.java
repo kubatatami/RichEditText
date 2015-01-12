@@ -19,10 +19,8 @@ public abstract class HtmlExportModule {
 
     public static String getHtml(EditText editText, Collection<SpanController<?>> spanControllers) {
         StringBuilder out = new StringBuilder();
-        String styles = getDefaultStyles(editText, spanControllers);
-        out.append("<p style=\"");
-        out.append(styles);
-        out.append("\">");
+        out.append("<p>");
+        startDefaultStyles(editText, out, spanControllers);
         within(ParagraphStyle.class, out, editText, 0, editText.getText().length(), spanControllers, new WithinCallback() {
             @Override
             public void nextWithin(Class<?> clazz, StringBuilder out, EditText editText, int start, int end, Collection<SpanController<?>> spanControllers) {
@@ -34,18 +32,26 @@ public abstract class HtmlExportModule {
                 });
             }
         });
+        endDefaultStyles(out, spanControllers);
         out.append("</p>");
         return out.toString();
     }
 
-    private static String getDefaultStyles(EditText editText, Collection<SpanController<?>> spanControllers) {
-        StringBuilder out = new StringBuilder();
+    private static void startDefaultStyles(EditText editText, StringBuilder out, Collection<SpanController<?>> spanControllers) {
         for (SpanController<?> spanController : spanControllers) {
             if (spanController instanceof MultiStyleController) {
                 out.append(((MultiStyleController) spanController).defaultStyle(editText));
             }
         }
-        return out.toString();
+    }
+
+
+    private static void endDefaultStyles(StringBuilder out, Collection<SpanController<?>> spanControllers) {
+        for (SpanController<?> spanController : spanControllers) {
+            if (spanController instanceof MultiStyleController) {
+                out.append(((MultiStyleController) spanController).endTag());
+            }
+        }
     }
 
 

@@ -232,6 +232,11 @@ public class DefaultPanelView extends RelativeLayout {
         }
     }
 
+    public void showUndoRedo(boolean show){
+        undoButton.setVisibility(show ? View.VISIBLE : View.GONE);
+        redoButton.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
 
     public void connectWithRichEditText(final RichEditText richEditText) {
         this.richEditText = richEditText;
@@ -300,7 +305,7 @@ public class DefaultPanelView extends RelativeLayout {
         strikethroughButton.setTextOff(spannableString);
 
 
-        adapter = new ArrayAdapter<SizeSpanController.Size>(getContext(), android.R.layout.simple_spinner_item,
+        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item,
                 android.R.id.text1, SizeSpanController.Size.values());
 
         fontSizeValueLeftArrow.setOnClickListener(new OnClickListener() {

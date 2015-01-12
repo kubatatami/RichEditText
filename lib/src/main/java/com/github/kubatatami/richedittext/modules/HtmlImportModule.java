@@ -32,7 +32,7 @@ public abstract class HtmlImportModule {
 
 
     public static Spanned fromHtml(String source, Collection<SpanController<?>> spanControllers) {
-        if(source==null || source.length()==0){
+        if (source == null || source.length() == 0) {
             return new SpannedString("");
         }
         Parser parser = new Parser();
@@ -58,7 +58,7 @@ public abstract class HtmlImportModule {
                 String source,
                 Parser parser, Collection<SpanController<?>> spanControllers) {
             mSource = source;
-            mSpanControllers=spanControllers;
+            mSpanControllers = spanControllers;
             mSpannableStringBuilder = new SpannableStringBuilder();
             mReader = parser;
         }
@@ -77,26 +77,26 @@ public abstract class HtmlImportModule {
         }
 
         private void handleStartTag(String tag, Attributes attributes) {
-            if(tag.equals("br")){
+            if (tag.equals("br")) {
                 mSpannableStringBuilder.append('\n');
                 return;
             }
             String styles = attributes.getValue("style");
-            Map<String,String> styleMap=new HashMap<>();
-            if(styles!=null){
-                for(String style : styles.split(";")){
-                    if(style.length()>0){
+            Map<String, String> styleMap = new HashMap<>();
+            if (styles != null) {
+                for (String style : styles.split(";")) {
+                    if (style.length() > 0) {
                         String[] nameValue = style.split(":");
-                        if(nameValue.length==2) {
+                        if (nameValue.length == 2) {
                             styleMap.put(nameValue[0].trim(), nameValue[1].trim());
                         }
                     }
                 }
             }
 
-            for(SpanController<?> spanController : mSpanControllers){
-                Object object = spanController.createSpanFromTag(tag,styleMap);
-                if(object!=null) {
+            for (SpanController<?> spanController : mSpanControllers) {
+                Object object = spanController.createSpanFromTag(tag, styleMap, attributes);
+                if (object != null) {
                     start(mSpannableStringBuilder, object);
                     break;
                 }
@@ -104,10 +104,10 @@ public abstract class HtmlImportModule {
         }
 
         private void handleEndTag(String tag) {
-            for(SpanController<?> spanController : mSpanControllers){
+            for (SpanController<?> spanController : mSpanControllers) {
                 Class<?> spanClass = spanController.spanFromEndTag(tag);
-                if(spanClass!=null) {
-                    if(end(mSpannableStringBuilder, spanClass, spanController)) {
+                if (spanClass != null) {
+                    if (end(mSpannableStringBuilder, spanClass, spanController)) {
                         break;
                     }
                 }
@@ -137,17 +137,17 @@ public abstract class HtmlImportModule {
             int len = text.length();
             Object obj = getLast(text, kind);
 
-            if(obj==null || text.getSpanFlags(obj)!=Spannable.SPAN_MARK_MARK || !spanController.acceptSpan(obj)){
+            if (obj == null || text.getSpanFlags(obj) != Spannable.SPAN_MARK_MARK || !spanController.acceptSpan(obj)) {
                 return false;
             }
             int where = text.getSpanStart(obj);
 
             text.removeSpan(obj);
 
-            if (where != len && where!=-1) {
+            if (where != len && where != -1) {
                 text.setSpan(obj, where, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 return true;
-            }else{
+            } else {
                 return false;
             }
         }
@@ -218,7 +218,6 @@ public abstract class HtmlImportModule {
 
         public void skippedEntity(String name) throws SAXException {
         }
-
 
 
     }

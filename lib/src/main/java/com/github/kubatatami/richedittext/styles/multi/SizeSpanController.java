@@ -9,6 +9,8 @@ import android.widget.EditText;
 import com.github.kubatatami.richedittext.other.DimenUtil;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 
+import org.xml.sax.Attributes;
+
 import java.util.Map;
 
 public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, Float> {
@@ -33,7 +35,7 @@ public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, F
 
     @Override
     public String defaultStyle(EditText editText) {
-        return "font-size: " + Size.getTag(getDefaultValue(editText)) + ";";
+        return beginTag(new AbsoluteSizeSpan((int) DimenUtil.convertDpToPixel(getDefaultValue(editText))));
     }
 
     @Override
@@ -53,7 +55,7 @@ public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, F
     }
 
     @Override
-    public Object createSpanFromTag(String tag, Map<String, String> styleMap) {
+    public Object createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
         if(tag.equals(tagName) && styleMap.containsKey("font-size")){
             float value = Size.getByName(styleMap.get("font-size")).size;
             return new AbsoluteSizeSpan((int) DimenUtil.convertDpToPixel(value));

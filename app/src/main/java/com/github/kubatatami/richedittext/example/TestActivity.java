@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Spanned;
+import android.text.style.URLSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -82,6 +84,10 @@ public class TestActivity extends ActionBarActivity {
             case R.id.menu_show_panel:
                 panelView.toggle(false);
                 break;
+            case R.id.menu_add_link:
+                richEditText.addLink("http://www.google.pl");
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -92,4 +98,7 @@ public class TestActivity extends ActionBarActivity {
             super.onBackPressed();
         }
     }
+
+
+
 }

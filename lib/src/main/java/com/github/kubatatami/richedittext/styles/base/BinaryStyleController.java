@@ -9,6 +9,8 @@ import android.widget.EditText;
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 
+import org.xml.sax.Attributes;
+
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +58,6 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
         }
         value = isAdd(editable, styleSelectionInfo);
 
-        Log.i("add", value + "");
         boolean result;
         if (value) {
             result = selectStyle(editable, styleSelectionInfo);
@@ -195,7 +196,7 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
 
 
     @Override
-    public Object createSpanFromTag(String tag, Map<String, String> styleMap) {
+    public Object createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
         if(tag.equals(tagName)){
             try {
                 return clazz.newInstance();

@@ -5,6 +5,8 @@ import android.text.style.StyleSpan;
 
 import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
 
+import org.xml.sax.Attributes;
+
 import java.util.Map;
 
 public abstract class StyleSpanController extends BinaryStyleController<StyleSpan> {
@@ -17,7 +19,7 @@ public abstract class StyleSpanController extends BinaryStyleController<StyleSpa
     }
 
     @Override
-    public Object createSpanFromTag(String tag, Map<String, String> styleMap) {
+    public Object createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
         if(tag.equals(tagName)){
             return new StyleSpan(typeface);
         }

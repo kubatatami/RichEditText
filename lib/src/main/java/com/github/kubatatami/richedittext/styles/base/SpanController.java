@@ -7,6 +7,8 @@ import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 
+import org.xml.sax.Attributes;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +53,7 @@ public abstract class SpanController<T> {
 
     public abstract String beginTag(Object span);
 
-    public abstract Object createSpanFromTag(String tag, Map<String,String> styleMap);
+    public abstract Object createSpanFromTag(String tag, Map<String,String> styleMap,Attributes attributes);
 
     public Class<?> spanFromEndTag(String tag) {
         if(tag.equals(tagName)){

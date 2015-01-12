@@ -10,6 +10,7 @@ import com.github.kubatatami.richedittext.styles.binary.StrikethroughSpanControl
 import com.github.kubatatami.richedittext.styles.binary.UnderlineSpanController;
 import com.github.kubatatami.richedittext.styles.multi.AlignmentSpanController;
 import com.github.kubatatami.richedittext.styles.multi.ColorSpanController;
+import com.github.kubatatami.richedittext.styles.multi.LinkSpanController;
 import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
 
 /**
@@ -39,6 +40,7 @@ public class RichEditText extends BaseRichEditText {
         registerController(SizeSpanController.class, new SizeSpanController());
         registerController(ColorSpanController.class, new ColorSpanController());
         registerController(AlignmentSpanController.class, new AlignmentSpanController());
+        registerController(LinkSpanController.class, new LinkSpanController());
     }
 
     public void boldClick() {
@@ -71,6 +73,15 @@ public class RichEditText extends BaseRichEditText {
 
     public void alignmentClick(Layout.Alignment alignment) {
         multiClick(alignment, AlignmentSpanController.class);
+    }
+
+    public void addLink(String url) {
+        addLink(url, url);
+    }
+
+    public void addLink(String name, String url) {
+        getText().replace(getSelectionStart(), getSelectionEnd(), name);
+        getModule(LinkSpanController.class).add(url, getText(), getSelectionStart() - name.length(), getSelectionStart());
     }
 
     public void setOnAlignmentChangeListener(OnValueChangeListener<Layout.Alignment> onAlignmentChangeListener) {

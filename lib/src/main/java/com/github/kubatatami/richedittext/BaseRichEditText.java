@@ -95,7 +95,6 @@ public class BaseRichEditText extends EditText {
     }
 
     public void setHtml(String html){
-        //TODO
         setText(HtmlImportModule.fromHtml(html,spanControllerMap.values()));
     }
 

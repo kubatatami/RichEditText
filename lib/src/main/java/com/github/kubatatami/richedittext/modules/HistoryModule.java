@@ -43,16 +43,20 @@ public class HistoryModule {
 
     public void undo() {
         EditHistory editHistory = undoList.pollFirst();
-        redoList.addFirst(new EditHistory(new SpannableStringBuilder(richEditText.getText()),
-                richEditText.getSelectionStart(), richEditText.getSelectionEnd()));
-        restoreState(editHistory);
+        if(editHistory!=null) {
+            redoList.addFirst(new EditHistory(new SpannableStringBuilder(richEditText.getText()),
+                    richEditText.getSelectionStart(), richEditText.getSelectionEnd()));
+            restoreState(editHistory);
+        }
     }
 
     public void redo() {
         EditHistory editHistory = redoList.pollFirst();
-        undoList.addFirst(new EditHistory(new SpannableStringBuilder(richEditText.getText()),
-                richEditText.getSelectionStart(), richEditText.getSelectionEnd()));
-        restoreState(editHistory);
+        if(editHistory!=null) {
+            undoList.addFirst(new EditHistory(new SpannableStringBuilder(richEditText.getText()),
+                    richEditText.getSelectionStart(), richEditText.getSelectionEnd()));
+            restoreState(editHistory);
+        }
     }
 
     protected void restoreState(EditHistory editHistory) {

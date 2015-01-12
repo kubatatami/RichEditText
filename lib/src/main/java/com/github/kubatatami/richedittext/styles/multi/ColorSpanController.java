@@ -7,6 +7,8 @@ import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 
+import org.xml.sax.Attributes;
+
 import java.util.Map;
 
 public class ColorSpanController extends MultiStyleController<ForegroundColorSpan, Integer> {
@@ -29,7 +31,7 @@ public class ColorSpanController extends MultiStyleController<ForegroundColorSpa
 
     @Override
     public String defaultStyle(EditText editText) {
-        return "";
+        return beginTag(new ForegroundColorSpan(getDefaultValue(editText)));
     }
 
     @Override
@@ -54,7 +56,7 @@ public class ColorSpanController extends MultiStyleController<ForegroundColorSpa
     }
 
     @Override
-    public Object createSpanFromTag(String tag, Map<String, String> styleMap) {
+    public Object createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
         if(tag.equals(tagName) && styleMap.containsKey("color")){
             return new ForegroundColorSpan(Color.parseColor(styleMap.get("color")));
         }

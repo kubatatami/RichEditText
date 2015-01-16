@@ -105,10 +105,13 @@ public class DefaultPanelView extends RelativeLayout {
         if (getChildCount() > 2) {
             removeViewAt(1);
         }
+
+        if(!colorPanelVisible) {
+            currentTextView.setShowSoftInputOnFocus(true);
+        }
+
         colorPanelVisible = false;
         mainPanel.setVisibility(View.VISIBLE);
-
-        currentTextView.setShowSoftInputOnFocus(true);
     }
 
     public void showAdditionalView(boolean anim, View view) {

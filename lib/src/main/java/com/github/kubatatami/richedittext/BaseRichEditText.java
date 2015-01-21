@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.text.Editable;
 import android.text.Html;
 import android.util.AttributeSet;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.modules.DebugProxyClass;
@@ -48,6 +49,7 @@ public class BaseRichEditText extends EditText {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        setInputType(getInputType() | EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         addTextChangedListener(new TextWatcherAdapter() {
 
             boolean removed;

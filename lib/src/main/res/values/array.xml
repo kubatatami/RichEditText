@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="colors">
+        <item>@android:color/holo_blue_bright</item>
+        <item>@android:color/holo_green_light</item>
+        <item>@android:color/holo_orange_dark</item>
+        <item>@android:color/holo_purple</item>
+        <item>#ffc1c600</item>
+        <item>#ffcf2f50</item>
+        <item>#ffbbbbbb</item>
+
+    </array>
+
+</resources>

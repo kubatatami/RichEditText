@@ -200,19 +200,12 @@
                 android:textSize="@dimen/normal_font" />
 
 
-            <FrameLayout
-                android:layout_width="50dp"
+            <com.github.kubatatami.richedittext.views.CircleView
+                android:id="@+id/color_picker_value"
+                android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="@android:color/black"
-                android:padding="1px">
-
-                <View
-                    android:id="@+id/color_picker_value"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </FrameLayout>
+                android:layout_centerVertical="true"/>
 
         </RelativeLayout>
 

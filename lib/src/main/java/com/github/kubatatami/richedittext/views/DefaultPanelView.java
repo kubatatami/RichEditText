@@ -32,7 +32,6 @@ import com.github.kubatatami.richedittext.R;
 import com.github.kubatatami.richedittext.RichEditText;
 import com.github.kubatatami.richedittext.modules.HistoryModule;
 import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
-import com.larswerkman.holocolorpicker.ColorPicker;
 
 import java.lang.reflect.Field;
 
@@ -46,13 +45,13 @@ public class DefaultPanelView extends RelativeLayout {
     protected ToggleButton boldButton, italicButton, underlineButton, strikethroughButton;
     protected ToggleImageButton leftButton, centerButton, rightButton;
     protected ImageView undoButton, redoButton;
-    protected View colorOk;
     protected TextView fontSizeSpinner;
     protected ArrayAdapter<SizeSpanController.Size> adapter;
-    protected ColorPicker colorPicker;
-    protected View colorValue, colorPanel;
+    protected CircleView colorValue;
+    protected View colorPanel;
     protected ImageView fontSizeValueLeftArrow, fontSizeValueRightArrow;
-    protected boolean ignoreSizeEvent, ignoreColorEvent, visible = false, colorPanelVisible;
+    protected boolean ignoreSizeEvent, ignoreColorEvent, visible = false;
+    protected ColorPanelVisibility colorPanelVisibilityVisible = ColorPanelVisibility.INVISIBLE;
     protected boolean changeState = false;
     protected InputMethodManager inputManager;
     protected Handler handler = new Handler();
@@ -106,11 +105,11 @@ public class DefaultPanelView extends RelativeLayout {
             removeViewAt(1);
         }
 
-        if(!colorPanelVisible) {
+        if (colorPanelVisibilityVisible.equals(ColorPanelVisibility.INVISIBLE)) {
             currentTextView.setShowSoftInputOnFocus(true);
         }
 
-        colorPanelVisible = false;
+        colorPanelVisibilityVisible = ColorPanelVisibility.INVISIBLE;
         mainPanel.setVisibility(View.VISIBLE);
     }
 
@@ -118,16 +117,26 @@ public class DefaultPanelView extends RelativeLayout {
         showAdditionalView(anim, view, richEditText);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void showAdditionalView(boolean anim, View view, boolean alignTopAndBottom) {
+        showAdditionalView(anim, view, richEditText, alignTopAndBottom);
+    }
+
     public void showAdditionalView(boolean anim, View view, TextView currentTextView) {
+        showAdditionalView(anim, view, currentTextView, true);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void showAdditionalView(boolean anim, View view, TextView currentTextView, boolean alignTopAndBottom) {
         hideAdditionalView(currentTextView);
-        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.addRule(ALIGN_TOP, R.id.main_panel);
+        LayoutParams layoutParams = new LayoutParams(view.getLayoutParams().width, view.getLayoutParams().height);
+        if (alignTopAndBottom) {
+            layoutParams.addRule(ALIGN_TOP, R.id.main_panel);
+            mainPanel.setVisibility(View.INVISIBLE);
+        }
         layoutParams.addRule(ALIGN_BOTTOM, R.id.main_panel);
         view.setLayoutParams(layoutParams);
         addView(view, 1);
         toggle(anim, true);
-        mainPanel.setVisibility(View.INVISIBLE);
         currentTextView.setShowSoftInputOnFocus(false);
     }
 
@@ -235,7 +244,7 @@ public class DefaultPanelView extends RelativeLayout {
         }
     }
 
-    public void showUndoRedo(boolean show){
+    public void showUndoRedo(boolean show) {
         undoButton.setVisibility(show ? View.VISIBLE : View.GONE);
         redoButton.setVisibility(show ? View.VISIBLE : View.GONE);
     }
@@ -254,21 +263,12 @@ public class DefaultPanelView extends RelativeLayout {
 
 
         fontSizeSpinner = (TextView) findViewById(R.id.font_size_value);
-        colorValue = findViewById(R.id.color_picker_value);
+        colorValue = (CircleView) findViewById(R.id.color_picker_value);
 
         undoButton = (ImageView) findViewById(R.id.undo_button);
         redoButton = (ImageView) findViewById(R.id.redo_button);
         fontSizeValueLeftArrow = (ImageView) findViewById(R.id.font_size_value_left_arrow);
         fontSizeValueRightArrow = (ImageView) findViewById(R.id.font_size_value_right_arrow);
-
-
-        colorPicker = (ColorPicker) colorPanel.findViewById(R.id.color_picker);
-        colorOk = colorPanel.findViewById(R.id.color_ok);
-
-
-        colorPicker.setShowOldCenterColor(false);
-        colorPicker.addSaturationBar((com.larswerkman.holocolorpicker.SaturationBar) colorPanel.findViewById(R.id.color_saturation_bar));
-        colorPicker.addValueBar((com.larswerkman.holocolorpicker.ValueBar) colorPanel.findViewById(R.id.color_value_bar));
 
 
         boldButton.setOnClickListener(new View.OnClickListener() {
@@ -398,8 +398,8 @@ public class DefaultPanelView extends RelativeLayout {
             @Override
             public void onValueChange(Integer value) {
                 ignoreColorEvent = true;
-                colorPicker.setNewCenterColor(value);
-                colorValue.setBackgroundColor(value);
+//                colorPicker.setNewCenterColor(value);
+                colorValue.setColor(value);
             }
         });
         richEditText.setOnAlignmentChangeListener(new BaseRichEditText.OnValueChangeListener<Layout.Alignment>() {
@@ -440,38 +440,81 @@ public class DefaultPanelView extends RelativeLayout {
         });
         richEditText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, adapter.getItem(0).getSize());
         richEditText.setHistoryLimit(20);
-        colorPicker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
-            boolean first = true;
-
-            @Override
-            public void onColorChanged(int i) {
-                if (!ignoreColorEvent && !first) {
-                    richEditText.colorClick(i);
-                    colorValue.setBackgroundColor(i);
-                }
-                first = false;
-                ignoreColorEvent = false;
-            }
-        });
         colorValue.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAdditionalView(false, colorPanel);
-                colorPanelVisible = true;
-            }
-        });
-        colorOk.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideAdditionalView();
-                colorPanelVisible = false;
+                showPrimaryColors();
             }
         });
     }
 
+    protected void showPrimaryColors() {
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        showAdditionalView(false, colorPanel, false);
+        ViewGroup colorPanelList = (ViewGroup) colorPanel.findViewById(R.id.color_picker_list);
+        colorPanel.findViewById(R.id.color_picker_back).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideAdditionalView();
+            }
+        });
+        colorPanelList.removeAllViews();
+        int colors[] = getResources().getIntArray(R.array.colors);
+        for (int color : colors) {
+            CircleView circleView = (CircleView) inflater.inflate(R.layout.circle_view, colorPanelList, false);
+            circleView.setColor(color);
+            colorPanelList.addView(circleView);
+            circleView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showSecondaryColors(((CircleView) v).getColor());
+                }
+            });
+        }
+        colorPanelVisibilityVisible = ColorPanelVisibility.PRIMARY;
+    }
+
+    protected void showSecondaryColors(int baseColor) {
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        showAdditionalView(false, colorPanel, false);
+        ViewGroup colorPanelList = (ViewGroup) colorPanel.findViewById(R.id.color_picker_list);
+        colorPanel.findViewById(R.id.color_picker_back).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPrimaryColors();
+            }
+        });
+        colorPanelList.removeAllViews();
+        int colors=15;
+        for (int i = 1; i <= colors; i++) {
+            CircleView circleView = (CircleView) inflater.inflate(R.layout.circle_view, colorPanelList, false);
+            int r = Color.red(baseColor);
+            int g = Color.green(baseColor);
+            int b = Color.blue(baseColor);
+            r = (int) ((float) (255 - r) * ((float) i / (float)(colors+4)) + r);
+            g = (int) ((float) (255 - g) * ((float) i / (float)(colors+4)) + g);
+            b = (int) ((float) (255 - b) * ((float) i / (float)(colors+4)) + b);
+            circleView.setColor(Color.rgb(r, g, b));
+            colorPanelList.addView(circleView);
+            circleView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    hideAdditionalView();
+                    colorPanelVisibilityVisible = ColorPanelVisibility.INVISIBLE;
+                    colorValue.setColor(((CircleView) v).getColor());
+                    richEditText.colorClick(((CircleView) v).getColor());
+                }
+            });
+        }
+        colorPanelVisibilityVisible = ColorPanelVisibility.SECONDARY;
+    }
+
     public boolean onBack(boolean anim) {
-        if (colorPanelVisible) {
+        if (colorPanelVisibilityVisible.equals(ColorPanelVisibility.PRIMARY)) {
             hideAdditionalView();
+            return true;
+        }if (colorPanelVisibilityVisible.equals(ColorPanelVisibility.SECONDARY)) {
+            showPrimaryColors();
             return true;
         } else if (visible) {
             toggle(anim, false);
@@ -509,5 +552,12 @@ public class DefaultPanelView extends RelativeLayout {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+
+    enum ColorPanelVisibility {
+        INVISIBLE,
+        PRIMARY,
+        SECONDARY
     }
 }

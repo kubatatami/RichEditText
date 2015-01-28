@@ -128,7 +128,9 @@ public class DefaultPanelView extends RelativeLayout {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void showAdditionalView(boolean anim, View view, TextView currentTextView, boolean alignTopAndBottom) {
         hideAdditionalView(currentTextView);
-        LayoutParams layoutParams = new LayoutParams(view.getLayoutParams().width, view.getLayoutParams().height);
+        LayoutParams layoutParams = view.getLayoutParams() == null ?
+                new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT) :
+                new LayoutParams(view.getLayoutParams().width, view.getLayoutParams().height);
         if (alignTopAndBottom) {
             layoutParams.addRule(ALIGN_TOP, R.id.main_panel);
             mainPanel.setVisibility(View.INVISIBLE);

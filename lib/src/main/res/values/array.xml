@@ -2,13 +2,13 @@
 <resources>
 
     <array name="colors">
-        <item>@android:color/holo_blue_bright</item>
-        <item>@android:color/holo_green_light</item>
-        <item>@android:color/holo_orange_dark</item>
-        <item>@android:color/holo_purple</item>
-        <item>#ffc1c600</item>
-        <item>#ffcf2f50</item>
-        <item>#ffbbbbbb</item>
+        <item>#000000</item>
+        <item>#FF0000</item>
+        <item>#00FF00</item>
+        <item>#0000FF</item>
+        <item>#FFFF00</item>
+        <item>#00FFFF</item>
+        <item>#FF00FF</item>
 
     </array>
 

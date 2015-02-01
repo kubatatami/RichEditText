@@ -487,15 +487,15 @@ public class DefaultPanelView extends RelativeLayout {
             }
         });
         colorPanelList.removeAllViews();
-        int colors=15;
+        int colors=8;
         for (int i = 1; i <= colors; i++) {
             CircleView circleView = (CircleView) inflater.inflate(R.layout.circle_view, colorPanelList, false);
             int r = Color.red(baseColor);
             int g = Color.green(baseColor);
             int b = Color.blue(baseColor);
-            r = (int) ((float) (255 - r) * ((float) i / (float)(colors+4)) + r);
-            g = (int) ((float) (255 - g) * ((float) i / (float)(colors+4)) + g);
-            b = (int) ((float) (255 - b) * ((float) i / (float)(colors+4)) + b);
+            r = (int) ((float) (255 - r) * ((float) i / (float)(colors+2)) + r);
+            g = (int) ((float) (255 - g) * ((float) i / (float)(colors+2)) + g);
+            b = (int) ((float) (255 - b) * ((float) i / (float)(colors+2)) + b);
             circleView.setColor(Color.rgb(r, g, b));
             colorPanelList.addView(circleView);
             circleView.setOnClickListener(new OnClickListener() {

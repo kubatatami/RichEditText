@@ -42,7 +42,7 @@ public class DefaultPanelView extends RelativeLayout {
 
     protected final static int ANIM_DURATION = 250;
 
-    protected ToggleButton boldButton, italicButton, underlineButton, strikethroughButton;
+    protected ToggleImageButton boldButton, italicButton, underlineButton, strikethroughButton;
     protected ToggleImageButton leftButton, centerButton, rightButton;
     protected ImageView undoButton, redoButton;
     protected TextView fontSizeSpinner;
@@ -254,10 +254,10 @@ public class DefaultPanelView extends RelativeLayout {
 
     public void connectWithRichEditText(final RichEditText richEditText) {
         this.richEditText = richEditText;
-        boldButton = (ToggleButton) findViewById(R.id.bold_button);
-        italicButton = (ToggleButton) findViewById(R.id.italic_button);
-        underlineButton = (ToggleButton) findViewById(R.id.underline_button);
-        strikethroughButton = (ToggleButton) findViewById(R.id.strikethrough_button);
+        boldButton = (ToggleImageButton) findViewById(R.id.bold_button);
+        italicButton = (ToggleImageButton) findViewById(R.id.italic_button);
+        underlineButton = (ToggleImageButton) findViewById(R.id.underline_button);
+        strikethroughButton = (ToggleImageButton) findViewById(R.id.strikethrough_button);
 
         leftButton = (ToggleImageButton) findViewById(R.id.left_button);
         centerButton = (ToggleImageButton) findViewById(R.id.center_button);
@@ -297,18 +297,6 @@ public class DefaultPanelView extends RelativeLayout {
                 richEditText.strikethroughClick();
             }
         });
-        Spannable spannableString = new SpannableString("U");
-        spannableString.setSpan(new UnderlineSpan(), 0, 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        underlineButton.setText(spannableString);
-        underlineButton.setTextOn(spannableString);
-        underlineButton.setTextOff(spannableString);
-
-        spannableString = new SpannableString("S");
-        spannableString.setSpan(new StrikethroughSpan(), 0, 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        strikethroughButton.setText(spannableString);
-        strikethroughButton.setTextOn(spannableString);
-        strikethroughButton.setTextOff(spannableString);
-
 
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item,
                 android.R.id.text1, SizeSpanController.Size.values());

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="ToogleImageButton">
+    <declare-styleable name="ToggleImageButton">
 
         <attr name="checked" format="boolean"/>
+        <attr name="checkedTint" format="color"/>
 
     </declare-styleable>
 

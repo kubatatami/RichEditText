@@ -1,4 +1,4 @@
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:id="@+id/main_panel"
@@ -10,54 +10,50 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="55dp"
             android:orientation="horizontal">
 
-            <ToggleButton
+            <com.github.kubatatami.richedittext.views.ToggleImageButton
                 android:id="@+id/bold_button"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                android:background="@drawable/style_button_background"
-                android:textOff="B"
-                android:textOn="B"
+                app:checkedTint="@color/blue"
+                android:src="@drawable/bold"
+                android:background="@null"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <ToggleButton
+            <com.github.kubatatami.richedittext.views.ToggleImageButton
                 android:id="@+id/italic_button"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                android:background="@drawable/style_button_background"
-                android:textOff="I"
-                android:textOn="I"
-                android:textSize="20sp"
-                android:textStyle="italic" />
+                app:checkedTint="@color/blue"
+                android:background="@null"
+                android:src="@drawable/italics" />
 
-            <ToggleButton
+            <com.github.kubatatami.richedittext.views.ToggleImageButton
                 android:id="@+id/underline_button"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                android:background="@drawable/style_button_background"
-                android:textOff="U"
-                android:textOn="U"
-                android:textSize="20sp" />
+                app:checkedTint="@color/blue"
+                android:background="@null"
+                android:src="@drawable/underline" />
 
-            <ToggleButton
+            <com.github.kubatatami.richedittext.views.ToggleImageButton
                 android:id="@+id/strikethrough_button"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                android:background="@drawable/style_button_background"
-                android:textOff="S"
-                android:textOn="S"
-                android:textSize="20sp" />
+                app:checkedTint="@color/blue"
+                android:background="@null"
+                android:src="@drawable/strike"/>
         </LinearLayout>
 
         <View
@@ -67,7 +63,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="55dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -79,7 +75,7 @@
                 android:layout_weight="1"
                 android:scaleType="centerInside"
                 android:src="@drawable/undo_arrow"
-                android:background="@drawable/style_button_background"/>
+                />
 
             <ImageView
                 android:id="@+id/redo_button"
@@ -88,42 +84,44 @@
                 android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:scaleType="centerInside"
-                android:background="@drawable/style_button_background"
                 android:src="@drawable/redo_arrow" />
+
+
+
 
             <com.github.kubatatami.richedittext.views.ToggleImageButton
                 android:id="@+id/left_button"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:padding="7dp"
-                android:background="@drawable/style_button_background"
+                app:checkedTint="@color/blue"
+                android:background="@null"
                 android:checked="true"
-                android:gravity="center"
                 android:src="@drawable/left_align" />
 
             <com.github.kubatatami.richedittext.views.ToggleImageButton
                 android:id="@+id/center_button"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:padding="7dp"
-                android:background="@drawable/style_button_background"
+                app:checkedTint="@color/blue"
+                android:background="@null"
                 android:src="@drawable/center_align" />
 
             <com.github.kubatatami.richedittext.views.ToggleImageButton
                 android:id="@+id/right_button"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:padding="7dp"
-                android:background="@drawable/style_button_background"
+                app:checkedTint="@color/blue"
+                android:background="@null"
                 android:src="@drawable/right_align" />
-
-
 
 
         </LinearLayout>

@@ -1,7 +1,19 @@
 package com.github.kubatatami.richedittext.views;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -32,19 +44,25 @@ public class ToggleImageButton extends ImageButton implements Checkable {
 
     public ToggleImageButton(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initAttr(context, attrs);
     }
 
     public ToggleImageButton(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        initAttr(context, attrs, defStyle);
+        initAttr(context, attrs);
     }
 
-    private void initAttr(Context context, AttributeSet attrs, int defStyle) {
+    private void initAttr(Context context, AttributeSet attrs) {
         TypedArray a =
                 context.obtainStyledAttributes(
-                        attrs, R.styleable.ToogleImageButton, defStyle, 0);
+                        attrs, R.styleable.ToggleImageButton);
         boolean checked = a
-                .getBoolean(R.styleable.ToogleImageButton_checked, false);
+                .getBoolean(R.styleable.ToggleImageButton_checked, false);
+        int tint = a
+                .getColor(R.styleable.ToggleImageButton_checkedTint, 0);
+        if(tint!=0){
+            setImageDrawable(getDrawable(),tint);
+        }
         setChecked(checked);
         a.recycle();
     }
@@ -81,6 +99,22 @@ public class ToggleImageButton extends ImageButton implements Checkable {
             onCheckedChangeListener.onCheckedChanged(this, isChecked);
         }
         isBroadCasting = false;
+    }
+
+    public void setImageDrawable(Drawable drawable, int tint) {
+        StateListDrawable stateListDrawable = new StateListDrawable();
+
+        Bitmap oneCopy = Bitmap.createBitmap(drawable.getMinimumWidth(), drawable.getMinimumHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas c = new Canvas(oneCopy);
+        Paint p = new Paint();
+        p.setColorFilter(new PorterDuffColorFilter(tint, PorterDuff.Mode.SRC_IN));
+        c.drawBitmap(((BitmapDrawable)drawable).getBitmap(), 0, 0, p);
+
+        stateListDrawable.addState(new int[]{android.R.attr.state_checked}, new BitmapDrawable(getResources(),oneCopy));
+        stateListDrawable.addState(new int[]{}, drawable);
+
+        super.setImageDrawable(stateListDrawable);
     }
 
     @Override

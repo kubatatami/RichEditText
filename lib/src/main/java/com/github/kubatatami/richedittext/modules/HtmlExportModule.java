@@ -32,7 +32,7 @@ public abstract class HtmlExportModule {
                 });
             }
         });
-        endDefaultStyles(out, spanControllers);
+        endDefaultStyles(editText, out, spanControllers);
         out.append("</p>");
         return out.toString();
     }
@@ -46,9 +46,9 @@ public abstract class HtmlExportModule {
     }
 
 
-    private static void endDefaultStyles(StringBuilder out, Collection<SpanController<?>> spanControllers) {
+    private static void endDefaultStyles(EditText editText,StringBuilder out, Collection<SpanController<?>> spanControllers) {
         for (SpanController<?> spanController : spanControllers) {
-            if (spanController instanceof MultiStyleController) {
+            if (spanController instanceof MultiStyleController && ((MultiStyleController) spanController).defaultStyle(editText).length()>0) {
                 out.append(((MultiStyleController) spanController).endTag());
             }
         }

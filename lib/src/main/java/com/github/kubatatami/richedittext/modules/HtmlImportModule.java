@@ -6,6 +6,7 @@ import android.text.Spanned;
 import android.text.SpannedString;
 import android.text.style.ParagraphStyle;
 
+import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 
 import org.ccil.cowan.tagsoup.HTMLSchema;
@@ -29,22 +30,27 @@ import java.util.Map;
 public abstract class HtmlImportModule {
 
     private static final HTMLSchema schema = new HTMLSchema();
-
+    private static int tagCounter = 0;
+    private static Integer tagBaseCounter = null;
+    private static boolean endingMode = false;
 
     public static Spanned fromHtml(String source, Collection<SpanController<?>> spanControllers) {
         if (source == null || source.length() == 0) {
             return new SpannedString("");
         }
+        tagBaseCounter = null;
+        tagCounter = 0;
+        endingMode = false;
         Parser parser = new Parser();
         try {
             parser.setProperty(Parser.schemaProperty, schema);
         } catch (org.xml.sax.SAXNotRecognizedException | org.xml.sax.SAXNotSupportedException e) {
-            // Should not happen.
             throw new RuntimeException(e);
         }
 
         HtmlToSpannedConverter converter = new HtmlToSpannedConverter(source, parser, spanControllers);
-        return converter.convert();
+        Spanned converted = converter.convert();
+        return converted;
     }
 
 
@@ -69,18 +75,18 @@ public abstract class HtmlImportModule {
             try {
                 mReader.parse(new InputSource(new StringReader(mSource)));
             } catch (IOException | SAXException e) {
-                // We are reading from a string. There should not be IO problems.
-                throw new RuntimeException(e);
+                return null;
             }
 
             return mSpannableStringBuilder;
         }
 
-        private void handleStartTag(String tag, Attributes attributes) {
+        private void handleStartTag(String tag, Attributes attributes) throws SAXException {
             if (tag.equals("br")) {
                 mSpannableStringBuilder.append('\n');
                 return;
             }
+
             String styles = attributes.getValue("style");
             Map<String, String> styleMap = new HashMap<>();
             if (styles != null) {
@@ -93,28 +99,37 @@ public abstract class HtmlImportModule {
                     }
                 }
             }
-
             for (SpanController<?> spanController : mSpanControllers) {
                 Object object = spanController.createSpanFromTag(tag, styleMap, attributes);
                 if (object != null) {
                     start(mSpannableStringBuilder, object);
-                    break;
+                    if (endingMode) {
+                        throw new SAXException("Start tag before end");
+                    }
+                    tagCounter++;
+                    return;
                 }
+            }
+            if (!tag.equals("html") && !tag.equals("body") && !(tag.equals("p") && attributes.getLength() == 0)) {
+                throw new SAXException("Unsupported tag");
             }
         }
 
-        private void handleEndTag(String tag) {
+        private void handleEndTag(String tag) throws SAXException {
+
             for (SpanController<?> spanController : mSpanControllers) {
                 Class<?> spanClass = spanController.spanFromEndTag(tag);
                 if (spanClass != null) {
                     if (end(mSpannableStringBuilder, spanClass, spanController)) {
-                        break;
+                        tagCounter--;
+                        endingMode = tagCounter > tagBaseCounter;
+                        return;
                     }
                 }
             }
         }
 
-        private static Object getLast(Spanned text, Class kind) {
+        private static Object getLast(Spanned text, Class kind, SpanController<?> spanController) {
         /*
          * This knows that the last returned object from getSpans()
          * will be the most recently added.
@@ -124,7 +139,22 @@ public abstract class HtmlImportModule {
             if (objs.length == 0) {
                 return null;
             } else {
-                return objs[objs.length - 1];
+                if(spanController instanceof MultiStyleController){
+                    for (Object obj : objs) {
+                        int flag = text.getSpanFlags(obj);
+                        if (flag == Spannable.SPAN_MARK_MARK) {
+                            return obj;
+                        }
+                    }
+                }else {
+                    for (int i = objs.length - 1; i >= 0; i--) {
+                        int flag = text.getSpanFlags(objs[i]);
+                        if (flag == Spannable.SPAN_MARK_MARK) {
+                            return objs[i];
+                        }
+                    }
+                }
+                return null;
             }
         }
 
@@ -135,11 +165,17 @@ public abstract class HtmlImportModule {
 
         private static boolean end(SpannableStringBuilder text, Class kind, SpanController<?> spanController) {
             int len = text.length();
-            Object obj = getLast(text, kind);
+            Object obj = getLast(text, kind,spanController);
 
-            if (obj == null || text.getSpanFlags(obj) != Spannable.SPAN_MARK_MARK || !spanController.acceptSpan(obj)) {
+            if (obj == null) {
                 return false;
             }
+
+            boolean accept = spanController.acceptSpan(obj);
+            if (!accept) {
+                return false;
+            }
+
             int where = text.getSpanStart(obj);
 
             text.removeSpan(obj);
@@ -178,6 +214,9 @@ public abstract class HtmlImportModule {
         }
 
         public void characters(char ch[], int start, int length) throws SAXException {
+            if (tagBaseCounter == null) {
+                tagBaseCounter = tagCounter;
+            }
             StringBuilder sb = new StringBuilder();
 
             for (int i = 0; i < length; i++) {

@@ -61,10 +61,13 @@ public class TestActivity extends ActionBarActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShareCompat.IntentBuilder builder = ShareCompat.IntentBuilder.from(TestActivity.this);
-                builder.setType("text/plain");
-                builder.setText(richEditText.getTextOrHtml());
-                builder.startChooser();
+                if(richEditText.isValidHtml(richEditText.getHtml())){
+                    ShareCompat.IntentBuilder builder = ShareCompat.IntentBuilder.from(TestActivity.this);
+                    builder.setType("text/plain");
+                    builder.setText(richEditText.getTextOrHtml());
+                    builder.startChooser();
+                }
+
             }
         });
         panelView.connectWithRichEditText(richEditText);

@@ -96,6 +96,10 @@ public class BaseRichEditText extends EditText {
         checkAfterChange();
     }
 
+    public boolean isValidHtml(String html){
+        return HtmlImportModule.fromHtml(html,spanControllerMap.values())!=null;
+    }
+
     public void setHtml(String html){
         setText(HtmlImportModule.fromHtml(html,spanControllerMap.values()));
     }

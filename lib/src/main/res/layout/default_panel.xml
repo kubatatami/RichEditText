@@ -142,7 +142,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:text="@string/size"
+                android:text="@string/font_size"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/normal_font" />
 
@@ -193,7 +193,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:text="@string/color"
+                android:text="@string/font_color"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/normal_font" />
 

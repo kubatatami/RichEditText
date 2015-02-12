@@ -19,6 +19,8 @@ import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -96,12 +98,16 @@ public class BaseRichEditText extends EditText {
         checkAfterChange();
     }
 
-    public boolean isValidHtml(String html){
-        return HtmlImportModule.fromHtml(html,spanControllerMap.values())!=null;
+    public void isValidHtml(String html) throws IOException {
+        HtmlImportModule.fromHtml(html,spanControllerMap.values());
     }
 
     public void setHtml(String html){
-        setText(HtmlImportModule.fromHtml(html,spanControllerMap.values()));
+        try {
+            setText(HtmlImportModule.fromHtml(html,spanControllerMap.values()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

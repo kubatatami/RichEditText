@@ -11,6 +11,7 @@ import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 
 import org.xml.sax.Attributes;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,14 +23,14 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
     protected boolean value;
     protected SpanInfo<Boolean> spanInfo;
     protected Object composeStyleSpan;
-    protected BaseRichEditText.OnValueChangeListener<Boolean> onValueChangeListener;
+    protected List<BaseRichEditText.OnValueChangeListener<Boolean>> onValueChangeListeners = new ArrayList<>();
 
     public BinaryStyleController(Class<T> clazz, String tagName) {
         super(clazz, tagName);
     }
 
-    public void setOnValueChangeListener(BaseRichEditText.OnValueChangeListener<Boolean> onValueChangeListener) {
-        this.onValueChangeListener = onValueChangeListener;
+    public void addOnValueChangeListener(BaseRichEditText.OnValueChangeListener<Boolean> onValueChangeListener) {
+        this.onValueChangeListeners.add(onValueChangeListener);
     }
 
     public T add(Editable editable, int selectionStart, int selectionEnd, int flags) {
@@ -185,8 +186,11 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
         boolean result = (currentValue != value);
         value = currentValue;
 
-        if (onValueChangeListener != null && result) {
-            onValueChangeListener.onValueChange(value);
+
+        if (result) {
+            for(BaseRichEditText.OnValueChangeListener<Boolean> onValueChangeListener : onValueChangeListeners){
+                onValueChangeListener.onValueChange(value);
+            }
         }
     }
 

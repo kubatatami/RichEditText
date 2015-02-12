@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 
 import com.github.kubatatami.richedittext.styles.binary.BoldSpanController;
 import com.github.kubatatami.richedittext.styles.binary.ItalicSpanController;
-import com.github.kubatatami.richedittext.styles.binary.StrikethroughSpanController;
+import com.github.kubatatami.richedittext.styles.binary.StrikeThroughSpanController;
 import com.github.kubatatami.richedittext.styles.binary.UnderlineSpanController;
 import com.github.kubatatami.richedittext.styles.multi.AlignmentSpanController;
 import com.github.kubatatami.richedittext.styles.multi.ColorSpanController;
@@ -36,7 +36,7 @@ public class RichEditText extends BaseRichEditText {
         registerController(BoldSpanController.class, new BoldSpanController());
         registerController(ItalicSpanController.class, new ItalicSpanController());
         registerController(UnderlineSpanController.class, new UnderlineSpanController());
-        registerController(StrikethroughSpanController.class, new StrikethroughSpanController());
+        registerController(StrikeThroughSpanController.class, new StrikeThroughSpanController());
         registerController(SizeSpanController.class, new SizeSpanController());
         registerController(ColorSpanController.class, new ColorSpanController());
         registerController(AlignmentSpanController.class, new AlignmentSpanController());
@@ -55,8 +55,8 @@ public class RichEditText extends BaseRichEditText {
         binaryClick(ItalicSpanController.class);
     }
 
-    public void strikethroughClick() {
-        binaryClick(StrikethroughSpanController.class);
+    public void strikeThroughClick() {
+        binaryClick(StrikeThroughSpanController.class);
     }
 
     public void sizeClick(SizeSpanController.Size size) {
@@ -84,32 +84,32 @@ public class RichEditText extends BaseRichEditText {
         getModule(LinkSpanController.class).add(url, getText(), getSelectionStart() - name.length(), getSelectionStart());
     }
 
-    public void setOnAlignmentChangeListener(OnValueChangeListener<Layout.Alignment> onAlignmentChangeListener) {
-        getModule(AlignmentSpanController.class).setOnValueChangeListener(onAlignmentChangeListener);
+    public void addOnAlignmentChangeListener(OnValueChangeListener<Layout.Alignment> onAlignmentChangeListener) {
+        getModule(AlignmentSpanController.class).addOnValueChangeListener(onAlignmentChangeListener);
     }
 
-    public void setOnSizeChangeListener(OnValueChangeListener<Float> onSizeChangeListener) {
-        getModule(SizeSpanController.class).setOnValueChangeListener(onSizeChangeListener);
+    public void addOnSizeChangeListener(OnValueChangeListener<Float> onSizeChangeListener) {
+        getModule(SizeSpanController.class).addOnValueChangeListener(onSizeChangeListener);
     }
 
-    public void setOnColorChangeListener(OnValueChangeListener<Integer> onSizeChangeListener) {
-        getModule(ColorSpanController.class).setOnValueChangeListener(onSizeChangeListener);
+    public void addOnColorChangeListener(OnValueChangeListener<Integer> onSizeChangeListener) {
+        getModule(ColorSpanController.class).addOnValueChangeListener(onSizeChangeListener);
     }
 
-    public void setOnBoldChangeListener(OnValueChangeListener<Boolean> onBoldChangeListener) {
-        getModule(BoldSpanController.class).setOnValueChangeListener(onBoldChangeListener);
+    public void addOnBoldChangeListener(OnValueChangeListener<Boolean> onBoldChangeListener) {
+        getModule(BoldSpanController.class).addOnValueChangeListener(onBoldChangeListener);
     }
 
-    public void setOnItalicChangeListener(OnValueChangeListener<Boolean> onItalicChangeListener) {
-        getModule(ItalicSpanController.class).setOnValueChangeListener(onItalicChangeListener);
+    public void addOnItalicChangeListener(OnValueChangeListener<Boolean> onItalicChangeListener) {
+        getModule(ItalicSpanController.class).addOnValueChangeListener(onItalicChangeListener);
     }
 
-    public void setOnStrikethroughChangeListener(OnValueChangeListener<Boolean> onStrikethroughChangeListener) {
-        getModule(StrikethroughSpanController.class).setOnValueChangeListener(onStrikethroughChangeListener);
+    public void addOnStrikethroughChangeListener(OnValueChangeListener<Boolean> onStrikethroughChangeListener) {
+        getModule(StrikeThroughSpanController.class).addOnValueChangeListener(onStrikethroughChangeListener);
     }
 
-    public void setOnUnderlineChangeListener(OnValueChangeListener<Boolean> onUnderlineChangeListener) {
-        getModule(UnderlineSpanController.class).setOnValueChangeListener(onUnderlineChangeListener);
+    public void addOnUnderlineChangeListener(OnValueChangeListener<Boolean> onUnderlineChangeListener) {
+        getModule(UnderlineSpanController.class).addOnValueChangeListener(onUnderlineChangeListener);
     }
 
 }

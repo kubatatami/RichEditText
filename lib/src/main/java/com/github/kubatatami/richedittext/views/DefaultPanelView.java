@@ -9,11 +9,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.text.Layout;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.StrikethroughSpan;
-import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -25,7 +20,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.R;
@@ -34,6 +28,8 @@ import com.github.kubatatami.richedittext.modules.HistoryModule;
 import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Kuba on 26/11/14.
@@ -46,12 +42,14 @@ public class DefaultPanelView extends RelativeLayout {
     protected ToggleImageButton leftButton, centerButton, rightButton;
     protected ImageView undoButton, redoButton;
     protected TextView fontSizeSpinner;
+    protected TextView fontSizeText;
+    protected TextView fontColorText;
     protected ArrayAdapter<SizeSpanController.Size> adapter;
     protected CircleView colorValue;
     protected View colorPanel;
     protected ImageView fontSizeValueLeftArrow, fontSizeValueRightArrow;
     protected boolean ignoreSizeEvent, ignoreColorEvent, visible = false;
-    protected ColorPanelVisibility colorPanelVisibilityVisible = ColorPanelVisibility.INVISIBLE;
+    protected ColorPanelVisibility colorPanelVisibility = ColorPanelVisibility.INVISIBLE;
     protected boolean changeState = false;
     protected InputMethodManager inputManager;
     protected Handler handler = new Handler();
@@ -60,6 +58,17 @@ public class DefaultPanelView extends RelativeLayout {
     protected int grayColor, blackColor;
     protected ViewPropertyAnimator animator;
     protected View mainPanel;
+
+
+    protected List<BaseRichEditText.OnValueChangeListener<Layout.Alignment>> onAlignmentClickListeners = new ArrayList<>();
+    protected List<BaseRichEditText.OnValueChangeListener<Float>> onSizeClickListeners = new ArrayList<>();
+    protected List<BaseRichEditText.OnValueChangeListener<ColorPanelVisibility>> onColorPanelShowListeners = new ArrayList<>();
+    protected List<BaseRichEditText.OnValueChangeListener<Integer>> onColorClickListeners = new ArrayList<>();
+    protected List<BaseRichEditText.OnValueChangeListener<Boolean>> onBoldClickListeners = new ArrayList<>();
+    protected List<BaseRichEditText.OnValueChangeListener<Boolean>> onItalicClickListeners = new ArrayList<>();
+    protected List<BaseRichEditText.OnValueChangeListener<Boolean>> onStrikeThroughClickListeners = new ArrayList<>();
+    protected List<BaseRichEditText.OnValueChangeListener<Boolean>> onUnderlineClickListeners = new ArrayList<>();
+
 
     public DefaultPanelView(Context context) {
         super(context);
@@ -105,11 +114,11 @@ public class DefaultPanelView extends RelativeLayout {
             removeViewAt(1);
         }
 
-        if (colorPanelVisibilityVisible.equals(ColorPanelVisibility.INVISIBLE)) {
+        if (colorPanelVisibility.equals(ColorPanelVisibility.INVISIBLE)) {
             currentTextView.setShowSoftInputOnFocus(true);
         }
 
-        colorPanelVisibilityVisible = ColorPanelVisibility.INVISIBLE;
+        setColorPanelVisibility(ColorPanelVisibility.INVISIBLE);
         mainPanel.setVisibility(View.VISIBLE);
     }
 
@@ -272,29 +281,43 @@ public class DefaultPanelView extends RelativeLayout {
         fontSizeValueLeftArrow = (ImageView) findViewById(R.id.font_size_value_left_arrow);
         fontSizeValueRightArrow = (ImageView) findViewById(R.id.font_size_value_right_arrow);
 
+        fontSizeText = (TextView) findViewById(R.id.font_size_text);
+        fontColorText = (TextView) findViewById(R.id.font_color_text);
 
         boldButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 richEditText.boldClick();
+                for (BaseRichEditText.OnValueChangeListener<Boolean> onValueChangeListener : onBoldClickListeners) {
+                    onValueChangeListener.onValueChange(boldButton.isChecked());
+                }
             }
         });
         italicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 richEditText.italicClick();
+                for (BaseRichEditText.OnValueChangeListener<Boolean> onValueChangeListener : onItalicClickListeners) {
+                    onValueChangeListener.onValueChange(italicButton.isChecked());
+                }
             }
         });
         underlineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 richEditText.underlineClick();
+                for (BaseRichEditText.OnValueChangeListener<Boolean> onValueChangeListener : onUnderlineClickListeners) {
+                    onValueChangeListener.onValueChange(underlineButton.isChecked());
+                }
             }
         });
         strikethroughButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                richEditText.strikethroughClick();
+                richEditText.strikeThroughClick();
+                for (BaseRichEditText.OnValueChangeListener<Boolean> onValueChangeListener : onStrikeThroughClickListeners) {
+                    onValueChangeListener.onValueChange(strikethroughButton.isChecked());
+                }
             }
         });
 
@@ -308,6 +331,9 @@ public class DefaultPanelView extends RelativeLayout {
                     currentSizeItem--;
                     setFontSize();
                     richEditText.sizeClick(adapter.getItem(currentSizeItem));
+                    for (BaseRichEditText.OnValueChangeListener<Float> onValueChangeListener : onSizeClickListeners) {
+                        onValueChangeListener.onValueChange(adapter.getItem(currentSizeItem).getSize());
+                    }
                 }
             }
         });
@@ -319,6 +345,9 @@ public class DefaultPanelView extends RelativeLayout {
                     currentSizeItem++;
                     setFontSize();
                     richEditText.sizeClick(adapter.getItem(currentSizeItem));
+                    for (BaseRichEditText.OnValueChangeListener<Float> onValueChangeListener : onSizeClickListeners) {
+                        onValueChangeListener.onValueChange(adapter.getItem(currentSizeItem).getSize());
+                    }
                 }
             }
         });
@@ -336,25 +365,25 @@ public class DefaultPanelView extends RelativeLayout {
             }
         });
 
-        richEditText.setOnBoldChangeListener(new BaseRichEditText.OnValueChangeListener<Boolean>() {
+        richEditText.addOnBoldChangeListener(new BaseRichEditText.OnValueChangeListener<Boolean>() {
             @Override
             public void onValueChange(Boolean bold) {
                 boldButton.setChecked(bold);
             }
         });
-        richEditText.setOnItalicChangeListener(new BaseRichEditText.OnValueChangeListener<Boolean>() {
+        richEditText.addOnItalicChangeListener(new BaseRichEditText.OnValueChangeListener<Boolean>() {
             @Override
             public void onValueChange(Boolean italic) {
                 italicButton.setChecked(italic);
             }
         });
-        richEditText.setOnUnderlineChangeListener(new BaseRichEditText.OnValueChangeListener<Boolean>() {
+        richEditText.addOnUnderlineChangeListener(new BaseRichEditText.OnValueChangeListener<Boolean>() {
             @Override
             public void onValueChange(Boolean underline) {
                 underlineButton.setChecked(underline);
             }
         });
-        richEditText.setOnStrikethroughChangeListener(new BaseRichEditText.OnValueChangeListener<Boolean>() {
+        richEditText.addOnStrikethroughChangeListener(new BaseRichEditText.OnValueChangeListener<Boolean>() {
             @Override
             public void onValueChange(Boolean strikethroug) {
                 strikethroughButton.setChecked(strikethroug);
@@ -369,7 +398,7 @@ public class DefaultPanelView extends RelativeLayout {
                 redoButton.setColorFilter(redoSteps > 0 ? blackColor : grayColor);
             }
         });
-        richEditText.setOnSizeChangeListener(new BaseRichEditText.OnValueChangeListener<Float>() {
+        richEditText.addOnSizeChangeListener(new BaseRichEditText.OnValueChangeListener<Float>() {
             @Override
             public void onValueChange(Float size) {
                 ignoreSizeEvent = true;
@@ -384,7 +413,7 @@ public class DefaultPanelView extends RelativeLayout {
 
             }
         });
-        richEditText.setOnColorChangeListener(new BaseRichEditText.OnValueChangeListener<Integer>() {
+        richEditText.addOnColorChangeListener(new BaseRichEditText.OnValueChangeListener<Integer>() {
             @Override
             public void onValueChange(Integer value) {
                 ignoreColorEvent = true;
@@ -392,7 +421,7 @@ public class DefaultPanelView extends RelativeLayout {
                 colorValue.setColor(value);
             }
         });
-        richEditText.setOnAlignmentChangeListener(new BaseRichEditText.OnValueChangeListener<Layout.Alignment>() {
+        richEditText.addOnAlignmentChangeListener(new BaseRichEditText.OnValueChangeListener<Layout.Alignment>() {
 
             @Override
             public void onValueChange(Layout.Alignment value) {
@@ -406,6 +435,9 @@ public class DefaultPanelView extends RelativeLayout {
             public void onCheckedChanged(ToggleImageButton buttonView, boolean isChecked) {
                 setChecked(centerButton, false);
                 setChecked(rightButton, false);
+                for (BaseRichEditText.OnValueChangeListener<Layout.Alignment> onValueChangeListener : onAlignmentClickListeners) {
+                    onValueChangeListener.onValueChange(Layout.Alignment.ALIGN_NORMAL);
+                }
                 richEditText.alignmentClick(Layout.Alignment.ALIGN_NORMAL);
                 setChecked(buttonView, true);
             }
@@ -415,6 +447,9 @@ public class DefaultPanelView extends RelativeLayout {
             public void onCheckedChanged(ToggleImageButton buttonView, boolean isChecked) {
                 setChecked(leftButton, false);
                 setChecked(rightButton, false);
+                for (BaseRichEditText.OnValueChangeListener<Layout.Alignment> onValueChangeListener : onAlignmentClickListeners) {
+                    onValueChangeListener.onValueChange(Layout.Alignment.ALIGN_CENTER);
+                }
                 richEditText.alignmentClick(Layout.Alignment.ALIGN_CENTER);
                 setChecked(buttonView, true);
             }
@@ -424,6 +459,9 @@ public class DefaultPanelView extends RelativeLayout {
             public void onCheckedChanged(ToggleImageButton buttonView, boolean isChecked) {
                 setChecked(leftButton, false);
                 setChecked(centerButton, false);
+                for (BaseRichEditText.OnValueChangeListener<Layout.Alignment> onValueChangeListener : onAlignmentClickListeners) {
+                    onValueChangeListener.onValueChange(Layout.Alignment.ALIGN_OPPOSITE);
+                }
                 richEditText.alignmentClick(Layout.Alignment.ALIGN_OPPOSITE);
                 setChecked(buttonView, true);
             }
@@ -461,7 +499,7 @@ public class DefaultPanelView extends RelativeLayout {
                 }
             });
         }
-        colorPanelVisibilityVisible = ColorPanelVisibility.PRIMARY;
+        setColorPanelVisibility(ColorPanelVisibility.PRIMARY);
     }
 
     protected void showSecondaryColors(int baseColor) {
@@ -475,35 +513,47 @@ public class DefaultPanelView extends RelativeLayout {
             }
         });
         colorPanelList.removeAllViews();
-        int colors=8;
+        int colors = 8;
         for (int i = 1; i <= colors; i++) {
             CircleView circleView = (CircleView) inflater.inflate(R.layout.circle_view, colorPanelList, false);
             int r = Color.red(baseColor);
             int g = Color.green(baseColor);
             int b = Color.blue(baseColor);
-            r = (int) ((float) (255 - r) * ((float) i / (float)(colors+2)) + r);
-            g = (int) ((float) (255 - g) * ((float) i / (float)(colors+2)) + g);
-            b = (int) ((float) (255 - b) * ((float) i / (float)(colors+2)) + b);
+            r = (int) ((float) (255 - r) * ((float) i / (float) (colors + 2)) + r);
+            g = (int) ((float) (255 - g) * ((float) i / (float) (colors + 2)) + g);
+            b = (int) ((float) (255 - b) * ((float) i / (float) (colors + 2)) + b);
             circleView.setColor(Color.rgb(r, g, b));
             colorPanelList.addView(circleView);
             circleView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     hideAdditionalView();
-                    colorPanelVisibilityVisible = ColorPanelVisibility.INVISIBLE;
+                    setColorPanelVisibility(ColorPanelVisibility.INVISIBLE);
+                    for (BaseRichEditText.OnValueChangeListener<Integer> onValueChangeListener : onColorClickListeners) {
+                        onValueChangeListener.onValueChange(((CircleView) v).getColor());
+                    }
                     colorValue.setColor(((CircleView) v).getColor());
                     richEditText.colorClick(((CircleView) v).getColor());
                 }
             });
         }
-        colorPanelVisibilityVisible = ColorPanelVisibility.SECONDARY;
+        setColorPanelVisibility(ColorPanelVisibility.SECONDARY);
+
+    }
+
+    protected void setColorPanelVisibility(ColorPanelVisibility visibility) {
+        colorPanelVisibility = visibility;
+        for (BaseRichEditText.OnValueChangeListener<ColorPanelVisibility> onValueChangeListener : onColorPanelShowListeners) {
+            onValueChangeListener.onValueChange(visibility);
+        }
     }
 
     public boolean onBack(boolean anim) {
-        if (colorPanelVisibilityVisible.equals(ColorPanelVisibility.PRIMARY)) {
+        if (colorPanelVisibility.equals(ColorPanelVisibility.PRIMARY)) {
             hideAdditionalView();
             return true;
-        }if (colorPanelVisibilityVisible.equals(ColorPanelVisibility.SECONDARY)) {
+        }
+        if (colorPanelVisibility.equals(ColorPanelVisibility.SECONDARY)) {
             showPrimaryColors();
             return true;
         } else if (visible) {
@@ -512,6 +562,14 @@ public class DefaultPanelView extends RelativeLayout {
         } else {
             return false;
         }
+    }
+
+    public void setFontSizeText(int text) {
+        fontSizeText.setText(text);
+    }
+
+    public void setFontColorText(int text) {
+        fontColorText.setText(text);
     }
 
     protected void setFontSize() {
@@ -537,17 +595,48 @@ public class DefaultPanelView extends RelativeLayout {
             checkBox.setChecked(checked);
             field.setBoolean(checkBox, false);
 
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }
 
 
-    enum ColorPanelVisibility {
+    public enum ColorPanelVisibility {
         INVISIBLE,
         PRIMARY,
         SECONDARY
+    }
+
+
+    public void addOnAlignmentClickListener(BaseRichEditText.OnValueChangeListener<Layout.Alignment> onAlignmentClickListener) {
+        onAlignmentClickListeners.add(onAlignmentClickListener);
+    }
+
+    public void addOnSizeClickListener(BaseRichEditText.OnValueChangeListener<Float> onSizeClickListener) {
+        onSizeClickListeners.add(onSizeClickListener);
+    }
+
+    public void addOnColorPanelShowListener(BaseRichEditText.OnValueChangeListener<ColorPanelVisibility> onColorPanelShowListener) {
+        onColorPanelShowListeners.add(onColorPanelShowListener);
+    }
+
+    public void addOnColorClickListener(BaseRichEditText.OnValueChangeListener<Integer> onColorClickListener) {
+        onColorClickListeners.add(onColorClickListener);
+    }
+
+    public void addOnBoldClickListener(BaseRichEditText.OnValueChangeListener<Boolean> onBoldClickListener) {
+        onBoldClickListeners.add(onBoldClickListener);
+    }
+
+    public void addOnItalicClickListener(BaseRichEditText.OnValueChangeListener<Boolean> onItalicClickListener) {
+        onItalicClickListeners.add(onItalicClickListener);
+    }
+
+    public void addOnStrikeThroughClickListener(BaseRichEditText.OnValueChangeListener<Boolean> onStrikeThroughClickListener) {
+        onStrikeThroughClickListeners.add(onStrikeThroughClickListener);
+    }
+
+    public void addOnUnderlineClickListener(BaseRichEditText.OnValueChangeListener<Boolean> onUnderlineClickListener) {
+        onUnderlineClickListeners.add(onUnderlineClickListener);
     }
 }

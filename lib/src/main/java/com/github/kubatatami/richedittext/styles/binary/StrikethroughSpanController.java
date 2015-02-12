@@ -7,9 +7,9 @@ import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
 
 import java.util.Map;
 
-public class StrikethroughSpanController extends BinaryStyleController<StrikethroughSpan> {
+public class StrikeThroughSpanController extends BinaryStyleController<StrikethroughSpan> {
 
-    public StrikethroughSpanController() {
+    public StrikeThroughSpanController() {
         super(StrikethroughSpan.class,"strike");
     }
 

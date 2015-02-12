@@ -4,7 +4,6 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.SpannedString;
-import android.text.style.ParagraphStyle;
 
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
@@ -34,7 +33,7 @@ public abstract class HtmlImportModule {
     private static Integer tagBaseCounter = null;
     private static boolean endingMode = false;
 
-    public static Spanned fromHtml(String source, Collection<SpanController<?>> spanControllers) {
+    public static Spanned fromHtml(String source, Collection<SpanController<?>> spanControllers) throws IOException{
         if (source == null || source.length() == 0) {
             return new SpannedString("");
         }
@@ -49,8 +48,7 @@ public abstract class HtmlImportModule {
         }
 
         HtmlToSpannedConverter converter = new HtmlToSpannedConverter(source, parser, spanControllers);
-        Spanned converted = converter.convert();
-        return converted;
+        return converter.convert();
     }
 
 
@@ -69,13 +67,13 @@ public abstract class HtmlImportModule {
             mReader = parser;
         }
 
-        public Spanned convert() {
+        public Spanned convert() throws IOException {
 
             mReader.setContentHandler(this);
             try {
                 mReader.parse(new InputSource(new StringReader(mSource)));
-            } catch (IOException | SAXException e) {
-                return null;
+            } catch (SAXException e) {
+                throw new IOException(e.getMessage());
             }
 
             return mSpannableStringBuilder;
@@ -104,15 +102,26 @@ public abstract class HtmlImportModule {
                 if (object != null) {
                     start(mSpannableStringBuilder, object);
                     if (endingMode) {
-                        throw new SAXException("Start tag before end");
+                        throw new SAXException("Start new tag(" + tag + " " + attrToString(attributes) + ") before end previous");
                     }
                     tagCounter++;
                     return;
                 }
             }
             if (!tag.equals("html") && !tag.equals("body") && !(tag.equals("p") && attributes.getLength() == 0)) {
-                throw new SAXException("Unsupported tag");
+                throw new SAXException("Unsupported tag: " + tag + " " + attrToString(attributes));
             }
+        }
+
+        private String attrToString(Attributes attrs){
+            StringBuilder builder=new StringBuilder();
+            for(int i=0;i<attrs.getLength();i++){
+                builder.append(" ");
+                builder.append(attrs.getLocalName(i));
+                builder.append("=");
+                builder.append(attrs.getValue(i));
+            }
+            return builder.toString();
         }
 
         private void handleEndTag(String tag) throws SAXException {

@@ -7,6 +7,7 @@ import android.widget.EditText;
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +17,7 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
 
     protected Z value;
     protected SpanInfo<Z> spanInfo;
-    protected BaseRichEditText.OnValueChangeListener<Z> onValueChangeListener;
+    protected List<BaseRichEditText.OnValueChangeListener<Z>> onValueChangeListeners = new ArrayList<>();
 
     public MultiStyleController(Class<T> clazz,String tagName) {
         super(clazz,tagName);
@@ -34,8 +35,8 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
         add(value, editable, selectionStart, selectionEnd, defaultFlags);
     }
 
-    public void setOnValueChangeListener(BaseRichEditText.OnValueChangeListener<Z> onValueChangeListener) {
-        this.onValueChangeListener = onValueChangeListener;
+    public void addOnValueChangeListener(BaseRichEditText.OnValueChangeListener<Z> onValueChangeListener) {
+        this.onValueChangeListeners.add(onValueChangeListener);
     }
 
     public boolean perform(Z value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
@@ -113,7 +114,7 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
     protected void onValueChange(Z newValue){
         if ((newValue == null && value != null) || (newValue != null && value == null) || (value != null && !newValue.equals(value))) {
             value = newValue;
-            if (onValueChangeListener != null) {
+            for(BaseRichEditText.OnValueChangeListener<Z> onValueChangeListener : onValueChangeListeners){
                 onValueChangeListener.onValueChange(value);
             }
         }

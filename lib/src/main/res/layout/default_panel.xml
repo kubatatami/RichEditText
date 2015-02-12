@@ -138,11 +138,12 @@
             android:padding="10dp">
 
             <TextView
+                android:id="@+id/font_size_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:text="@string/font_size"
+                android:text="Size"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/normal_font" />
 
@@ -189,11 +190,12 @@
             android:padding="10dp">
 
             <TextView
+                android:id="@+id/font_color_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:text="@string/font_color"
+                android:text="Color"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/normal_font" />
 

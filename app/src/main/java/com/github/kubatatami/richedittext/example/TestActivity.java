@@ -20,10 +20,13 @@ import com.github.kubatatami.richedittext.RichEditText;
 import com.github.kubatatami.richedittext.modules.HistoryModule;
 import com.github.kubatatami.richedittext.views.DefaultPanelView;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 
 public class TestActivity extends ActionBarActivity {
 
-    RichEditText richEditText,richEditTextPreview;
+    RichEditText richEditText, richEditTextPreview;
     DefaultPanelView panelView;
     TextView htmlView;
     Button sendButton;
@@ -61,13 +64,15 @@ public class TestActivity extends ActionBarActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(richEditText.isValidHtml(richEditText.getHtml())){
+                try {
+                    richEditText.isValidHtml(richEditText.getHtml());
                     ShareCompat.IntentBuilder builder = ShareCompat.IntentBuilder.from(TestActivity.this);
                     builder.setType("text/plain");
                     builder.setText(richEditText.getTextOrHtml());
                     builder.startChooser();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-
             }
         });
         panelView.connectWithRichEditText(richEditText);
@@ -101,7 +106,6 @@ public class TestActivity extends ActionBarActivity {
             super.onBackPressed();
         }
     }
-
 
 
 }

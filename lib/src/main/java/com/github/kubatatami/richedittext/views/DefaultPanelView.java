@@ -162,6 +162,9 @@ public class DefaultPanelView extends RelativeLayout {
 
     public void toggle(final boolean anim, final boolean show) {
         if (this.visible == show || changeState) {
+            if(visible) {
+                getCurrentTextView().setShowSoftInputOnFocus(false);
+            }
             return;
         }
 

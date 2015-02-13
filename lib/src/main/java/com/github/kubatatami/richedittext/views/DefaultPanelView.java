@@ -165,7 +165,6 @@ public class DefaultPanelView extends RelativeLayout {
             if(visible) {
                 getCurrentTextView().setShowSoftInputOnFocus(false);
             }
-            return;
         }
 
         changeState = true;

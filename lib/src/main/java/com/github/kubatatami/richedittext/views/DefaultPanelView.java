@@ -8,10 +8,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
+import android.text.InputType;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
@@ -29,7 +31,9 @@ import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Kuba on 26/11/14.
@@ -108,14 +112,14 @@ public class DefaultPanelView extends RelativeLayout {
         hideAdditionalView(richEditText);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+
     public void hideAdditionalView(TextView currentTextView) {
         if (getChildCount() > 2) {
             removeViewAt(1);
         }
 
         if (colorPanelVisibility.equals(ColorPanelVisibility.INVISIBLE)) {
-            currentTextView.setShowSoftInputOnFocus(true);
+            setShowSoftInputOnFocus(currentTextView, true);
         }
 
         setColorPanelVisibility(ColorPanelVisibility.INVISIBLE);
@@ -134,7 +138,7 @@ public class DefaultPanelView extends RelativeLayout {
         showAdditionalView(anim, view, currentTextView, true);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+
     public void showAdditionalView(boolean anim, View view, TextView currentTextView, boolean alignTopAndBottom) {
         hideAdditionalView(currentTextView);
         LayoutParams layoutParams = view.getLayoutParams() == null ?
@@ -148,7 +152,7 @@ public class DefaultPanelView extends RelativeLayout {
         view.setLayoutParams(layoutParams);
         addView(view, 1);
         toggle(anim, true);
-        currentTextView.setShowSoftInputOnFocus(false);
+        setShowSoftInputOnFocus(currentTextView, false);
     }
 
     public void showPanel(boolean anim) {
@@ -162,8 +166,8 @@ public class DefaultPanelView extends RelativeLayout {
 
     public void toggle(final boolean anim, final boolean show) {
         if (this.visible == show || changeState) {
-            if(visible) {
-                getCurrentTextView().setShowSoftInputOnFocus(false);
+            if (visible) {
+                setShowSoftInputOnFocus(getCurrentTextView(), false);
             }
             return;
         }
@@ -187,7 +191,6 @@ public class DefaultPanelView extends RelativeLayout {
         return richEditText;
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     protected void show(final boolean anim) {
         if (animator != null) {
             animator.cancel();
@@ -203,10 +206,9 @@ public class DefaultPanelView extends RelativeLayout {
                 }
             }, ANIM_DURATION);
         }
-        getCurrentTextView().setShowSoftInputOnFocus(false);
+        setShowSoftInputOnFocus(getCurrentTextView(), false);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     protected void hide(final boolean anim) {
         if (animator != null) {
             animator.cancel();
@@ -230,7 +232,29 @@ public class DefaultPanelView extends RelativeLayout {
             setVisibility(View.GONE);
             changeState = false;
         }
-        getCurrentTextView().setShowSoftInputOnFocus(true);
+        setShowSoftInputOnFocus(getCurrentTextView(), true);
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void setShowSoftInputOnFocus(final TextView textView, boolean show) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            textView.setShowSoftInputOnFocus(show);
+        } else {
+            if (show) {
+                textView.setOnTouchListener(null);
+            } else {
+                textView.setOnTouchListener(new OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        textView.onTouchEvent(event);
+                        inputManager.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+                        return true;
+                    }
+                });
+            }
+        }
+
     }
 
 

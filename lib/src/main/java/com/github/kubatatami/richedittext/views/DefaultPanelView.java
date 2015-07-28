@@ -254,7 +254,6 @@ public class DefaultPanelView extends RelativeLayout {
                 });
             }
         }
-
     }
 
 
@@ -622,7 +621,7 @@ public class DefaultPanelView extends RelativeLayout {
             checkBox.setChecked(checked);
             field.setBoolean(checkBox, false);
 
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -8,7 +8,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
-import android.text.InputType;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -31,9 +30,7 @@ import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Kuba on 26/11/14.
@@ -43,34 +40,60 @@ public class DefaultPanelView extends RelativeLayout {
     protected final static int ANIM_DURATION = 250;
 
     protected ToggleImageButton boldButton, italicButton, underlineButton, strikethroughButton;
+
     protected ToggleImageButton leftButton, centerButton, rightButton;
+
     protected ImageView undoButton, redoButton;
+
     protected TextView fontSizeSpinner;
+
     protected TextView fontSizeText;
+
     protected TextView fontColorText;
+
     protected ArrayAdapter<SizeSpanController.Size> adapter;
+
     protected CircleView colorValue;
+
     protected View colorPanel;
+
     protected ImageView fontSizeValueLeftArrow, fontSizeValueRightArrow;
+
     protected boolean ignoreSizeEvent, ignoreColorEvent, visible = false;
+
     protected ColorPanelVisibility colorPanelVisibility = ColorPanelVisibility.INVISIBLE;
+
     protected boolean changeState = false;
+
     protected InputMethodManager inputManager;
+
     protected Handler handler = new Handler();
+
     protected RichEditText richEditText;
+
     protected int currentSizeItem = 0;
+
     protected int grayColor, blackColor;
+
     protected ViewPropertyAnimator animator;
+
     protected View mainPanel;
 
 
     protected List<BaseRichEditText.OnValueChangeListener<Layout.Alignment>> onAlignmentClickListeners = new ArrayList<>();
+
     protected List<BaseRichEditText.OnValueChangeListener<Float>> onSizeClickListeners = new ArrayList<>();
+
     protected List<BaseRichEditText.OnValueChangeListener<ColorPanelVisibility>> onColorPanelShowListeners = new ArrayList<>();
+
     protected List<BaseRichEditText.OnValueChangeListener<Integer>> onColorClickListeners = new ArrayList<>();
+
     protected List<BaseRichEditText.OnValueChangeListener<Boolean>> onBoldClickListeners = new ArrayList<>();
+
     protected List<BaseRichEditText.OnValueChangeListener<Boolean>> onItalicClickListeners = new ArrayList<>();
+
     protected List<BaseRichEditText.OnValueChangeListener<Boolean>> onStrikeThroughClickListeners = new ArrayList<>();
+
     protected List<BaseRichEditText.OnValueChangeListener<Boolean>> onUnderlineClickListeners = new ArrayList<>();
 
 

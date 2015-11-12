@@ -9,33 +9,40 @@ import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public abstract class StyleSpanController extends BinaryStyleController<StyleSpan> {
+public abstract class StyleSpanController extends BinaryStyleController<StyleSpanController.RichStyleSpan> {
+
     protected int typeface;
 
 
     public StyleSpanController(int typeface, String tagName) {
-        super(StyleSpan.class,tagName);
+        super(RichStyleSpan.class, tagName);
         this.typeface = typeface;
     }
 
     @Override
-    public Object createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if(tag.equals(tagName)){
-            return new StyleSpan(typeface);
+    public StyleSpanController.RichStyleSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
+        if (tag.equals(tagName)) {
+            return new RichStyleSpan(typeface);
         }
         return null;
     }
 
     public boolean acceptSpan(Object span) {
-        return span instanceof StyleSpan && ((StyleSpan) span).getStyle() == typeface;
+        return span instanceof RichStyleSpan && ((RichStyleSpan) span).getStyle() == typeface;
     }
 
     @Override
-    public StyleSpan add(Editable editable, int selectionStart, int selectionEnd, int flags) {
-        StyleSpan result = new StyleSpan(typeface);
+    public RichStyleSpan add(Editable editable, int selectionStart, int selectionEnd, int flags) {
+        RichStyleSpan result = new RichStyleSpan(typeface);
         editable.setSpan(result, selectionStart, selectionEnd, flags);
         return result;
     }
 
+    public static class RichStyleSpan extends StyleSpan {
 
+        public RichStyleSpan(int style) {
+            super(style);
+        }
+
+    }
 }

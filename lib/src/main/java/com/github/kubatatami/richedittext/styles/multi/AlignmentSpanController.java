@@ -1,6 +1,5 @@
 package com.github.kubatatami.richedittext.styles.multi;
 
-import android.graphics.Color;
 import android.text.Editable;
 import android.text.Layout;
 import android.text.style.AlignmentSpan;
@@ -13,22 +12,22 @@ import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public class AlignmentSpanController extends LineStyleController<AlignmentSpan.Standard, Layout.Alignment> {
+public class AlignmentSpanController extends LineStyleController<AlignmentSpanController.RichAlignmentSpanStandard, Layout.Alignment> {
 
 
     public AlignmentSpanController() {
-        super(AlignmentSpan.Standard.class,"p");
+        super(RichAlignmentSpanStandard.class, "p");
     }
 
 
     @Override
-    public Layout.Alignment getValueFromSpan(AlignmentSpan.Standard span) {
+    public Layout.Alignment getValueFromSpan(RichAlignmentSpanStandard span) {
         return (span).getAlignment();
     }
 
     @Override
-    public AlignmentSpan.Standard add(Layout.Alignment value, Editable editable, int selectionStart, int selectionEnd, int flags) {
-        AlignmentSpan.Standard result = new AlignmentSpan.Standard(value);
+    public RichAlignmentSpanStandard add(Layout.Alignment value, Editable editable, int selectionStart, int selectionEnd, int flags) {
+        RichAlignmentSpanStandard result = new RichAlignmentSpanStandard(value);
         editable.setSpan(result, selectionStart, selectionEnd, flags);
         return result;
     }
@@ -50,7 +49,7 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpan.S
 
     @Override
     public String beginTag(Object span) {
-        Layout.Alignment spanValue = getValueFromSpan((AlignmentSpan.Standard) span);
+        Layout.Alignment spanValue = getValueFromSpan((RichAlignmentSpanStandard) span);
         String alignValue;
         switch (spanValue) {
             case ALIGN_CENTER:
@@ -68,20 +67,25 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpan.S
     }
 
     @Override
-    public Object createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if(tag.equals(tagName) && styleMap.containsKey("text-align")){
+    public AlignmentSpanController.RichAlignmentSpanStandard createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
+        if (tag.equals(tagName) && styleMap.containsKey("text-align")) {
             switch (styleMap.get("text-align")) {
                 case "center":
-                    return new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER);
+                    return new RichAlignmentSpanStandard(Layout.Alignment.ALIGN_CENTER);
                 case "right":
-                    return new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE);
+                    return new RichAlignmentSpanStandard(Layout.Alignment.ALIGN_OPPOSITE);
                 default:
                 case "left":
-                    return new AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL);
+                    return new RichAlignmentSpanStandard(Layout.Alignment.ALIGN_NORMAL);
             }
         }
         return null;
     }
 
+    public static class RichAlignmentSpanStandard extends AlignmentSpan.Standard {
 
+        public RichAlignmentSpanStandard(Layout.Alignment align) {
+            super(align);
+        }
+    }
 }

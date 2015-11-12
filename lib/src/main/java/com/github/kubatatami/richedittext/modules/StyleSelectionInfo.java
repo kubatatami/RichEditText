@@ -3,10 +3,15 @@ package com.github.kubatatami.richedittext.modules;
 import com.github.kubatatami.richedittext.BaseRichEditText;
 
 public class StyleSelectionInfo {
+
     public int selectionStart;
+
     public int selectionEnd;
+
     public int realSelectionStart;
+
     public int realSelectionEnd;
+
     public boolean selection;
 
 

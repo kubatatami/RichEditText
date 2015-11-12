@@ -16,9 +16,13 @@ import java.util.List;
 public class HistoryModule {
 
     protected BaseRichEditText richEditText;
+
     protected final LimitedQueue<EditHistory> undoList = new LimitedQueue<EditHistory>(Integer.MAX_VALUE);
+
     protected final LimitedQueue<EditHistory> redoList = new LimitedQueue<EditHistory>(Integer.MAX_VALUE);
+
     protected boolean ignoreHistory = false;
+
     protected List<OnHistoryChangeListener> onHistoryChangeListeners = new ArrayList<OnHistoryChangeListener>();
 
     public HistoryModule(BaseRichEditText richEditText) {
@@ -43,7 +47,7 @@ public class HistoryModule {
 
     public void undo() {
         EditHistory editHistory = undoList.pollFirst();
-        if(editHistory!=null) {
+        if (editHistory != null) {
             redoList.addFirst(new EditHistory(new SpannableStringBuilder(richEditText.getText()),
                     richEditText.getSelectionStart(), richEditText.getSelectionEnd()));
             restoreState(editHistory);
@@ -52,7 +56,7 @@ public class HistoryModule {
 
     public void redo() {
         EditHistory editHistory = redoList.pollFirst();
-        if(editHistory!=null) {
+        if (editHistory != null) {
             undoList.addFirst(new EditHistory(new SpannableStringBuilder(richEditText.getText()),
                     richEditText.getSelectionStart(), richEditText.getSelectionEnd()));
             restoreState(editHistory);
@@ -79,8 +83,11 @@ public class HistoryModule {
     }
 
     protected class EditHistory {
+
         protected Editable editable;
+
         protected int selectionStart;
+
         protected int selectionEnd;
 
         public EditHistory(Editable editable, int selectionStart, int selectionEnd) {
@@ -112,6 +119,7 @@ public class HistoryModule {
     }
 
     public interface OnHistoryChangeListener {
+
         public void onHistoryChange(int undoSteps, int redoSteps);
     }
 

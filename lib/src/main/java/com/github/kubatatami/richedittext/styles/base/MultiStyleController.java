@@ -16,11 +16,13 @@ import java.util.List;
 public abstract class MultiStyleController<T, Z> extends SpanController<T> {
 
     protected Z value;
+
     protected SpanInfo<Z> spanInfo;
+
     protected List<BaseRichEditText.OnValueChangeListener<Z>> onValueChangeListeners = new ArrayList<>();
 
-    public MultiStyleController(Class<T> clazz,String tagName) {
-        super(clazz,tagName);
+    public MultiStyleController(Class<T> clazz, String tagName) {
+        super(clazz, tagName);
     }
 
     public abstract Z getValueFromSpan(T span);
@@ -48,7 +50,7 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
 
     public boolean selectStyle(Z value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
         if (styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd) {
-            spanInfo = new SpanInfo<Z>(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd,editable.length(), defaultFlags, value);
+            spanInfo = new SpanInfo<Z>(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, editable.length(), defaultFlags, value);
             return false;
         } else {
             int finalSpanStart = styleSelectionInfo.selectionStart;
@@ -111,16 +113,16 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
         spanInfo = null;
     }
 
-    protected void onValueChange(Z newValue){
+    protected void onValueChange(Z newValue) {
         if ((newValue == null && value != null) || (newValue != null && value == null) || (value != null && !newValue.equals(value))) {
             value = newValue;
-            for(BaseRichEditText.OnValueChangeListener<Z> onValueChangeListener : onValueChangeListeners){
+            for (BaseRichEditText.OnValueChangeListener<Z> onValueChangeListener : onValueChangeListeners) {
                 onValueChangeListener.onValueChange(value);
             }
         }
     }
 
-    protected Z getCurrentValue(EditText editText, StyleSelectionInfo styleSelectionInfo){
+    protected Z getCurrentValue(EditText editText, StyleSelectionInfo styleSelectionInfo) {
         T[] spans = editText.getText().getSpans(styleSelectionInfo.realSelectionStart, styleSelectionInfo.realSelectionEnd, getClazz());
         Z newValue = spans.length > 0 ? getValueFromSpan(spans[0]) : getDefaultValue(editText);
         if (spans.length > 1 && styleSelectionInfo.realSelectionStart == styleSelectionInfo.realSelectionEnd) {
@@ -142,7 +144,7 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
     }
 
     @Override
-    public void checkBeforeChange(final Editable editable, StyleSelectionInfo styleSelectionInfo,boolean added) {
+    public void checkBeforeChange(final Editable editable, StyleSelectionInfo styleSelectionInfo, boolean added) {
         if (spanInfo != null && styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd
                 && spanInfo.start == styleSelectionInfo.selectionStart) {
             List<T> spans = filter(editable.getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, getClazz()));
@@ -153,16 +155,16 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
                 int spanStart = editable.getSpanStart(span);
                 int spanEnd = editable.getSpanEnd(span);
                 editable.removeSpan(span);
-                if(spanInfo.start>spanStart && spanInfo.start < spanEnd){
-                    add(getValueFromSpan(span),editable,spanInfo.start, spanEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-                    spanEnd=spanInfo.start;
+                if (spanInfo.start > spanStart && spanInfo.start < spanEnd) {
+                    add(getValueFromSpan(span), editable, spanInfo.start, spanEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+                    spanEnd = spanInfo.start;
                 }
                 if (styleSelectionInfo.selectionStart != 0 && styleSelectionInfo.selectionEnd == styleSelectionInfo.realSelectionEnd) {
-                    spanInfo = new SpanInfo<Z>(spanStart, spanEnd,editable.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE, getValueFromSpan(span));
-                }else{
+                    spanInfo = new SpanInfo<Z>(spanStart, spanEnd, editable.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE, getValueFromSpan(span));
+                } else {
                     spanInfo = null;
                 }
-            }else{
+            } else {
                 spanInfo = null;
             }
         }

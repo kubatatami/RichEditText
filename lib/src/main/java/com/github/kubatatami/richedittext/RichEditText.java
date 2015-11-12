@@ -17,6 +17,7 @@ import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
  * Created by Kuba on 20/11/14.
  */
 public class RichEditText extends BaseRichEditText {
+
     public RichEditText(Context context) {
         super(context);
         init();

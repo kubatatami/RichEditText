@@ -46,9 +46,9 @@ public abstract class HtmlExportModule {
     }
 
 
-    private static void endDefaultStyles(EditText editText,StringBuilder out, Collection<SpanController<?>> spanControllers) {
+    private static void endDefaultStyles(EditText editText, StringBuilder out, Collection<SpanController<?>> spanControllers) {
         for (SpanController<?> spanController : spanControllers) {
-            if (spanController instanceof MultiStyleController && ((MultiStyleController) spanController).defaultStyle(editText).length()>0) {
+            if (spanController instanceof MultiStyleController && ((MultiStyleController) spanController).defaultStyle(editText).length() > 0) {
                 out.append(((MultiStyleController) spanController).endTag());
             }
         }
@@ -67,7 +67,7 @@ public abstract class HtmlExportModule {
 
             for (Object aStyle : style) {
                 SpanController<?> controller = SpanUtil.acceptController(spanControllers, aStyle);
-                if (controller != null && text.getSpanStart(aStyle)!=text.getSpanEnd(aStyle)) {
+                if (controller != null && text.getSpanStart(aStyle) != text.getSpanEnd(aStyle)) {
                     out.append(controller.beginTag(aStyle));
                 }
             }
@@ -85,6 +85,7 @@ public abstract class HtmlExportModule {
     }
 
     interface WithinCallback {
+
         public void nextWithin(Class<?> clazz, StringBuilder out, EditText editText, int start, int end, Collection<SpanController<?>> spanControllers);
     }
 

@@ -1,9 +1,7 @@
 package com.github.kubatatami.richedittext.styles.multi;
 
-import android.graphics.Color;
 import android.text.Editable;
 import android.text.style.AbsoluteSizeSpan;
-import android.text.style.ForegroundColorSpan;
 import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.other.DimenUtil;
@@ -13,29 +11,29 @@ import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, Float> {
+public class SizeSpanController extends MultiStyleController<SizeSpanController.RichAbsoluteSizeSpan, Float> {
 
 
     public SizeSpanController() {
-        super(AbsoluteSizeSpan.class,"span");
+        super(RichAbsoluteSizeSpan.class, "span");
     }
 
 
     @Override
-    public Float getValueFromSpan(AbsoluteSizeSpan span) {
+    public Float getValueFromSpan(RichAbsoluteSizeSpan span) {
         return DimenUtil.convertPixelsToDp((span).getSize());
     }
 
     @Override
-    public AbsoluteSizeSpan add(Float value, Editable editable, int selectionStart, int selectionEnd, int flags) {
-        AbsoluteSizeSpan result = new AbsoluteSizeSpan((int) DimenUtil.convertDpToPixel(value));
+    public RichAbsoluteSizeSpan add(Float value, Editable editable, int selectionStart, int selectionEnd, int flags) {
+        RichAbsoluteSizeSpan result = new RichAbsoluteSizeSpan((int) DimenUtil.convertDpToPixel(value));
         editable.setSpan(result, selectionStart, selectionEnd, flags);
         return result;
     }
 
     @Override
     public String defaultStyle(EditText editText) {
-        return beginTag(new AbsoluteSizeSpan((int) DimenUtil.convertDpToPixel(getDefaultValue(editText))));
+        return beginTag(new RichAbsoluteSizeSpan((int) DimenUtil.convertDpToPixel(getDefaultValue(editText))));
     }
 
     @Override
@@ -50,15 +48,15 @@ public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, F
 
     @Override
     public String beginTag(Object span) {
-        float spanValue = getValueFromSpan((AbsoluteSizeSpan) span);
+        float spanValue = getValueFromSpan((RichAbsoluteSizeSpan) span);
         return "<span style=\"font-size: " + Size.getTag(spanValue) + ";\">";
     }
 
     @Override
-    public Object createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if(tag.equals(tagName) && styleMap.containsKey("font-size")){
+    public SizeSpanController.RichAbsoluteSizeSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
+        if (tag.equals(tagName) && styleMap.containsKey("font-size")) {
             float value = Size.getByName(styleMap.get("font-size")).size;
-            return new AbsoluteSizeSpan((int) DimenUtil.convertDpToPixel(value));
+            return new RichAbsoluteSizeSpan((int) DimenUtil.convertDpToPixel(value));
         }
         return null;
     }
@@ -74,6 +72,7 @@ public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, F
         XX_LARGE(40, "xx-large");
 
         private String name;
+
         private float size;
 
         Size(float size, String name) {
@@ -100,9 +99,9 @@ public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, F
             return size + "pt";
         }
 
-        public static Size getByName(String name){
-            for(Size size : values()){
-                if(size.name.equals(name)){
+        public static Size getByName(String name) {
+            for (Size size : values()) {
+                if (size.name.equals(name)) {
                     return size;
                 }
             }
@@ -110,5 +109,11 @@ public class SizeSpanController extends MultiStyleController<AbsoluteSizeSpan, F
         }
     }
 
+    public static class RichAbsoluteSizeSpan extends AbsoluteSizeSpan{
 
+        public RichAbsoluteSizeSpan(int size) {
+            super(size);
+        }
+
+    }
 }

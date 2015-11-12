@@ -1,18 +1,14 @@
 package com.github.kubatatami.richedittext.views;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -28,14 +24,18 @@ public class ToggleImageButton extends ImageButton implements Checkable {
     private static final int[] CHECKED_STATE_SET = {
             android.R.attr.state_checked
     };
+
     private final OnClickListener onClickListener = new OnClickListener() {
         @Override
         public void onClick(View view) {
             toggle();
         }
     };
+
     private boolean isChecked;
+
     private boolean isBroadCasting;
+
     private OnCheckedChangeListener onCheckedChangeListener;
 
     public ToggleImageButton(Context context) {
@@ -60,8 +60,8 @@ public class ToggleImageButton extends ImageButton implements Checkable {
                 .getBoolean(R.styleable.ToggleImageButton_checked, false);
         int tint = a
                 .getColor(R.styleable.ToggleImageButton_checkedTint, 0);
-        if(tint!=0){
-            setImageDrawable(getDrawable(),tint);
+        if (tint != 0) {
+            setImageDrawable(getDrawable(), tint);
         }
         setChecked(checked);
         a.recycle();
@@ -109,9 +109,9 @@ public class ToggleImageButton extends ImageButton implements Checkable {
         Canvas c = new Canvas(oneCopy);
         Paint p = new Paint();
         p.setColorFilter(new PorterDuffColorFilter(tint, PorterDuff.Mode.SRC_IN));
-        c.drawBitmap(((BitmapDrawable)drawable).getBitmap(), 0, 0, p);
+        c.drawBitmap(((BitmapDrawable) drawable).getBitmap(), 0, 0, p);
 
-        stateListDrawable.addState(new int[]{android.R.attr.state_checked}, new BitmapDrawable(getResources(),oneCopy));
+        stateListDrawable.addState(new int[]{android.R.attr.state_checked}, new BitmapDrawable(getResources(), oneCopy));
         stateListDrawable.addState(new int[]{}, drawable);
 
         super.setImageDrawable(stateListDrawable);

@@ -10,8 +10,8 @@ import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
  */
 public abstract class LineStyleController<T, Z> extends MultiStyleController<T, Z> {
 
-    public LineStyleController(Class<T> clazz,String tagName) {
-        super(clazz,tagName);
+    public LineStyleController(Class<T> clazz, String tagName) {
+        super(clazz, tagName);
     }
 
     @Override
@@ -20,16 +20,16 @@ public abstract class LineStyleController<T, Z> extends MultiStyleController<T, 
     }
 
     @Override
-    public void checkBeforeChange(Editable editable, StyleSelectionInfo styleSelectionInfo,boolean added) {
+    public void checkBeforeChange(Editable editable, StyleSelectionInfo styleSelectionInfo, boolean added) {
         //super.checkBeforeChange(editable, styleSelectionInfo);
     }
 
     @Override
     public boolean selectStyle(Z value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
         LineInfo lineInfo = getLineInfo(editable, styleSelectionInfo);
-        if(lineInfo.start==lineInfo.end){
-            spanInfo = new SpanInfo<Z>(lineInfo.start, lineInfo.end,editable.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE, value);
-        }else {
+        if (lineInfo.start == lineInfo.end) {
+            spanInfo = new SpanInfo<>(lineInfo.start, lineInfo.end, editable.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE, value);
+        } else {
             add(value, editable, lineInfo.start, lineInfo.end);
         }
         return true;
@@ -68,7 +68,7 @@ public abstract class LineStyleController<T, Z> extends MultiStyleController<T, 
     protected LineInfo getLineInfo(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         int start = Math.max(0, Math.min(styleSelectionInfo.realSelectionStart, editable.length() - 1));
         int end = Math.max(0, Math.min(styleSelectionInfo.realSelectionEnd, editable.length() - 1));
-        if(editable.length()>0) {
+        if (editable.length() > 0) {
             if (start != end || editable.charAt(start) != '\n') {
                 while (start - 1 >= 0 && editable.charAt(start - 1) != '\n') {
                     start--;
@@ -78,13 +78,15 @@ public abstract class LineStyleController<T, Z> extends MultiStyleController<T, 
                 }
             }
             return new LineInfo(start, end + 1);
-        }else{
-            return new LineInfo(0,0);
+        } else {
+            return new LineInfo(0, 0);
         }
     }
 
     class LineInfo {
+
         int start;
+
         int end;
 
         LineInfo(int start, int end) {

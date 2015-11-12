@@ -11,27 +11,27 @@ import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public class ColorSpanController extends MultiStyleController<ForegroundColorSpan, Integer> {
+public class ColorSpanController extends MultiStyleController<ColorSpanController.RichForegroundColorSpan, Integer> {
 
     public ColorSpanController() {
-        super(ForegroundColorSpan.class,"span");
+        super(RichForegroundColorSpan.class, "span");
     }
 
     @Override
-    public Integer getValueFromSpan(ForegroundColorSpan span) {
+    public Integer getValueFromSpan(RichForegroundColorSpan span) {
         return span.getForegroundColor();
     }
 
     @Override
-    public ForegroundColorSpan add(Integer value, Editable editable, int selectionStart, int selectionEnd, int flags) {
-        ForegroundColorSpan result = new ForegroundColorSpan(value);
+    public RichForegroundColorSpan add(Integer value, Editable editable, int selectionStart, int selectionEnd, int flags) {
+        RichForegroundColorSpan result = new RichForegroundColorSpan(value);
         editable.setSpan(result, selectionStart, selectionEnd, flags);
         return result;
     }
 
     @Override
     public String defaultStyle(EditText editText) {
-        return beginTag(new ForegroundColorSpan(getDefaultValue(editText)));
+        return beginTag(new RichForegroundColorSpan(getDefaultValue(editText)));
     }
 
     @Override
@@ -47,7 +47,7 @@ public class ColorSpanController extends MultiStyleController<ForegroundColorSpa
 
     @Override
     public String beginTag(Object span) {
-        int spanValue = getValueFromSpan((ForegroundColorSpan) span);
+        int spanValue = getValueFromSpan((RichForegroundColorSpan) span);
         String color = Integer.toHexString(spanValue + 0x01000000);
         while (color.length() < 6) {
             color = "0" + color;
@@ -56,18 +56,25 @@ public class ColorSpanController extends MultiStyleController<ForegroundColorSpa
     }
 
     @Override
-    public Object createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if(tag.equals(tagName) && styleMap.containsKey("color")){
-            return new ForegroundColorSpan(Color.parseColor(styleMap.get("color")));
+    public ColorSpanController.RichForegroundColorSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
+        if (tag.equals(tagName) && styleMap.containsKey("color")) {
+            return new RichForegroundColorSpan(Color.parseColor(styleMap.get("color")));
         }
         return null;
     }
 
 
-
     @Override
-    public String getDebugValueFromSpan(ForegroundColorSpan span) {
+    public String getDebugValueFromSpan(RichForegroundColorSpan span) {
         int spanValue = getValueFromSpan(span);
         return "rgb(" + Color.red(spanValue) + "," + Color.green(spanValue) + "," + Color.blue(spanValue) + ")";
+    }
+
+
+    public static class RichForegroundColorSpan extends ForegroundColorSpan{
+
+        public RichForegroundColorSpan(int color) {
+            super(color);
+        }
     }
 }

@@ -1,9 +1,7 @@
 package com.github.kubatatami.richedittext.styles.multi;
 
-import android.graphics.Color;
 import android.text.Editable;
 import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.URLSpan;
 import android.widget.EditText;
 
@@ -17,14 +15,14 @@ import java.util.Map;
 /**
  * Created by Kuba on 05/01/15.
  */
-public class LinkSpanController extends MultiStyleController<URLSpan,String> {
+public class LinkSpanController extends MultiStyleController<LinkSpanController.RichURLSpan, String> {
 
     public LinkSpanController() {
-        super(URLSpan.class, "a");
+        super(RichURLSpan.class, "a");
     }
 
     @Override
-    public String getValueFromSpan(URLSpan span) {
+    public String getValueFromSpan(RichURLSpan span) {
         return span.getURL();
     }
 
@@ -34,8 +32,8 @@ public class LinkSpanController extends MultiStyleController<URLSpan,String> {
     }
 
     @Override
-    public URLSpan add(String value, Editable editable, int selectionStart, int selectionEnd, int flags) {
-        URLSpan result = new URLSpan(value);
+    public RichURLSpan add(String value, Editable editable, int selectionStart, int selectionEnd, int flags) {
+        RichURLSpan result = new RichURLSpan(value);
         editable.setSpan(result, selectionStart, selectionEnd, flags);
         return result;
     }
@@ -57,15 +55,15 @@ public class LinkSpanController extends MultiStyleController<URLSpan,String> {
 
     @Override
     public String beginTag(Object span) {
-        URLSpan urlSpan = (URLSpan) span;
-        return "<a href=\"" + urlSpan.getURL()+"\">";
+        RichURLSpan urlSpan = (RichURLSpan) span;
+        return "<a href=\"" + urlSpan.getURL() + "\">";
     }
 
 
     @Override
-    public Object createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if(tag.equals(tagName) ){
-            return new URLSpan(attributes.getValue("href"));
+    public LinkSpanController.RichURLSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
+        if (tag.equals(tagName)) {
+            return new RichURLSpan(attributes.getValue("href"));
         }
         return null;
     }
@@ -86,5 +84,10 @@ public class LinkSpanController extends MultiStyleController<URLSpan,String> {
         return false;
     }
 
+    public static class RichURLSpan extends URLSpan{
 
+        public RichURLSpan(String url) {
+            super(url);
+        }
+    }
 }

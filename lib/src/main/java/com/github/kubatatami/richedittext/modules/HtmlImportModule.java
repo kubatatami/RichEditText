@@ -29,11 +29,14 @@ import java.util.Map;
 public abstract class HtmlImportModule {
 
     private static final HTMLSchema schema = new HTMLSchema();
+
     private static int tagCounter = 0;
+
     private static Integer tagBaseCounter = null;
+
     private static boolean endingMode = false;
 
-    public static Spanned fromHtml(String source, Collection<SpanController<?>> spanControllers) throws IOException{
+    public static Spanned fromHtml(String source, Collection<SpanController<?>> spanControllers) throws IOException {
         if (source == null || source.length() == 0) {
             return new SpannedString("");
         }
@@ -53,9 +56,13 @@ public abstract class HtmlImportModule {
 
 
     static class HtmlToSpannedConverter implements ContentHandler {
+
         private String mSource;
+
         private XMLReader mReader;
+
         private SpannableStringBuilder mSpannableStringBuilder;
+
         private Collection<SpanController<?>> mSpanControllers;
 
         public HtmlToSpannedConverter(
@@ -113,9 +120,9 @@ public abstract class HtmlImportModule {
             }
         }
 
-        private String attrToString(Attributes attrs){
-            StringBuilder builder=new StringBuilder();
-            for(int i=0;i<attrs.getLength();i++){
+        private String attrToString(Attributes attrs) {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < attrs.getLength(); i++) {
                 builder.append(" ");
                 builder.append(attrs.getLocalName(i));
                 builder.append("=");
@@ -125,12 +132,14 @@ public abstract class HtmlImportModule {
         }
 
         private void handleEndTag(String tag) throws SAXException {
-
             for (SpanController<?> spanController : mSpanControllers) {
                 Class<?> spanClass = spanController.spanFromEndTag(tag);
                 if (spanClass != null) {
                     if (end(mSpannableStringBuilder, spanClass, spanController)) {
                         tagCounter--;
+                        if (tagBaseCounter == null) {
+                            throw new SAXException("End tag before start any");
+                        }
                         endingMode = tagCounter > tagBaseCounter;
                         return;
                     }
@@ -148,14 +157,14 @@ public abstract class HtmlImportModule {
             if (objs.length == 0) {
                 return null;
             } else {
-                if(spanController instanceof MultiStyleController){
+                if (spanController instanceof MultiStyleController) {
                     for (Object obj : objs) {
                         int flag = text.getSpanFlags(obj);
                         if (flag == Spannable.SPAN_MARK_MARK) {
                             return obj;
                         }
                     }
-                }else {
+                } else {
                     for (int i = objs.length - 1; i >= 0; i--) {
                         int flag = text.getSpanFlags(objs[i]);
                         if (flag == Spannable.SPAN_MARK_MARK) {
@@ -174,7 +183,7 @@ public abstract class HtmlImportModule {
 
         private static boolean end(SpannableStringBuilder text, Class kind, SpanController<?> spanController) {
             int len = text.length();
-            Object obj = getLast(text, kind,spanController);
+            Object obj = getLast(text, kind, spanController);
 
             if (obj == null) {
                 return false;

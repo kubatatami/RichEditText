@@ -64,7 +64,7 @@ public class RichEditText extends BaseRichEditText {
         sizeClick(size.getSize());
     }
 
-    private void sizeClick(float size) {
+    public void sizeClick(float size) {
         multiClick(size, SizeSpanController.class);
     }
 
@@ -80,7 +80,7 @@ public class RichEditText extends BaseRichEditText {
         addLink(url, url);
     }
 
-    private void addLink(String name, String url) {
+    public void addLink(String name, String url) {
         getText().replace(getSelectionStart(), getSelectionEnd(), name);
         getModule(LinkSpanController.class).add(url, getText(), getSelectionStart() - name.length(), getSelectionStart());
     }

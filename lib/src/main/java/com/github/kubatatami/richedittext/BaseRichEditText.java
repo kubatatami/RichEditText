@@ -109,7 +109,7 @@ public class BaseRichEditText extends EditText {
         }
     }
 
-    <T extends SpanController<?>> void registerController(Class<T> clazz, T controller) {
+    public <T extends SpanController<?>> void registerController(Class<T> clazz, T controller) {
         spanControllerMap.put(clazz, controller);
     }
 
@@ -155,7 +155,7 @@ public class BaseRichEditText extends EditText {
         historyModule.setLimit(limit);
     }
 
-    private boolean isStyled() {
+    public boolean isStyled() {
         Object[] spans = getText().getSpans(0, getText().length(), Object.class);
         for (Object span : spans) {
             for (SpanController<?> controller : spanControllerMap.values()) {

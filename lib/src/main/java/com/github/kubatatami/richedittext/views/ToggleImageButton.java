@@ -101,7 +101,7 @@ public class ToggleImageButton extends ImageButton implements Checkable {
         isBroadCasting = false;
     }
 
-    public void setImageDrawable(Drawable drawable, int tint) {
+    private void setImageDrawable(Drawable drawable, int tint) {
         StateListDrawable stateListDrawable = new StateListDrawable();
 
         Bitmap oneCopy = Bitmap.createBitmap(drawable.getMinimumWidth(), drawable.getMinimumHeight(), Bitmap.Config.ARGB_8888);
@@ -153,7 +153,7 @@ public class ToggleImageButton extends ImageButton implements Checkable {
         super.onRestoreInstanceState(state);
     }
 
-    public static interface OnCheckedChangeListener {
+    public interface OnCheckedChangeListener {
 
         void onCheckedChanged(ToggleImageButton buttonView, boolean isChecked);
     }

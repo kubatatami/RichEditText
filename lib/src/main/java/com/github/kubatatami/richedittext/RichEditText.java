@@ -33,7 +33,7 @@ public class RichEditText extends BaseRichEditText {
         init();
     }
 
-    protected void init() {
+    private void init() {
         registerController(BoldSpanController.class, new BoldSpanController());
         registerController(ItalicSpanController.class, new ItalicSpanController());
         registerController(UnderlineSpanController.class, new UnderlineSpanController());
@@ -64,7 +64,7 @@ public class RichEditText extends BaseRichEditText {
         sizeClick(size.getSize());
     }
 
-    public void sizeClick(float size) {
+    private void sizeClick(float size) {
         multiClick(size, SizeSpanController.class);
     }
 
@@ -80,7 +80,7 @@ public class RichEditText extends BaseRichEditText {
         addLink(url, url);
     }
 
-    public void addLink(String name, String url) {
+    private void addLink(String name, String url) {
         getText().replace(getSelectionStart(), getSelectionEnd(), name);
         getModule(LinkSpanController.class).add(url, getText(), getSelectionStart() - name.length(), getSelectionStart());
     }

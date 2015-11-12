@@ -11,7 +11,7 @@ import java.util.Map;
 
 public abstract class StyleSpanController extends BinaryStyleController<StyleSpanController.RichStyleSpan> {
 
-    protected int typeface;
+    final int typeface;
 
 
     public StyleSpanController(int typeface, String tagName) {

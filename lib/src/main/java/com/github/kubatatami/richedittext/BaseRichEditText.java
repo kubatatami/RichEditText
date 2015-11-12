@@ -26,13 +26,13 @@ import java.util.Map;
  */
 public class BaseRichEditText extends EditText {
 
-    protected static final boolean DEBUG = false;
+    private static final boolean DEBUG = false;
 
-    protected boolean inflateFinished;
+    private boolean inflateFinished;
 
-    protected final HistoryModule historyModule = new HistoryModule(this);
+    private final HistoryModule historyModule = new HistoryModule(this);
 
-    protected final Map<Class<?>, SpanController<?>> spanControllerMap = new HashMap<>();
+    private final Map<Class<?>, SpanController<?>> spanControllerMap = new HashMap<>();
 
 
     public BaseRichEditText(Context context) {
@@ -76,25 +76,25 @@ public class BaseRichEditText extends EditText {
     @Override
     protected void onSelectionChanged(int selStart, int selEnd) {
         super.onSelectionChanged(selStart, selEnd);
-        checkAfterChange();
+        checkAfterChange(false);
     }
 
     @Override
     public void setTextSize(int unit, float size) {
         super.setTextSize(unit, size);
-        checkAfterChange();
+        checkAfterChange(false);
     }
 
     @Override
     public void setTextColor(int color) {
         super.setTextColor(color);
-        checkAfterChange();
+        checkAfterChange(false);
     }
 
     @Override
     public void setTextColor(ColorStateList colors) {
         super.setTextColor(colors);
-        checkAfterChange();
+        checkAfterChange(false);
     }
 
     public void isValidHtml(String html) throws IOException {
@@ -109,15 +109,16 @@ public class BaseRichEditText extends EditText {
         }
     }
 
-    public <T extends SpanController<?>> void registerController(Class<T> clazz, T controller) {
+    <T extends SpanController<?>> void registerController(Class<T> clazz, T controller) {
         spanControllerMap.put(clazz, controller);
     }
 
-    protected <T extends SpanController<?>> T getModule(Class<T> clazz) {
+    @SuppressWarnings("unchecked")
+    <T extends SpanController<?>> T getModule(Class<T> clazz) {
         return (T) spanControllerMap.get(clazz);
     }
 
-    protected void checkBeforeChange(boolean added) {
+    private void checkBeforeChange(boolean added) {
         if (inflateFinished) {
             StyleSelectionInfo styleSelectionInfo = StyleSelectionInfo.getStyleSelectionInfo(this);
             for (SpanController<?> controller : spanControllerMap.values()) {
@@ -126,11 +127,11 @@ public class BaseRichEditText extends EditText {
         }
     }
 
-    public void checkAfterChange() {
+    public void checkAfterChange(boolean passive) {
         if (inflateFinished) {
             StyleSelectionInfo styleSelectionInfo = StyleSelectionInfo.getStyleSelectionInfo(this);
             for (SpanController<?> controller : spanControllerMap.values()) {
-                controller.checkAfterChange(this, styleSelectionInfo);
+                controller.checkAfterChange(this, styleSelectionInfo, passive);
             }
             if (DEBUG) {
                 SpanUtil.logSpans(getText(), spanControllerMap.values());
@@ -154,7 +155,7 @@ public class BaseRichEditText extends EditText {
         historyModule.setLimit(limit);
     }
 
-    public boolean isStyled() {
+    private boolean isStyled() {
         Object[] spans = getText().getSpans(0, getText().length(), Object.class);
         for (Object span : spans) {
             for (SpanController<?> controller : spanControllerMap.values()) {
@@ -170,13 +171,13 @@ public class BaseRichEditText extends EditText {
         return isStyled() ? getHtml() : getText().toString();
     }
 
-    public void binaryClick(Class<? extends BinaryStyleController<?>> clazz) {
+    void binaryClick(Class<? extends BinaryStyleController<?>> clazz) {
         if (getModule(clazz).perform(getText(), StyleSelectionInfo.getStyleSelectionInfo(this))) {
             historyModule.saveHistory();
         }
     }
 
-    public <T> void multiClick(T value, Class<? extends MultiStyleController<?, T>> clazz) {
+    <T> void multiClick(T value, Class<? extends MultiStyleController<?, T>> clazz) {
         if (getModule(clazz).perform(value, getText(), StyleSelectionInfo.getStyleSelectionInfo(this))) {
             historyModule.saveHistory();
         }

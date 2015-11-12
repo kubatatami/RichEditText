@@ -3,7 +3,6 @@ package com.github.kubatatami.richedittext.styles.multi;
 import android.text.Editable;
 import android.text.Layout;
 import android.text.style.AlignmentSpan;
-import android.text.style.ForegroundColorSpan;
 import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.styles.base.LineStyleController;

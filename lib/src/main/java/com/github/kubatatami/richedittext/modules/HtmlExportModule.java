@@ -86,7 +86,7 @@ public abstract class HtmlExportModule {
 
     interface WithinCallback {
 
-        public void nextWithin(Class<?> clazz, StringBuilder out, EditText editText, int start, int end, Collection<SpanController<?>> spanControllers);
+        void nextWithin(Class<?> clazz, StringBuilder out, EditText editText, int start, int end, Collection<SpanController<?>> spanControllers);
     }
 
     private static void withinStyle(StringBuilder out, CharSequence text,

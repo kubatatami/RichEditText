@@ -15,7 +15,7 @@ public class StyleSelectionInfo {
     public boolean selection;
 
 
-    public StyleSelectionInfo() {
+    private StyleSelectionInfo() {
     }
 
     public StyleSelectionInfo(int selectionStart, int selectionEnd, int realSelectionStart, int realSelectionEnd, boolean selection) {

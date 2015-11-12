@@ -10,7 +10,7 @@ import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
  */
 public abstract class LineStyleController<T, Z> extends MultiStyleController<T, Z> {
 
-    public LineStyleController(Class<T> clazz, String tagName) {
+    protected LineStyleController(Class<T> clazz, String tagName) {
         super(clazz, tagName);
     }
 
@@ -28,13 +28,14 @@ public abstract class LineStyleController<T, Z> extends MultiStyleController<T, 
     public boolean selectStyle(Z value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
         LineInfo lineInfo = getLineInfo(editable, styleSelectionInfo);
         if (lineInfo.start == lineInfo.end) {
-            spanInfo = new SpanInfo<>(lineInfo.start, lineInfo.end, editable.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE, value);
+            spanInfo = new SpanInfo<>(lineInfo.start, lineInfo.end, Spanned.SPAN_INCLUSIVE_INCLUSIVE, value);
         } else {
             add(value, editable, lineInfo.start, lineInfo.end);
         }
         return true;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void clearStyle(Editable editable, Object span, StyleSelectionInfo styleSelectionInfo) {
         LineInfo lineInfo = getLineInfo(editable, styleSelectionInfo);
@@ -65,7 +66,7 @@ public abstract class LineStyleController<T, Z> extends MultiStyleController<T, 
     }
 
 
-    protected LineInfo getLineInfo(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+    private LineInfo getLineInfo(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         int start = Math.max(0, Math.min(styleSelectionInfo.realSelectionStart, editable.length() - 1));
         int end = Math.max(0, Math.min(styleSelectionInfo.realSelectionEnd, editable.length() - 1));
         if (editable.length() > 0) {
@@ -85,9 +86,9 @@ public abstract class LineStyleController<T, Z> extends MultiStyleController<T, 
 
     class LineInfo {
 
-        int start;
+        final int start;
 
-        int end;
+        final int end;
 
         LineInfo(int start, int end) {
             this.start = start;

@@ -57,13 +57,13 @@ public abstract class HtmlImportModule {
 
     static class HtmlToSpannedConverter implements ContentHandler {
 
-        private String mSource;
+        private final String mSource;
 
-        private XMLReader mReader;
+        private final XMLReader mReader;
 
-        private SpannableStringBuilder mSpannableStringBuilder;
+        private final SpannableStringBuilder mSpannableStringBuilder;
 
-        private Collection<SpanController<?>> mSpanControllers;
+        private final Collection<SpanController<?>> mSpanControllers;
 
         public HtmlToSpannedConverter(
                 String source,

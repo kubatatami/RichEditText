@@ -11,7 +11,7 @@ import android.view.View;
  */
 public class CircleView extends View {
 
-    protected Paint paint = new Paint();
+    private final Paint paint = new Paint();
 
     public CircleView(Context context) {
         super(context);

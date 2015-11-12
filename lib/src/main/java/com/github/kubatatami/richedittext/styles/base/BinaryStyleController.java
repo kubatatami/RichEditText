@@ -18,15 +18,15 @@ import java.util.Map;
  */
 public abstract class BinaryStyleController<T> extends SpanController<T> {
 
-    protected boolean value;
+    private boolean value;
 
-    protected SpanInfo<Boolean> spanInfo;
+    private SpanInfo<Boolean> spanInfo;
 
-    protected Object composeStyleSpan;
+    private Object composeStyleSpan;
 
-    protected List<BaseRichEditText.OnValueChangeListener<Boolean>> onValueChangeListeners = new ArrayList<>();
+    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onValueChangeListeners = new ArrayList<>();
 
-    public BinaryStyleController(Class<T> clazz, String tagName) {
+    protected BinaryStyleController(Class<T> clazz, String tagName) {
         super(clazz, tagName);
     }
 
@@ -34,7 +34,7 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
         this.onValueChangeListeners.add(onValueChangeListener);
     }
 
-    public T add(Editable editable, int selectionStart, int selectionEnd, int flags) {
+    protected T add(Editable editable, int selectionStart, int selectionEnd, int flags) {
         try {
             T result = clazz.newInstance();
             editable.setSpan(result, selectionStart, selectionEnd, flags);
@@ -44,7 +44,7 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
         }
     }
 
-    public void add(Editable editable, int selectionStart, int selectionEnd) {
+    private void add(Editable editable, int selectionStart, int selectionEnd) {
         add(editable, selectionStart, selectionEnd, defaultFlags);
     }
 
@@ -69,10 +69,10 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
         return result;
     }
 
-    public boolean selectStyle(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+    private boolean selectStyle(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         if (styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd) {
             spanInfo = new SpanInfo<>(styleSelectionInfo.selectionStart,
-                    styleSelectionInfo.selectionEnd, editable.length(), defaultFlags, true);
+                    styleSelectionInfo.selectionEnd, defaultFlags, true);
             return false;
         } else {
             int finalSpanStart = styleSelectionInfo.selectionStart;
@@ -130,7 +130,7 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
     }
 
 
-    protected boolean isContinuous(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+    private boolean isContinuous(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         for (int i = styleSelectionInfo.selectionStart; i <= styleSelectionInfo.selectionEnd; i++) {
             if (filter(editable.getSpans(i, i, getClazz())).size() == 0) {
                 return false;
@@ -139,17 +139,17 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
         return true;
     }
 
-    protected boolean isExists(Editable editable, int start, int end) {
-        return filter(editable.getSpans(start, end, getClazz())).size() > 0;
+    private boolean isNotExists(Editable editable, int start, int end) {
+        return filter(editable.getSpans(start, end, getClazz())).size() == 0;
     }
 
-    protected boolean isAdd(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+    private boolean isAdd(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         if (styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd) {
-            return !isExists(editable, styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd);
+            return isNotExists(editable, styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd);
         } else if (styleSelectionInfo.selection) {
             return !isContinuous(editable, styleSelectionInfo);
         } else {
-            return !isExists(editable, styleSelectionInfo.realSelectionStart, styleSelectionInfo.realSelectionEnd);
+            return isNotExists(editable, styleSelectionInfo.realSelectionStart, styleSelectionInfo.realSelectionEnd);
         }
     }
 
@@ -160,7 +160,7 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
             int spanEnd = editable.getSpanEnd(composeStyleSpan);
             editable.removeSpan(composeStyleSpan);
             if (spanEnd != -1 && spanStart != spanEnd) {
-                spanInfo = new SpanInfo<>(spanStart, spanEnd, editable.length(), defaultFlags, false);
+                spanInfo = new SpanInfo<>(spanStart, spanEnd, defaultFlags, false);
             }
         }
         composeStyleSpan = null;
@@ -172,8 +172,8 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
     }
 
     @Override
-    public void checkAfterChange(EditText editText, StyleSelectionInfo styleSelectionInfo) {
-        if (spanInfo != null && !spanInfo.span) {
+    public void checkAfterChange(EditText editText, StyleSelectionInfo styleSelectionInfo, boolean passive) {
+        if (!passive && spanInfo != null && !spanInfo.span) {
             if (spanInfo.end == styleSelectionInfo.realSelectionEnd - 1) {
                 add(editText.getText(), spanInfo.start, spanInfo.end, spanInfo.flags);
             } else {

@@ -3,9 +3,7 @@ package com.github.kubatatami.richedittext.example;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ShareCompat;
-import android.support.v7.app.ActionBarActivity;
-import android.text.Spanned;
-import android.text.style.URLSpan;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,17 +19,17 @@ import com.github.kubatatami.richedittext.modules.HistoryModule;
 import com.github.kubatatami.richedittext.views.DefaultPanelView;
 
 import java.io.IOException;
-import java.text.ParseException;
 
 
-public class TestActivity extends ActionBarActivity {
+public class TestActivity extends AppCompatActivity {
 
-    RichEditText richEditText, richEditTextPreview;
-    DefaultPanelView panelView;
-    TextView htmlView;
-    Button sendButton;
-    WebView webView;
-    Handler handler = new Handler();
+    private RichEditText richEditText;
+
+    private RichEditText richEditTextPreview;
+    private DefaultPanelView panelView;
+    private TextView htmlView;
+    private WebView webView;
+    private final Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +40,7 @@ public class TestActivity extends ActionBarActivity {
         panelView = (DefaultPanelView) findViewById(R.id.panel);
         webView = (WebView) findViewById(R.id.webview);
         htmlView = (TextView) findViewById(R.id.html);
-        sendButton = (Button) findViewById(R.id.send_button);
+        Button sendButton = (Button) findViewById(R.id.send_button);
         webView.setWebChromeClient(new WebChromeClient());
         webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
         richEditText.addOnHistoryChangeListener(new HistoryModule.OnHistoryChangeListener() {
@@ -81,8 +79,7 @@ public class TestActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = new MenuInflater(getApplicationContext());
-        menuInflater.inflate(R.menu.menu_test, menu);
+        getMenuInflater().inflate(R.menu.menu_test, menu);
         return true;
     }
 

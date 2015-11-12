@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">RichEditText</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="add_link">Add link</string>
+    <string name="show_panel">Show panel</string>
 
 </resources>

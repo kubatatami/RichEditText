@@ -71,9 +71,9 @@ public class SizeSpanController extends MultiStyleController<SizeSpanController.
         X_LARGE(30, "x-large"),
         XX_LARGE(40, "xx-large");
 
-        private String name;
+        private final String name;
 
-        private float size;
+        private final float size;
 
         Size(float size, String name) {
             this.name = name;

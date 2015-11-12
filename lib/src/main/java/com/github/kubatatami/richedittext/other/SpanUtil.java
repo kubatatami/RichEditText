@@ -27,7 +27,7 @@ public class SpanUtil {
         Editable editable = richEditText.getText();
         if (after == 0) {
             Log.i("removeUnusedSpansStart", start + "");
-            List<Pair<SpanController<?>, Object>> spansToRemove = new ArrayList<Pair<SpanController<?>, Object>>();
+            List<Pair<SpanController<?>, Object>> spansToRemove = new ArrayList<>();
             Object[] spans = editable.getSpans(start, start + count, Object.class);
             for (Object span : spans) {
                 SpanController<?> controller = acceptController(controllers, span);
@@ -60,7 +60,7 @@ public class SpanUtil {
                 int spanStart = editable.getSpanStart(span);
                 int spanEnd = editable.getSpanEnd(span);
                 int spanFlags = editable.getSpanFlags(span);
-                Log.i("removeUnusedSpansInclusive", spanStart + " " + spanEnd + " " + spanFlags);
+                Log.i("removeUnusedSpansIncl", spanStart + " " + spanEnd + " " + spanFlags);
                 if ((spanFlags & Spanned.SPAN_INCLUSIVE_EXCLUSIVE) == Spanned.SPAN_INCLUSIVE_EXCLUSIVE && editable.getSpans(start, start, span.getClass()).length == 1) {
                     editable.removeSpan(span);
                     editable.setSpan(span, spanStart, spanEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -69,6 +69,7 @@ public class SpanUtil {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static void logSpans(final Editable editable, Collection<SpanController<?>> controllers) {
         List<Object> spans = Arrays.asList(editable.getSpans(0, editable.length(), Object.class));
         Collections.sort(spans, new Comparator<Object>() {

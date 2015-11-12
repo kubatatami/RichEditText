@@ -14,20 +14,20 @@ import java.util.Map;
 
 public abstract class SpanController<T> {
 
-    protected Class<T> clazz;
+    protected final Class<T> clazz;
 
-    protected String tagName;
+    protected final String tagName;
 
-    public final static int defaultFlags = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
+    final static int defaultFlags = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
 
-    public SpanController(Class<T> clazz, String tagName) {
+    SpanController(Class<T> clazz, String tagName) {
         this.clazz = clazz;
         this.tagName = tagName;
     }
 
-
-    public List<T> filter(Object[] spans) {
-        List<T> result = new ArrayList<T>();
+    @SuppressWarnings("unchecked")
+    List<T> filter(Object[] spans) {
+        List<T> result = new ArrayList<>();
         for (Object span : spans) {
             if (acceptSpan(span)) {
                 result.add((T) span);
@@ -50,7 +50,7 @@ public abstract class SpanController<T> {
 
     public abstract void checkBeforeChange(Editable editable, StyleSelectionInfo styleSelectionInfo, boolean added);
 
-    public abstract void checkAfterChange(EditText editText, StyleSelectionInfo styleSelectionInfo);
+    public abstract void checkAfterChange(EditText editText, StyleSelectionInfo styleSelectionInfo, boolean passive);
 
     public abstract String beginTag(Object span);
 

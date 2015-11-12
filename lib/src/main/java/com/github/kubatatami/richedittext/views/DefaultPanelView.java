@@ -37,64 +37,84 @@ import java.util.List;
  */
 public class DefaultPanelView extends RelativeLayout {
 
-    protected final static int ANIM_DURATION = 250;
+    private final static int ANIM_DURATION = 250;
 
-    protected ToggleImageButton boldButton, italicButton, underlineButton, strikethroughButton;
+    private ToggleImageButton boldButton;
 
-    protected ToggleImageButton leftButton, centerButton, rightButton;
+    private ToggleImageButton italicButton;
 
-    protected ImageView undoButton, redoButton;
+    private ToggleImageButton underlineButton;
 
-    protected TextView fontSizeSpinner;
+    private ToggleImageButton strikethroughButton;
 
-    protected TextView fontSizeText;
+    private ToggleImageButton leftButton;
 
-    protected TextView fontColorText;
+    private ToggleImageButton centerButton;
 
-    protected ArrayAdapter<SizeSpanController.Size> adapter;
+    private ToggleImageButton rightButton;
 
-    protected CircleView colorValue;
+    private ImageView undoButton;
 
-    protected View colorPanel;
+    private ImageView redoButton;
 
-    protected ImageView fontSizeValueLeftArrow, fontSizeValueRightArrow;
+    private TextView fontSizeSpinner;
 
-    protected boolean ignoreSizeEvent, ignoreColorEvent, visible = false;
+    private TextView fontSizeText;
 
-    protected ColorPanelVisibility colorPanelVisibility = ColorPanelVisibility.INVISIBLE;
+    private TextView fontColorText;
 
-    protected boolean changeState = false;
+    private ArrayAdapter<SizeSpanController.Size> adapter;
 
-    protected InputMethodManager inputManager;
+    private CircleView colorValue;
 
-    protected Handler handler = new Handler();
+    private View colorPanel;
 
-    protected RichEditText richEditText;
+    private ImageView fontSizeValueLeftArrow;
 
-    protected int currentSizeItem = 0;
+    private ImageView fontSizeValueRightArrow;
 
-    protected int grayColor, blackColor;
+    private boolean ignoreSizeEvent;
 
-    protected ViewPropertyAnimator animator;
+    private boolean ignoreColorEvent;
 
-    protected View mainPanel;
+    private boolean visible = false;
+
+    private ColorPanelVisibility colorPanelVisibility = ColorPanelVisibility.INVISIBLE;
+
+    private boolean changeState = false;
+
+    private InputMethodManager inputManager;
+
+    private final Handler handler = new Handler();
+
+    private RichEditText richEditText;
+
+    private int currentSizeItem = 0;
+
+    private int grayColor;
+
+    private int blackColor;
+
+    private ViewPropertyAnimator animator;
+
+    private View mainPanel;
 
 
-    protected List<BaseRichEditText.OnValueChangeListener<Layout.Alignment>> onAlignmentClickListeners = new ArrayList<>();
+    private final List<BaseRichEditText.OnValueChangeListener<Layout.Alignment>> onAlignmentClickListeners = new ArrayList<>();
 
-    protected List<BaseRichEditText.OnValueChangeListener<Float>> onSizeClickListeners = new ArrayList<>();
+    private final List<BaseRichEditText.OnValueChangeListener<Float>> onSizeClickListeners = new ArrayList<>();
 
-    protected List<BaseRichEditText.OnValueChangeListener<ColorPanelVisibility>> onColorPanelShowListeners = new ArrayList<>();
+    private final List<BaseRichEditText.OnValueChangeListener<ColorPanelVisibility>> onColorPanelShowListeners = new ArrayList<>();
 
-    protected List<BaseRichEditText.OnValueChangeListener<Integer>> onColorClickListeners = new ArrayList<>();
+    private final List<BaseRichEditText.OnValueChangeListener<Integer>> onColorClickListeners = new ArrayList<>();
 
-    protected List<BaseRichEditText.OnValueChangeListener<Boolean>> onBoldClickListeners = new ArrayList<>();
+    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onBoldClickListeners = new ArrayList<>();
 
-    protected List<BaseRichEditText.OnValueChangeListener<Boolean>> onItalicClickListeners = new ArrayList<>();
+    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onItalicClickListeners = new ArrayList<>();
 
-    protected List<BaseRichEditText.OnValueChangeListener<Boolean>> onStrikeThroughClickListeners = new ArrayList<>();
+    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onStrikeThroughClickListeners = new ArrayList<>();
 
-    protected List<BaseRichEditText.OnValueChangeListener<Boolean>> onUnderlineClickListeners = new ArrayList<>();
+    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onUnderlineClickListeners = new ArrayList<>();
 
 
     public DefaultPanelView(Context context) {
@@ -119,7 +139,7 @@ public class DefaultPanelView extends RelativeLayout {
         init();
     }
 
-    protected void init() {
+    private void init() {
         inflate(getContext(), R.layout.default_panel, this);
         mainPanel = findViewById(R.id.main_panel);
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -131,12 +151,12 @@ public class DefaultPanelView extends RelativeLayout {
         setVisibility(View.GONE);
     }
 
-    public void hideAdditionalView() {
+    private void hideAdditionalView() {
         hideAdditionalView(richEditText);
     }
 
 
-    public void hideAdditionalView(TextView currentTextView) {
+    private void hideAdditionalView(TextView currentTextView) {
         if (getChildCount() > 2) {
             removeViewAt(1);
         }
@@ -153,16 +173,16 @@ public class DefaultPanelView extends RelativeLayout {
         showAdditionalView(anim, view, richEditText);
     }
 
-    public void showAdditionalView(boolean anim, View view, boolean alignTopAndBottom) {
+    private void showAdditionalView(boolean anim, View view, boolean alignTopAndBottom) {
         showAdditionalView(anim, view, richEditText, alignTopAndBottom);
     }
 
-    public void showAdditionalView(boolean anim, View view, TextView currentTextView) {
+    private void showAdditionalView(boolean anim, View view, TextView currentTextView) {
         showAdditionalView(anim, view, currentTextView, true);
     }
 
 
-    public void showAdditionalView(boolean anim, View view, TextView currentTextView, boolean alignTopAndBottom) {
+    private void showAdditionalView(boolean anim, View view, TextView currentTextView, boolean alignTopAndBottom) {
         hideAdditionalView(currentTextView);
         LayoutParams layoutParams = view.getLayoutParams() == null ?
                 new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT) :
@@ -187,7 +207,7 @@ public class DefaultPanelView extends RelativeLayout {
         toggle(anim, !visible);
     }
 
-    public void toggle(final boolean anim, final boolean show) {
+    private void toggle(final boolean anim, final boolean show) {
         if (this.visible == show || changeState) {
             if (visible) {
                 setShowSoftInputOnFocus(getCurrentTextView(), false);
@@ -204,7 +224,7 @@ public class DefaultPanelView extends RelativeLayout {
         this.visible = show;
     }
 
-    protected TextView getCurrentTextView() {
+    private TextView getCurrentTextView() {
         if (getContext() instanceof Activity) {
             View view = ((Activity) getContext()).getCurrentFocus();
             if (view != null && view instanceof TextView) {
@@ -214,7 +234,7 @@ public class DefaultPanelView extends RelativeLayout {
         return richEditText;
     }
 
-    protected void show(final boolean anim) {
+    private void show(final boolean anim) {
         if (animator != null) {
             animator.cancel();
         }
@@ -232,7 +252,7 @@ public class DefaultPanelView extends RelativeLayout {
         setShowSoftInputOnFocus(getCurrentTextView(), false);
     }
 
-    protected void hide(final boolean anim) {
+    private void hide(final boolean anim) {
         if (animator != null) {
             animator.cancel();
         }
@@ -260,7 +280,7 @@ public class DefaultPanelView extends RelativeLayout {
 
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public void setShowSoftInputOnFocus(final TextView textView, boolean show) {
+    private void setShowSoftInputOnFocus(final TextView textView, boolean show) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             textView.setShowSoftInputOnFocus(show);
         } else {
@@ -280,7 +300,7 @@ public class DefaultPanelView extends RelativeLayout {
     }
 
 
-    protected void showPanelView(boolean anim) {
+    private void showPanelView(boolean anim) {
         setVisibility(View.VISIBLE);
         int newTop;
         if (getMeasuredHeight() == 0) {
@@ -525,7 +545,7 @@ public class DefaultPanelView extends RelativeLayout {
         });
     }
 
-    protected void showPrimaryColors() {
+    private void showPrimaryColors() {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         showAdditionalView(false, colorPanel, false);
         ViewGroup colorPanelList = (ViewGroup) colorPanel.findViewById(R.id.color_picker_list);
@@ -551,7 +571,7 @@ public class DefaultPanelView extends RelativeLayout {
         setColorPanelVisibility(ColorPanelVisibility.PRIMARY);
     }
 
-    protected void showSecondaryColors(int baseColor) {
+    private void showSecondaryColors(int baseColor) {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         showAdditionalView(false, colorPanel, false);
         ViewGroup colorPanelList = (ViewGroup) colorPanel.findViewById(R.id.color_picker_list);
@@ -590,7 +610,7 @@ public class DefaultPanelView extends RelativeLayout {
 
     }
 
-    protected void setColorPanelVisibility(ColorPanelVisibility visibility) {
+    private void setColorPanelVisibility(ColorPanelVisibility visibility) {
         colorPanelVisibility = visibility;
         for (BaseRichEditText.OnValueChangeListener<ColorPanelVisibility> onValueChangeListener : onColorPanelShowListeners) {
             onValueChangeListener.onValueChange(visibility);
@@ -621,7 +641,7 @@ public class DefaultPanelView extends RelativeLayout {
         fontColorText.setText(text);
     }
 
-    protected void setFontSize() {
+    private void setFontSize() {
         fontSizeSpinner.setText(adapter.getItem(currentSizeItem).getSize() + "");
         if (currentSizeItem == 0) {
             fontSizeValueLeftArrow.setColorFilter(grayColor);
@@ -636,7 +656,7 @@ public class DefaultPanelView extends RelativeLayout {
     }
 
 
-    protected void setChecked(ToggleImageButton checkBox, boolean checked) {
+    private void setChecked(ToggleImageButton checkBox, boolean checked) {
         try {
             Field field = ToggleImageButton.class.getDeclaredField("isBroadCasting");
             field.setAccessible(true);

@@ -4,13 +4,11 @@
 
     <item android:id="@+id/menu_add_link"
         android:icon="@android:drawable/stat_sys_upload_done"
-        app:showAsAction="always"
-        android:showAsAction="always"
-        android:title="Add link"/>
+        app:showAsAction="ifRoom"
+        android:title="@string/add_link"/>
 
     <item android:id="@+id/menu_show_panel"
         android:icon="@drawable/font_icon_white"
-        app:showAsAction="always"
-        android:showAsAction="always"
-        android:title="Show panel"/>
+        app:showAsAction="ifRoom"
+        android:title="@string/show_panel"/>
 </menu>

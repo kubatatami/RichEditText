@@ -15,15 +15,15 @@ import java.util.List;
  */
 public class HistoryModule {
 
-    protected BaseRichEditText richEditText;
+    private final BaseRichEditText richEditText;
 
-    protected final LimitedQueue<EditHistory> undoList = new LimitedQueue<EditHistory>(Integer.MAX_VALUE);
+    private final LimitedQueue<EditHistory> undoList = new LimitedQueue<>(Integer.MAX_VALUE);
 
-    protected final LimitedQueue<EditHistory> redoList = new LimitedQueue<EditHistory>(Integer.MAX_VALUE);
+    private final LimitedQueue<EditHistory> redoList = new LimitedQueue<>(Integer.MAX_VALUE);
 
-    protected boolean ignoreHistory = false;
+    private boolean ignoreHistory = false;
 
-    protected List<OnHistoryChangeListener> onHistoryChangeListeners = new ArrayList<OnHistoryChangeListener>();
+    private final List<OnHistoryChangeListener> onHistoryChangeListeners = new ArrayList<>();
 
     public HistoryModule(BaseRichEditText richEditText) {
         this.richEditText = richEditText;
@@ -63,15 +63,15 @@ public class HistoryModule {
         }
     }
 
-    protected void restoreState(EditHistory editHistory) {
+    private void restoreState(EditHistory editHistory) {
         ignoreHistory = true;
         richEditText.setText(editHistory.editable, TextView.BufferType.EDITABLE);
         richEditText.setSelection(editHistory.selectionStart, editHistory.selectionEnd);
         checkHistory();
-        richEditText.checkAfterChange();
+        richEditText.checkAfterChange(true);
     }
 
-    protected void checkHistory() {
+    private void checkHistory() {
         for (OnHistoryChangeListener onHistoryChangeListener : onHistoryChangeListeners) {
             onHistoryChangeListener.onHistoryChange(undoList.size(), redoList.size());
         }
@@ -82,13 +82,13 @@ public class HistoryModule {
         onHistoryChangeListener.onHistoryChange(undoList.size(), redoList.size());
     }
 
-    protected class EditHistory {
+    static class EditHistory {
 
-        protected Editable editable;
+        final Editable editable;
 
-        protected int selectionStart;
+        final int selectionStart;
 
-        protected int selectionEnd;
+        final int selectionEnd;
 
         public EditHistory(Editable editable, int selectionStart, int selectionEnd) {
             this.editable = editable;
@@ -97,7 +97,7 @@ public class HistoryModule {
         }
     }
 
-    public class LimitedQueue<E> extends LinkedList<E> {
+    public static class LimitedQueue<E> extends LinkedList<E> {
 
         private int limit;
 
@@ -120,7 +120,7 @@ public class HistoryModule {
 
     public interface OnHistoryChangeListener {
 
-        public void onHistoryChange(int undoSteps, int redoSteps);
+        void onHistoryChange(int undoSteps, int redoSteps);
     }
 
 }

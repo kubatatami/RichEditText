@@ -173,16 +173,16 @@ public class DefaultPanelView extends RelativeLayout {
         showAdditionalView(anim, view, richEditText);
     }
 
-    private void showAdditionalView(boolean anim, View view, boolean alignTopAndBottom) {
+    public void showAdditionalView(boolean anim, View view, boolean alignTopAndBottom) {
         showAdditionalView(anim, view, richEditText, alignTopAndBottom);
     }
 
-    private void showAdditionalView(boolean anim, View view, TextView currentTextView) {
+    public void showAdditionalView(boolean anim, View view, TextView currentTextView) {
         showAdditionalView(anim, view, currentTextView, true);
     }
 
 
-    private void showAdditionalView(boolean anim, View view, TextView currentTextView, boolean alignTopAndBottom) {
+    public void showAdditionalView(boolean anim, View view, TextView currentTextView, boolean alignTopAndBottom) {
         hideAdditionalView(currentTextView);
         LayoutParams layoutParams = view.getLayoutParams() == null ?
                 new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT) :

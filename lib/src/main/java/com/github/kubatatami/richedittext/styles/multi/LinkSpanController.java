@@ -84,7 +84,7 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
         return false;
     }
 
-    public static class RichURLSpan extends URLSpan{
+    public static class RichURLSpan extends URLSpan {
 
         public RichURLSpan(String url) {
             super(url);

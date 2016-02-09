@@ -71,7 +71,7 @@ public class ColorSpanController extends MultiStyleController<ColorSpanControlle
     }
 
 
-    public static class RichForegroundColorSpan extends ForegroundColorSpan{
+    public static class RichForegroundColorSpan extends ForegroundColorSpan {
 
         public RichForegroundColorSpan(int color) {
             super(color);

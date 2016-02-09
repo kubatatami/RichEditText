@@ -12,6 +12,9 @@ import com.github.kubatatami.richedittext.styles.multi.AlignmentSpanController;
 import com.github.kubatatami.richedittext.styles.multi.ColorSpanController;
 import com.github.kubatatami.richedittext.styles.multi.LinkSpanController;
 import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
+import com.github.kubatatami.richedittext.styles.multi.TypefaceSpanController;
+
+import static com.github.kubatatami.richedittext.styles.multi.TypefaceSpanController.Font;
 
 /**
  * Created by Kuba on 20/11/14.
@@ -42,6 +45,13 @@ public class RichEditText extends BaseRichEditText {
         registerController(ColorSpanController.class, new ColorSpanController());
         registerController(AlignmentSpanController.class, new AlignmentSpanController());
         registerController(LinkSpanController.class, new LinkSpanController());
+        registerController(TypefaceSpanController.class, new TypefaceSpanController());
+    }
+
+    public void registerFonts(Font... fonts) {
+        for (Font font : fonts) {
+            getModule(TypefaceSpanController.class).registerFont(font);
+        }
     }
 
     public void boldClick() {
@@ -74,6 +84,10 @@ public class RichEditText extends BaseRichEditText {
 
     public void alignmentClick(Layout.Alignment alignment) {
         multiClick(alignment, AlignmentSpanController.class);
+    }
+
+    public void typefaceClick(String font) {
+        multiClick(font, TypefaceSpanController.class);
     }
 
     public void addLink(String url) {
@@ -111,6 +125,10 @@ public class RichEditText extends BaseRichEditText {
 
     public void addOnUnderlineChangeListener(OnValueChangeListener<Boolean> onUnderlineChangeListener) {
         getModule(UnderlineSpanController.class).addOnValueChangeListener(onUnderlineChangeListener);
+    }
+
+    public void addOnFontChangeListener(OnValueChangeListener<String> onFontChangeListener) {
+        getModule(TypefaceSpanController.class).addOnValueChangeListener(onFontChangeListener);
     }
 
 }

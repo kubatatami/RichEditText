@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -20,15 +19,21 @@ import com.github.kubatatami.richedittext.views.DefaultPanelView;
 
 import java.io.IOException;
 
+import static com.github.kubatatami.richedittext.styles.multi.TypefaceSpanController.Font;
+
 
 public class TestActivity extends AppCompatActivity {
 
     private RichEditText richEditText;
 
     private RichEditText richEditTextPreview;
+
     private DefaultPanelView panelView;
+
     private TextView htmlView;
+
     private WebView webView;
+
     private final Handler handler = new Handler();
 
     @Override
@@ -74,7 +79,15 @@ public class TestActivity extends AppCompatActivity {
             }
         });
         panelView.connectWithRichEditText(richEditText);
-
+        Font openSansFont = new Font(
+                "OpenSans",
+                "fonts/OpenSans-Regular.ttf",
+                "fonts/OpenSans-Bold.ttf",
+                "fonts/OpenSans-Italic.ttf",
+                "fonts/OpenSans-BoldItalic.ttf");
+        richEditText.registerFonts(openSansFont);
+        richEditTextPreview.registerFonts(openSansFont);
+        richEditText.typefaceClick("OpenSans");
     }
 
     @Override

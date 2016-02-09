@@ -109,7 +109,7 @@ public class SizeSpanController extends MultiStyleController<SizeSpanController.
         }
     }
 
-    public static class RichAbsoluteSizeSpan extends AbsoluteSizeSpan{
+    public static class RichAbsoluteSizeSpan extends AbsoluteSizeSpan {
 
         public RichAbsoluteSizeSpan(int size) {
             super(size);

@@ -34,17 +34,29 @@ public class BaseRichEditText extends EditText {
 
     private final Map<Class<?>, SpanController<?>> spanControllerMap = new HashMap<>();
 
+    private static Context appContext;
 
     public BaseRichEditText(Context context) {
         super(context);
+        init(context);
     }
 
     public BaseRichEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(context);
     }
 
     public BaseRichEditText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        init(context);
+    }
+
+    private void init(Context context) {
+        appContext = context.getApplicationContext();
+    }
+
+    public static Context getAppContext() {
+        return appContext;
     }
 
     @Override

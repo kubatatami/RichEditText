@@ -3,6 +3,7 @@ package com.github.kubatatami.richedittext.styles.multi;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextPaint;
 import android.text.style.TypefaceSpan;
@@ -66,7 +67,7 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
     public TypefaceSpanController.FontSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
         if (tag.equals(tagName) && styleMap.containsKey("font-family")) {
             int i = 0;
-            List<Font> fonts = new ArrayList<>(fontMap.values());
+            List<Font> fonts = getFonts();
             String fontFamilyValue = styleMap.get("font-family");
             for (String fontFamily : fontFamilyValue.split(",")) {
                 fontFamily = fontFamily.trim();
@@ -87,6 +88,11 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
             }
         }
         return null;
+    }
+
+    @NonNull
+    public List<Font> getFonts() {
+        return new ArrayList<>(fontMap.values());
     }
 
 

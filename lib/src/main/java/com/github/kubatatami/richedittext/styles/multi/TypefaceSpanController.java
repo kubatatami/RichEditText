@@ -91,7 +91,7 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
     }
 
     @NonNull
-    public List<Font> getFonts() {
+    public static List<Font> getFonts() {
         return new ArrayList<>(fontMap.values());
     }
 

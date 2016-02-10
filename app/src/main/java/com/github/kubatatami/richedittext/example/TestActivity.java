@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.github.kubatatami.richedittext.RichEditText;
 import com.github.kubatatami.richedittext.modules.HistoryModule;
+import com.github.kubatatami.richedittext.styles.multi.TypefaceSpanController;
 import com.github.kubatatami.richedittext.views.DefaultPanelView;
 
 import java.io.IOException;
@@ -79,15 +80,20 @@ public class TestActivity extends AppCompatActivity {
             }
         });
         panelView.connectWithRichEditText(richEditText);
-        Font openSansFont = new Font(
-                "OpenSans",
-                "fonts/OpenSans-Regular.ttf",
-                "fonts/OpenSans-Bold.ttf",
-                "fonts/OpenSans-Italic.ttf",
-                "fonts/OpenSans-BoldItalic.ttf");
-        richEditText.registerFonts(openSansFont);
-        richEditTextPreview.registerFonts(openSansFont);
-        richEditText.typefaceClick("OpenSans");
+        Font arialFont = new Font(
+                "Arial",
+                new String[]{"Arial", "sans-serif"},
+                "fonts/", "LiberationSans");
+        Font timesFont = new Font(
+                "Times New Roman",
+                new String[]{"Times New Roman", "serif"},
+                "fonts/", "LiberationSerif");
+        Font courierFont = new Font(
+                "Courier New",
+                new String[]{"Courier New", "mono"},
+                "fonts/", "LiberationMono");
+        TypefaceSpanController.registerFonts(arialFont, timesFont, courierFont);
+        richEditText.typefaceClick("Courier New");
     }
 
     @Override

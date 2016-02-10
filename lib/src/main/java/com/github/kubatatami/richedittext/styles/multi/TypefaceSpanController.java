@@ -10,16 +10,19 @@ import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.other.FontCache;
+import com.github.kubatatami.richedittext.other.StringUtils;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 
 import org.xml.sax.Attributes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TypefaceSpanController extends MultiStyleController<TypefaceSpanController.FontSpan, String> {
 
-    Map<String, Font> fontMap = new HashMap<>();
+    private static Map<String, Font> fontMap = new HashMap<>();
 
     public TypefaceSpanController() {
         super(FontSpan.class, "span");
@@ -55,18 +58,32 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
 
     @Override
     public String beginTag(Object span) {
-        String spanValue = getValueFromSpan((TypefaceSpanController.FontSpan) span);
-        return "<span style=\"font-family: " + spanValue + ";\">";
+        String[] familyValues = ((FontSpan) span).getTypeface().getFamilyValues();
+        return "<span style=\"font-family: " + StringUtils.join(familyValues, ", ") + ";\">";
     }
 
     @Override
     public TypefaceSpanController.FontSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
         if (tag.equals(tagName) && styleMap.containsKey("font-family")) {
+            int i = 0;
+            List<Font> fonts = new ArrayList<>(fontMap.values());
             String fontFamilyValue = styleMap.get("font-family");
             for (String fontFamily : fontFamilyValue.split(",")) {
-                if (fontMap.containsKey(fontFamily.trim())) {
-                    return new FontSpan(fontMap.get(fontFamily));
-                }
+                fontFamily = fontFamily.trim();
+                boolean stop;
+                do {
+                    stop = true;
+                    for (Font font : fonts) {
+                        String[] values = font.getFamilyValues();
+                        if (i < values.length) {
+                            if (values[i].equals(fontFamily)) {
+                                return new FontSpan(font);
+                            }
+                            stop = false;
+                        }
+                    }
+                    i++;
+                } while (!stop);
             }
         }
         return null;
@@ -78,14 +95,21 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
         return getValueFromSpan(span);
     }
 
-    public void registerFont(Font font) {
-        fontMap.put(font.fontName, font);
+    public static void registerFonts(Font... fonts) {
+        for (Font font : fonts) {
+            TypefaceSpanController.registerFont(font);
+        }
     }
 
+    public static void registerFont(Font font) {
+        fontMap.put(font.fontName, font);
+    }
 
     public static class Font {
 
         private String fontName;
+
+        private String[] familyValues;
 
         private String normalTypefacePath;
 
@@ -95,16 +119,35 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
 
         private String boldItalicTypefacePath;
 
-        public Font(String fontName, String normalTypefacePath, String boldTypefacePath, String italicTypefacePath, String boldItalicTypefacePath) {
+        public Font(String fontName,
+                    String[] familyValues,
+                    String normalTypefacePath, String boldTypefacePath,
+                    String italicTypefacePath, String boldItalicTypefacePath) {
             this.fontName = fontName;
+            this.familyValues = familyValues;
             this.normalTypefacePath = normalTypefacePath;
             this.boldTypefacePath = boldTypefacePath;
             this.italicTypefacePath = italicTypefacePath;
             this.boldItalicTypefacePath = boldItalicTypefacePath;
         }
 
+        public Font(String fontName,
+                    String[] familyValues,
+                    String path, String name) {
+            this.fontName = fontName;
+            this.familyValues = familyValues;
+            this.normalTypefacePath = path + name + "-Regular.ttf";
+            this.boldTypefacePath = path + name + "-Bold.ttf";
+            this.italicTypefacePath = path + name + "-Italic.ttf";
+            this.boldItalicTypefacePath = path + name + "-BoldItalic.ttf";
+        }
+
         public String getFontName() {
             return fontName;
+        }
+
+        public String[] getFamilyValues() {
+            return familyValues;
         }
 
         public String getNormalTypefacePath() {
@@ -122,6 +165,11 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
         public String getBoldItalicTypefacePath() {
             return boldItalicTypefacePath;
         }
+
+        @Override
+        public String toString() {
+            return fontName;
+        }
     }
 
     public static class FontSpan extends TypefaceSpan {
@@ -130,7 +178,7 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
 
         public FontSpan(Parcel src) {
             super(src);
-            font = new Font(src.readString(), src.readString(), src.readString(), src.readString(), src.readString());
+            font = fontMap.get(src.readString());
         }
 
         public FontSpan(final Font font) {
@@ -178,10 +226,6 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(font.getFontName());
-            dest.writeString(font.getBoldItalicTypefacePath());
-            dest.writeString(font.getBoldTypefacePath());
-            dest.writeString(font.getItalicTypefacePath());
-            dest.writeString(font.getNormalTypefacePath());
         }
     }
 }

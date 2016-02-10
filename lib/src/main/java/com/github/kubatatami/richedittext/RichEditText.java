@@ -14,8 +14,6 @@ import com.github.kubatatami.richedittext.styles.multi.LinkSpanController;
 import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
 import com.github.kubatatami.richedittext.styles.multi.TypefaceSpanController;
 
-import static com.github.kubatatami.richedittext.styles.multi.TypefaceSpanController.Font;
-
 /**
  * Created by Kuba on 20/11/14.
  */
@@ -48,12 +46,6 @@ public class RichEditText extends BaseRichEditText {
         registerController(TypefaceSpanController.class, new TypefaceSpanController());
     }
 
-    public void registerFonts(Font... fonts) {
-        for (Font font : fonts) {
-            getModule(TypefaceSpanController.class).registerFont(font);
-        }
-    }
-
     public void boldClick() {
         binaryClick(BoldSpanController.class);
     }
@@ -84,6 +76,10 @@ public class RichEditText extends BaseRichEditText {
 
     public void alignmentClick(Layout.Alignment alignment) {
         multiClick(alignment, AlignmentSpanController.class);
+    }
+
+    public void typefaceClick(TypefaceSpanController.Font font) {
+        multiClick(font.getFontName(), TypefaceSpanController.class);
     }
 
     public void typefaceClick(String font) {

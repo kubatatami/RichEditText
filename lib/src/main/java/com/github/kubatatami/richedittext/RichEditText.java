@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.Layout;
 import android.util.AttributeSet;
 
+import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.binary.BoldSpanController;
 import com.github.kubatatami.richedittext.styles.binary.ItalicSpanController;
 import com.github.kubatatami.richedittext.styles.binary.StrikeThroughSpanController;
@@ -125,6 +126,14 @@ public class RichEditText extends BaseRichEditText {
 
     public void addOnFontChangeListener(OnValueChangeListener<String> onFontChangeListener) {
         getModule(TypefaceSpanController.class).addOnValueChangeListener(onFontChangeListener);
+    }
+
+    public String getOverallFont() {
+        return getModule(TypefaceSpanController.class).getCurrentValue(this, getAllSelectionInfo());
+    }
+
+    public String getCurrentFont() {
+        return getModule(TypefaceSpanController.class).getCurrentValue(this, StyleSelectionInfo.getStyleSelectionInfo(this));
     }
 
 }

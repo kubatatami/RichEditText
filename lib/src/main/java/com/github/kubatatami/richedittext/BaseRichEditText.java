@@ -144,7 +144,7 @@ public class BaseRichEditText extends EditText {
         }
     }
 
-    private StyleSelectionInfo getAllSelectionInfo(){
+    protected StyleSelectionInfo getAllSelectionInfo() {
         return new StyleSelectionInfo(0, length(), 0, length(), true);
     }
 
@@ -179,10 +179,6 @@ public class BaseRichEditText extends EditText {
     public void setDefaultFont(Font defaultFont) {
         this.defaultFont = defaultFont;
         getModule(TypefaceSpanController.class).perform(defaultFont.getFontName(), getText(), getAllSelectionInfo());
-    }
-
-    public String getCurrentFont() {
-        return getModule(TypefaceSpanController.class).getCurrentValue(this, getAllSelectionInfo());
     }
 
     public Font getDefaultFont() {

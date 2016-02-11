@@ -122,7 +122,7 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
         }
     }
 
-    private Z getCurrentValue(BaseRichEditText editText, StyleSelectionInfo styleSelectionInfo) {
+    public Z getCurrentValue(BaseRichEditText editText, StyleSelectionInfo styleSelectionInfo) {
         T[] spans = editText.getText().getSpans(styleSelectionInfo.realSelectionStart, styleSelectionInfo.realSelectionEnd, getClazz());
         Z newValue = spans.length > 0 ? getValueFromSpan(spans[0]) : getDefaultValue(editText);
         if (spans.length > 1 && styleSelectionInfo.realSelectionStart == styleSelectionInfo.realSelectionEnd) {

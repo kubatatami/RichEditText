@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextPaint;
 import android.text.style.TypefaceSpan;
-import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.other.FontCache;
@@ -42,18 +41,24 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
     }
 
     @Override
-    public String defaultStyle(EditText editText) {
+    public String defaultStyle(BaseRichEditText editText) {
+        if (editText.getDefaultFont() != null) {
+            return beginTag(new FontSpan(editText.getDefaultFont()));
+        }
         return "";
     }
 
     @Override
-    public String getDefaultValue(EditText editText) {
-        return null;
+    public String getDefaultValue(BaseRichEditText editText) {
+        if (editText.getDefaultFont() != null) {
+            return editText.getDefaultFont().getFontName();
+        }
+        return "";
     }
 
     @Override
     protected String getMultiValue() {
-        return null;
+        return "";
     }
 
 

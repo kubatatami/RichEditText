@@ -11,4 +11,16 @@
         android:icon="@drawable/font_icon_white"
         app:showAsAction="ifRoom"
         android:title="@string/show_panel"/>
+
+    <item android:id="@+id/menu_arial"
+        app:showAsAction="always"
+        android:title="Arial"/>
+
+    <item android:id="@+id/menu_times"
+        app:showAsAction="always"
+        android:title="Times"/>
+
+    <item android:id="@+id/menu_courier"
+        app:showAsAction="always"
+        android:title="Courier"/>
 </menu>

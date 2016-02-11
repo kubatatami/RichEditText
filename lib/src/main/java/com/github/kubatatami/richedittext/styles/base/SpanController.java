@@ -2,8 +2,8 @@ package com.github.kubatatami.richedittext.styles.base;
 
 import android.text.Editable;
 import android.text.Spanned;
-import android.widget.EditText;
 
+import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 
 import org.xml.sax.Attributes;
@@ -50,7 +50,7 @@ public abstract class SpanController<T> {
 
     public abstract void checkBeforeChange(Editable editable, StyleSelectionInfo styleSelectionInfo, boolean added);
 
-    public abstract void checkAfterChange(EditText editText, StyleSelectionInfo styleSelectionInfo, boolean passive);
+    public abstract void checkAfterChange(BaseRichEditText editText, StyleSelectionInfo styleSelectionInfo, boolean passive);
 
     public abstract String beginTag(Object span);
 

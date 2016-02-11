@@ -37,6 +37,12 @@ public class TestActivity extends AppCompatActivity {
 
     private final Handler handler = new Handler();
 
+    private Font arialFont;
+
+    private Font timesFont;
+
+    private Font courierFont;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,20 +86,20 @@ public class TestActivity extends AppCompatActivity {
             }
         });
         panelView.connectWithRichEditText(richEditText);
-        Font arialFont = new Font(
+        arialFont = new Font(
                 "Arial",
                 new String[]{"Arial", "sans-serif"},
                 "fonts/", "LiberationSans");
-        Font timesFont = new Font(
+        timesFont = new Font(
                 "Times New Roman",
                 new String[]{"Times New Roman", "serif"},
                 "fonts/", "LiberationSerif");
-        Font courierFont = new Font(
+        courierFont = new Font(
                 "Courier New",
                 new String[]{"Courier New", "mono"},
                 "fonts/", "LiberationMono");
         TypefaceSpanController.registerFonts(arialFont, timesFont, courierFont);
-        richEditText.typefaceClick("Courier New");
+        richEditText.setDefaultFont(courierFont);
     }
 
     @Override
@@ -111,7 +117,15 @@ public class TestActivity extends AppCompatActivity {
             case R.id.menu_add_link:
                 richEditText.addLink("http://www.google.pl");
                 break;
-
+            case R.id.menu_arial:
+                richEditText.typefaceClick(arialFont);
+                break;
+            case R.id.menu_times:
+                richEditText.typefaceClick(timesFont);
+                break;
+            case R.id.menu_courier:
+                richEditText.typefaceClick(courierFont);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -3,8 +3,8 @@ package com.github.kubatatami.richedittext.styles.multi;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.style.ForegroundColorSpan;
-import android.widget.EditText;
 
+import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 
 import org.xml.sax.Attributes;
@@ -30,12 +30,12 @@ public class ColorSpanController extends MultiStyleController<ColorSpanControlle
     }
 
     @Override
-    public String defaultStyle(EditText editText) {
+    public String defaultStyle(BaseRichEditText editText) {
         return beginTag(new RichForegroundColorSpan(getDefaultValue(editText)));
     }
 
     @Override
-    public Integer getDefaultValue(EditText editText) {
+    public Integer getDefaultValue(BaseRichEditText editText) {
         return editText.getCurrentTextColor();
     }
 

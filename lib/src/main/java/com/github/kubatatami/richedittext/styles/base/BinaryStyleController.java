@@ -2,7 +2,6 @@ package com.github.kubatatami.richedittext.styles.base;
 
 import android.text.Editable;
 import android.text.Spanned;
-import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
@@ -172,7 +171,7 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
     }
 
     @Override
-    public void checkAfterChange(EditText editText, StyleSelectionInfo styleSelectionInfo, boolean passive) {
+    public void checkAfterChange(BaseRichEditText editText, StyleSelectionInfo styleSelectionInfo, boolean passive) {
         if (!passive && spanInfo != null && !spanInfo.span) {
             if (spanInfo.end == styleSelectionInfo.realSelectionEnd - 1) {
                 add(editText.getText(), spanInfo.start, spanInfo.end, spanInfo.flags);

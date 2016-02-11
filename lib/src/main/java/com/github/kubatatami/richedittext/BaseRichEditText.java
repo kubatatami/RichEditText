@@ -16,10 +16,13 @@ import com.github.kubatatami.richedittext.other.TextWatcherAdapter;
 import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
+import com.github.kubatatami.richedittext.styles.multi.TypefaceSpanController;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.github.kubatatami.richedittext.styles.multi.TypefaceSpanController.Font;
 
 /**
  * Created by Kuba on 20/07/14.
@@ -35,6 +38,8 @@ public class BaseRichEditText extends EditText {
     private final Map<Class<?>, SpanController<?>> spanControllerMap = new HashMap<>();
 
     private static Context appContext;
+
+    private Font defaultFont;
 
     public BaseRichEditText(Context context) {
         super(context);
@@ -165,6 +170,16 @@ public class BaseRichEditText extends EditText {
 
     public void setHistoryLimit(int limit) {
         historyModule.setLimit(limit);
+    }
+
+    public void setDefaultFont(Font defaultFont) {
+        this.defaultFont = defaultFont;
+        StyleSelectionInfo styleSelectionInfo = new StyleSelectionInfo(0, length(), 0, length(), true);
+        getModule(TypefaceSpanController.class).perform(defaultFont.getFontName(), getText(), styleSelectionInfo);
+    }
+
+    public Font getDefaultFont() {
+        return defaultFont;
     }
 
     public boolean isStyled() {

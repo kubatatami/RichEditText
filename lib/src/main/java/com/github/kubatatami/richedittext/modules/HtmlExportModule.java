@@ -5,6 +5,7 @@ import android.text.style.CharacterStyle;
 import android.text.style.ParagraphStyle;
 import android.widget.EditText;
 
+import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.other.SpanUtil;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
@@ -17,7 +18,7 @@ import java.util.Collection;
 public abstract class HtmlExportModule {
 
 
-    public static String getHtml(EditText editText, Collection<SpanController<?>> spanControllers) {
+    public static String getHtml(BaseRichEditText editText, Collection<SpanController<?>> spanControllers) {
         StringBuilder out = new StringBuilder();
         out.append("<p>");
         startDefaultStyles(editText, out, spanControllers);
@@ -37,7 +38,7 @@ public abstract class HtmlExportModule {
         return out.toString();
     }
 
-    private static void startDefaultStyles(EditText editText, StringBuilder out, Collection<SpanController<?>> spanControllers) {
+    private static void startDefaultStyles(BaseRichEditText editText, StringBuilder out, Collection<SpanController<?>> spanControllers) {
         for (SpanController<?> spanController : spanControllers) {
             if (spanController instanceof MultiStyleController) {
                 out.append(((MultiStyleController) spanController).defaultStyle(editText));
@@ -46,7 +47,7 @@ public abstract class HtmlExportModule {
     }
 
 
-    private static void endDefaultStyles(EditText editText, StringBuilder out, Collection<SpanController<?>> spanControllers) {
+    private static void endDefaultStyles(BaseRichEditText editText, StringBuilder out, Collection<SpanController<?>> spanControllers) {
         for (SpanController<?> spanController : spanControllers) {
             if (spanController instanceof MultiStyleController && ((MultiStyleController) spanController).defaultStyle(editText).length() > 0) {
                 out.append(((MultiStyleController) spanController).endTag());

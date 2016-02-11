@@ -3,8 +3,8 @@ package com.github.kubatatami.richedittext.styles.multi;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.style.URLSpan;
-import android.widget.EditText;
 
+import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 
@@ -39,12 +39,12 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
     }
 
     @Override
-    public String defaultStyle(EditText editText) {
+    public String defaultStyle(BaseRichEditText editText) {
         return "";
     }
 
     @Override
-    public String getDefaultValue(EditText editText) {
+    public String getDefaultValue(BaseRichEditText editText) {
         return "";
     }
 

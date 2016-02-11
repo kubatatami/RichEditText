@@ -2,7 +2,6 @@ package com.github.kubatatami.richedittext.styles.base;
 
 import android.text.Editable;
 import android.text.Spanned;
-import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
@@ -104,7 +103,7 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
 
 
     @Override
-    public void checkAfterChange(EditText editText, StyleSelectionInfo styleSelectionInfo, boolean passive) {
+    public void checkAfterChange(BaseRichEditText editText, StyleSelectionInfo styleSelectionInfo, boolean passive) {
         Z newValue = getCurrentValue(editText, styleSelectionInfo);
         onValueChange(newValue);
 
@@ -123,7 +122,7 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
         }
     }
 
-    private Z getCurrentValue(EditText editText, StyleSelectionInfo styleSelectionInfo) {
+    private Z getCurrentValue(BaseRichEditText editText, StyleSelectionInfo styleSelectionInfo) {
         T[] spans = editText.getText().getSpans(styleSelectionInfo.realSelectionStart, styleSelectionInfo.realSelectionEnd, getClazz());
         Z newValue = spans.length > 0 ? getValueFromSpan(spans[0]) : getDefaultValue(editText);
         if (spans.length > 1 && styleSelectionInfo.realSelectionStart == styleSelectionInfo.realSelectionEnd) {
@@ -171,10 +170,10 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
         }
     }
 
-    public abstract String defaultStyle(EditText editText);
+    public abstract String defaultStyle(BaseRichEditText editText);
 
 
-    protected abstract Z getDefaultValue(EditText editText);
+    protected abstract Z getDefaultValue(BaseRichEditText editText);
 
     protected abstract Z getMultiValue();
 

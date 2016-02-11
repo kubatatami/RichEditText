@@ -2,8 +2,8 @@ package com.github.kubatatami.richedittext.styles.multi;
 
 import android.text.Editable;
 import android.text.style.AbsoluteSizeSpan;
-import android.widget.EditText;
 
+import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.other.DimenUtil;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 
@@ -32,12 +32,12 @@ public class SizeSpanController extends MultiStyleController<SizeSpanController.
     }
 
     @Override
-    public String defaultStyle(EditText editText) {
+    public String defaultStyle(BaseRichEditText editText) {
         return beginTag(new RichAbsoluteSizeSpan((int) DimenUtil.convertDpToPixel(getDefaultValue(editText))));
     }
 
     @Override
-    public Float getDefaultValue(EditText editText) {
+    public Float getDefaultValue(BaseRichEditText editText) {
         return DimenUtil.convertPixelsToDp(editText.getTextSize());
     }
 

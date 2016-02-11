@@ -3,8 +3,8 @@ package com.github.kubatatami.richedittext.styles.multi;
 import android.text.Editable;
 import android.text.Layout;
 import android.text.style.AlignmentSpan;
-import android.widget.EditText;
 
+import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.styles.base.LineStyleController;
 
 import org.xml.sax.Attributes;
@@ -32,12 +32,12 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpanCo
     }
 
     @Override
-    public String defaultStyle(EditText editText) {
+    public String defaultStyle(BaseRichEditText editText) {
         return "";
     }
 
     @Override
-    public Layout.Alignment getDefaultValue(EditText editText) {
+    public Layout.Alignment getDefaultValue(BaseRichEditText editText) {
         return Layout.Alignment.ALIGN_NORMAL;
     }
 

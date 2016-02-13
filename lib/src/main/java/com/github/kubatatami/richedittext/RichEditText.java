@@ -136,4 +136,60 @@ public class RichEditText extends BaseRichEditText {
         return getModule(TypefaceSpanController.class).getCurrentValue(this, StyleSelectionInfo.getStyleSelectionInfo(this));
     }
 
+    public Float getOverallSize() {
+        return getModule(SizeSpanController.class).getCurrentValue(this, getAllSelectionInfo());
+    }
+
+    public Float getCurrentSize() {
+        return getModule(SizeSpanController.class).getCurrentValue(this, StyleSelectionInfo.getStyleSelectionInfo(this));
+    }
+
+    public Integer getOverallColor() {
+        return getModule(ColorSpanController.class).getCurrentValue(this, getAllSelectionInfo());
+    }
+
+    public Integer getCurrentColor() {
+        return getModule(ColorSpanController.class).getCurrentValue(this, StyleSelectionInfo.getStyleSelectionInfo(this));
+    }
+
+    public Layout.Alignment getOverallAlignment() {
+        return getModule(AlignmentSpanController.class).getCurrentValue(this, getAllSelectionInfo());
+    }
+
+    public Layout.Alignment getCurrentAlignment() {
+        return getModule(AlignmentSpanController.class).getCurrentValue(this, StyleSelectionInfo.getStyleSelectionInfo(this));
+    }
+
+    public boolean getOverallBold() {
+        return getModule(BoldSpanController.class).isAdd(getText(), getAllSelectionInfo());
+    }
+
+    public boolean getCurrentBold() {
+        return getModule(BoldSpanController.class).isAdd(getText(), StyleSelectionInfo.getStyleSelectionInfo(this));
+    }
+
+    public boolean getOverallItalic() {
+        return getModule(ItalicSpanController.class).isAdd(getText(), getAllSelectionInfo());
+    }
+
+    public boolean getCurrentItalic() {
+        return getModule(ItalicSpanController.class).isAdd(getText(), StyleSelectionInfo.getStyleSelectionInfo(this));
+    }
+
+    public boolean getOverallUnderline() {
+        return getModule(UnderlineSpanController.class).isAdd(getText(), getAllSelectionInfo());
+    }
+
+    public boolean getCurrentUnderline() {
+        return getModule(UnderlineSpanController.class).isAdd(getText(), StyleSelectionInfo.getStyleSelectionInfo(this));
+    }
+
+    public boolean getOverallStrikeThrough() {
+        return getModule(StrikeThroughSpanController.class).isAdd(getText(), getAllSelectionInfo());
+    }
+
+    public boolean getCurrentStrikeThrough() {
+        return getModule(StrikeThroughSpanController.class).isAdd(getText(), StyleSelectionInfo.getStyleSelectionInfo(this));
+    }
+
 }

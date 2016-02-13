@@ -142,7 +142,7 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
         return filter(editable.getSpans(start, end, getClazz())).size() == 0;
     }
 
-    private boolean isAdd(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+    public boolean isAdd(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         if (styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd) {
             return isNotExists(editable, styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd);
         } else if (styleSelectionInfo.selection) {
@@ -197,7 +197,6 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
     public boolean getValue() {
         return value;
     }
-
 
     @Override
     public T createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {

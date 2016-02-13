@@ -99,7 +99,7 @@ public class TestActivity extends AppCompatActivity {
                 new String[]{"Courier New", "mono"},
                 "fonts/", "LiberationMono");
         TypefaceSpanController.registerFonts(arialFont, timesFont, courierFont);
-        richEditText.setDefaultFont(courierFont);
+        richEditText.typefaceClick(courierFont);
     }
 
     @Override

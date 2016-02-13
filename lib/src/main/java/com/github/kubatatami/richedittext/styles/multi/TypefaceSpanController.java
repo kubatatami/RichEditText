@@ -42,17 +42,11 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
 
     @Override
     public String defaultStyle(BaseRichEditText editText) {
-        if (editText.getDefaultFont() != null) {
-            return beginTag(new FontSpan(editText.getDefaultFont()));
-        }
         return "";
     }
 
     @Override
     public String getDefaultValue(BaseRichEditText editText) {
-        if (editText.getDefaultFont() != null) {
-            return editText.getDefaultFont().getFontName();
-        }
         return "";
     }
 

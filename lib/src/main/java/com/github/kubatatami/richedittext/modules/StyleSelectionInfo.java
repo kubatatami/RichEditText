@@ -30,12 +30,13 @@ public class StyleSelectionInfo {
         StyleSelectionInfo result = new StyleSelectionInfo();
         int selectionStart = richEditText.getSelectionStart();
         int selectionEnd = richEditText.getSelectionEnd();
-        if (richEditText.hasFocus()) {
+        if (!richEditText.hasFocus()) {
             result.selection = true;
             result.selectionStart = 0;
             result.selectionEnd = richEditText.length();
             result.realSelectionStart = 0;
             result.realSelectionEnd = richEditText.length();
+            return result;
         } else if (selectionStart == selectionEnd) {
             boolean end = true;
             while (selectionEnd < richEditText.getText().length()

@@ -13,7 +13,6 @@ import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.Checkable;
 import android.widget.ImageButton;
 
@@ -25,12 +24,6 @@ public class ToggleImageButton extends ImageButton implements Checkable {
             android.R.attr.state_checked
     };
 
-    private final OnClickListener onClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            toggle();
-        }
-    };
 
     private boolean isChecked;
 
@@ -68,12 +61,6 @@ public class ToggleImageButton extends ImageButton implements Checkable {
     }
 
     @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        setOnClickListener(onClickListener);
-    }
-
-    @Override
     public boolean performClick() {
         toggle();
         return super.performClick();
@@ -86,19 +73,25 @@ public class ToggleImageButton extends ImageButton implements Checkable {
 
     @Override
     public void setChecked(boolean checked) {
+        setChecked(checked, false);
+    }
+
+    public void setChecked(boolean checked, boolean invokeListeners) {
         if (isChecked == checked) {
             return;
         }
         isChecked = checked;
         refreshDrawableState();
-        if (isBroadCasting) {
-            return;
+        if (invokeListeners) {
+            if (isBroadCasting) {
+                return;
+            }
+            isBroadCasting = true;
+            if (onCheckedChangeListener != null) {
+                onCheckedChangeListener.onCheckedChanged(this, isChecked);
+            }
+            isBroadCasting = false;
         }
-        isBroadCasting = true;
-        if (onCheckedChangeListener != null) {
-            onCheckedChangeListener.onCheckedChanged(this, isChecked);
-        }
-        isBroadCasting = false;
     }
 
     private void setImageDrawable(Drawable drawable, int tint) {
@@ -132,7 +125,7 @@ public class ToggleImageButton extends ImageButton implements Checkable {
 
     @Override
     public void toggle() {
-        setChecked(!isChecked);
+        setChecked(!isChecked, true);
     }
 
     @Override

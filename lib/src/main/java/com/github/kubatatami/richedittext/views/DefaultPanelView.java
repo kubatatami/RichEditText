@@ -73,9 +73,6 @@ public class DefaultPanelView extends RelativeLayout {
 
     private ImageView fontSizeValueRightArrow;
 
-    private boolean ignoreSizeEvent;
-
-    private boolean ignoreColorEvent;
 
     private boolean visible = false;
 
@@ -470,7 +467,6 @@ public class DefaultPanelView extends RelativeLayout {
         richEditText.addOnSizeChangeListener(new BaseRichEditText.OnValueChangeListener<Float>() {
             @Override
             public void onValueChange(Float size) {
-                ignoreSizeEvent = true;
                 for (int i = 0; i < adapter.getCount(); i++) {
                     SizeSpanController.Size sizeEnum = adapter.getItem(i);
                     if (sizeEnum.getSize() == size) {
@@ -485,7 +481,6 @@ public class DefaultPanelView extends RelativeLayout {
         richEditText.addOnColorChangeListener(new BaseRichEditText.OnValueChangeListener<Integer>() {
             @Override
             public void onValueChange(Integer value) {
-                ignoreColorEvent = true;
 //                colorPicker.setNewCenterColor(value);
                 colorValue.setColor(value);
             }

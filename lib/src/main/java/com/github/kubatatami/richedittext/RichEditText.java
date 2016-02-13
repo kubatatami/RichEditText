@@ -181,11 +181,11 @@ public class RichEditText extends BaseRichEditText {
     }
 
     public boolean getOverallBold() {
-        return getModule(BoldSpanController.class).isAdd(getText(), getAllSelectionInfo());
+        return getModule(BoldSpanController.class).getCurrentValue(getText(), getAllSelectionInfo());
     }
 
     public boolean getCurrentBold() {
-        return getModule(BoldSpanController.class).isAdd(getText(), StyleSelectionInfo.getStyleSelectionInfo(this));
+        return getModule(BoldSpanController.class).getCurrentValue(getText(), StyleSelectionInfo.getStyleSelectionInfo(this));
     }
 
     public void setItalic(boolean italic) {
@@ -197,11 +197,11 @@ public class RichEditText extends BaseRichEditText {
     }
 
     public boolean getOverallItalic() {
-        return getModule(ItalicSpanController.class).isAdd(getText(), getAllSelectionInfo());
+        return getModule(ItalicSpanController.class).getCurrentValue(getText(), getAllSelectionInfo());
     }
 
     public boolean getCurrentItalic() {
-        return getModule(ItalicSpanController.class).isAdd(getText(), StyleSelectionInfo.getStyleSelectionInfo(this));
+        return getModule(ItalicSpanController.class).getCurrentValue(getText(), StyleSelectionInfo.getStyleSelectionInfo(this));
     }
 
     public void setUnderline(boolean underline) {
@@ -213,11 +213,11 @@ public class RichEditText extends BaseRichEditText {
     }
 
     public boolean getOverallUnderline() {
-        return getModule(UnderlineSpanController.class).isAdd(getText(), getAllSelectionInfo());
+        return getModule(UnderlineSpanController.class).getCurrentValue(getText(), getAllSelectionInfo());
     }
 
     public boolean getCurrentUnderline() {
-        return getModule(UnderlineSpanController.class).isAdd(getText(), StyleSelectionInfo.getStyleSelectionInfo(this));
+        return getModule(UnderlineSpanController.class).getCurrentValue(getText(), StyleSelectionInfo.getStyleSelectionInfo(this));
     }
 
     public void setStrikeThrough(boolean strikeThrough) {
@@ -229,11 +229,11 @@ public class RichEditText extends BaseRichEditText {
     }
 
     public boolean getOverallStrikeThrough() {
-        return getModule(StrikeThroughSpanController.class).isAdd(getText(), getAllSelectionInfo());
+        return getModule(StrikeThroughSpanController.class).getCurrentValue(getText(), getAllSelectionInfo());
     }
 
     public boolean getCurrentStrikeThrough() {
-        return getModule(StrikeThroughSpanController.class).isAdd(getText(), StyleSelectionInfo.getStyleSelectionInfo(this));
+        return getModule(StrikeThroughSpanController.class).getCurrentValue(getText(), StyleSelectionInfo.getStyleSelectionInfo(this));
     }
 
 }

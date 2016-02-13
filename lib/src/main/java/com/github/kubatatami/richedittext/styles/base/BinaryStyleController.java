@@ -68,7 +68,7 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
         return result;
     }
 
-    private boolean selectStyle(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+    public boolean selectStyle(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         if (styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd) {
             spanInfo = new SpanInfo<>(styleSelectionInfo.selectionStart,
                     styleSelectionInfo.selectionEnd, defaultFlags, true);
@@ -92,7 +92,6 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
         }
 
     }
-
 
     @Override
     public void clearStyle(Editable editable, Object span, StyleSelectionInfo styleSelectionInfo) {

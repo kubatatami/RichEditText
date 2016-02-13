@@ -136,12 +136,20 @@ public class RichEditText extends BaseRichEditText {
         return getModule(TypefaceSpanController.class).getCurrentValue(this, StyleSelectionInfo.getStyleSelectionInfo(this));
     }
 
+    public void setSize(float size) {
+        getModule(SizeSpanController.class).perform(size, getText(), getAllSelectionInfo());
+    }
+
     public Float getOverallSize() {
         return getModule(SizeSpanController.class).getCurrentValue(this, getAllSelectionInfo());
     }
 
     public Float getCurrentSize() {
         return getModule(SizeSpanController.class).getCurrentValue(this, StyleSelectionInfo.getStyleSelectionInfo(this));
+    }
+
+    public void setSize(int color) {
+        getModule(ColorSpanController.class).perform(color, getText(), getAllSelectionInfo());
     }
 
     public Integer getOverallColor() {
@@ -152,12 +160,24 @@ public class RichEditText extends BaseRichEditText {
         return getModule(ColorSpanController.class).getCurrentValue(this, StyleSelectionInfo.getStyleSelectionInfo(this));
     }
 
+    public void setAlignment(Layout.Alignment alignment) {
+        getModule(AlignmentSpanController.class).perform(alignment, getText(), getAllSelectionInfo());
+    }
+
     public Layout.Alignment getOverallAlignment() {
         return getModule(AlignmentSpanController.class).getCurrentValue(this, getAllSelectionInfo());
     }
 
     public Layout.Alignment getCurrentAlignment() {
         return getModule(AlignmentSpanController.class).getCurrentValue(this, StyleSelectionInfo.getStyleSelectionInfo(this));
+    }
+
+    public void setBold(boolean bold) {
+        if (bold) {
+            getModule(BoldSpanController.class).selectStyle(getText(), getAllSelectionInfo());
+        } else {
+            getModule(BoldSpanController.class).clearStyles(getText(), getAllSelectionInfo());
+        }
     }
 
     public boolean getOverallBold() {
@@ -168,6 +188,14 @@ public class RichEditText extends BaseRichEditText {
         return getModule(BoldSpanController.class).isAdd(getText(), StyleSelectionInfo.getStyleSelectionInfo(this));
     }
 
+    public void setItalic(boolean italic) {
+        if (italic) {
+            getModule(ItalicSpanController.class).selectStyle(getText(), getAllSelectionInfo());
+        } else {
+            getModule(ItalicSpanController.class).clearStyles(getText(), getAllSelectionInfo());
+        }
+    }
+
     public boolean getOverallItalic() {
         return getModule(ItalicSpanController.class).isAdd(getText(), getAllSelectionInfo());
     }
@@ -176,12 +204,28 @@ public class RichEditText extends BaseRichEditText {
         return getModule(ItalicSpanController.class).isAdd(getText(), StyleSelectionInfo.getStyleSelectionInfo(this));
     }
 
+    public void setUnderline(boolean underline) {
+        if (underline) {
+            getModule(UnderlineSpanController.class).selectStyle(getText(), getAllSelectionInfo());
+        } else {
+            getModule(UnderlineSpanController.class).clearStyles(getText(), getAllSelectionInfo());
+        }
+    }
+
     public boolean getOverallUnderline() {
         return getModule(UnderlineSpanController.class).isAdd(getText(), getAllSelectionInfo());
     }
 
     public boolean getCurrentUnderline() {
         return getModule(UnderlineSpanController.class).isAdd(getText(), StyleSelectionInfo.getStyleSelectionInfo(this));
+    }
+
+    public void setStrikeThrough(boolean strikeThrough) {
+        if (strikeThrough) {
+            getModule(StrikeThroughSpanController.class).selectStyle(getText(), getAllSelectionInfo());
+        } else {
+            getModule(StrikeThroughSpanController.class).clearStyles(getText(), getAllSelectionInfo());
+        }
     }
 
     public boolean getOverallStrikeThrough() {

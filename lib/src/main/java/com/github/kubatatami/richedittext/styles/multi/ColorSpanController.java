@@ -44,7 +44,6 @@ public class ColorSpanController extends MultiStyleController<ColorSpanControlle
         return 0;
     }
 
-
     @Override
     public String beginTag(Object span) {
         int spanValue = getValueFromSpan((RichForegroundColorSpan) span);

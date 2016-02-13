@@ -10,6 +10,7 @@ import com.github.kubatatami.richedittext.styles.binary.ItalicSpanController;
 import com.github.kubatatami.richedittext.styles.binary.StrikeThroughSpanController;
 import com.github.kubatatami.richedittext.styles.binary.UnderlineSpanController;
 import com.github.kubatatami.richedittext.styles.multi.AlignmentSpanController;
+import com.github.kubatatami.richedittext.styles.multi.BackgroundColorSpanController;
 import com.github.kubatatami.richedittext.styles.multi.ColorSpanController;
 import com.github.kubatatami.richedittext.styles.multi.LinkSpanController;
 import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
@@ -42,6 +43,7 @@ public class RichEditText extends BaseRichEditText {
         registerController(StrikeThroughSpanController.class, new StrikeThroughSpanController());
         registerController(SizeSpanController.class, new SizeSpanController());
         registerController(ColorSpanController.class, new ColorSpanController());
+        registerController(BackgroundColorSpanController.class, new BackgroundColorSpanController());
         registerController(AlignmentSpanController.class, new AlignmentSpanController());
         registerController(LinkSpanController.class, new LinkSpanController());
         registerController(TypefaceSpanController.class, new TypefaceSpanController());
@@ -75,6 +77,10 @@ public class RichEditText extends BaseRichEditText {
         multiClick(color, ColorSpanController.class);
     }
 
+    public void backgroundColorClick(int color) {
+        multiClick(color, BackgroundColorSpanController.class);
+    }
+
     public void alignmentClick(Layout.Alignment alignment) {
         multiClick(alignment, AlignmentSpanController.class);
     }
@@ -106,6 +112,10 @@ public class RichEditText extends BaseRichEditText {
 
     public void addOnColorChangeListener(OnValueChangeListener<Integer> onSizeChangeListener) {
         getModule(ColorSpanController.class).addOnValueChangeListener(onSizeChangeListener);
+    }
+
+    public void addOnBackgroundColorChangeListener(OnValueChangeListener<Integer> onSizeChangeListener) {
+        getModule(BackgroundColorSpanController.class).addOnValueChangeListener(onSizeChangeListener);
     }
 
     public void addOnBoldChangeListener(OnValueChangeListener<Boolean> onBoldChangeListener) {
@@ -148,7 +158,7 @@ public class RichEditText extends BaseRichEditText {
         return getModule(SizeSpanController.class).getCurrentValue(this, StyleSelectionInfo.getStyleSelectionInfo(this));
     }
 
-    public void setSize(int color) {
+    public void setColor(int color) {
         getModule(ColorSpanController.class).perform(color, getText(), getAllSelectionInfo());
     }
 
@@ -158,6 +168,18 @@ public class RichEditText extends BaseRichEditText {
 
     public Integer getCurrentColor() {
         return getModule(ColorSpanController.class).getCurrentValue(this, StyleSelectionInfo.getStyleSelectionInfo(this));
+    }
+
+    public void setBackgroundColor(int color) {
+        getModule(BackgroundColorSpanController.class).perform(color, getText(), getAllSelectionInfo());
+    }
+
+    public Integer getOverallBackgroundColor() {
+        return getModule(BackgroundColorSpanController.class).getCurrentValue(this, getAllSelectionInfo());
+    }
+
+    public Integer getCurrentBackgroundColor() {
+        return getModule(BackgroundColorSpanController.class).getCurrentValue(this, StyleSelectionInfo.getStyleSelectionInfo(this));
     }
 
     public void setAlignment(Layout.Alignment alignment) {

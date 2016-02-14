@@ -36,7 +36,7 @@ public class BackgroundColorSpanController extends MultiStyleController<Backgrou
 
     @Override
     public Integer getDefaultValue(BaseRichEditText editText) {
-        return editText.getCurrentTextColor();
+        return Color.TRANSPARENT;
     }
 
     @Override

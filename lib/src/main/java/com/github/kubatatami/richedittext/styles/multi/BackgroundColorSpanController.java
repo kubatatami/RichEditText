@@ -47,6 +47,9 @@ public class BackgroundColorSpanController extends MultiStyleController<Backgrou
     @Override
     public String beginTag(Object span) {
         int spanValue = getValueFromSpan((RichBackgroundColorSpan) span);
+        if(spanValue == Color.TRANSPARENT){
+            return "";
+        }
         String color = Integer.toHexString(spanValue + 0x01000000);
         while (color.length() < 6) {
             color = "0" + color;

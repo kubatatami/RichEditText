@@ -96,7 +96,7 @@ public class SizeSpanController extends MultiStyleController<SizeSpanController.
                     return sizeEnum.name;
                 }
             }
-            return size + "pt";
+            return size + "px";
         }
 
         public static Size getByName(String name) {

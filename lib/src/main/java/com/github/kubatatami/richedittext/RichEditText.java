@@ -170,7 +170,7 @@ public class RichEditText extends BaseRichEditText {
         return getModule(ColorSpanController.class).getCurrentValue(this, StyleSelectionInfo.getStyleSelectionInfo(this));
     }
 
-    public void setBackgroundColor(int color) {
+    public void setFontBackgroundColor(int color) {
         getModule(BackgroundColorSpanController.class).perform(color, getText(), getAllSelectionInfo());
     }
 

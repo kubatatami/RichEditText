@@ -216,6 +216,7 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
             } else {
                 path = font.getNormalTypefacePath();
             }
+            paint.setSubpixelText(true);
             paint.setTypeface(FontCache.getTypeface(path, BaseRichEditText.getAppContext()));
         }
 

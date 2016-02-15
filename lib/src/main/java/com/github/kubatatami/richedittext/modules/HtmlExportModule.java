@@ -8,19 +8,21 @@ import android.widget.EditText;
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.other.SpanUtil;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
+import com.github.kubatatami.richedittext.styles.base.PersistableProperty;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Kuba on 20/11/14.
  */
 public abstract class HtmlExportModule {
 
-
-    public static String getHtml(BaseRichEditText editText, Collection<SpanController<?>> spanControllers) {
+    public static String getHtml(BaseRichEditText editText, Collection<SpanController<?>> spanControllers, List<PersistableProperty> properties) {
         StringBuilder out = new StringBuilder();
         out.append("<p>");
+        startProperties(editText, out, properties);
         startDefaultStyles(editText, out, spanControllers);
         within(ParagraphStyle.class, out, editText, 0, editText.getText().length(), spanControllers, new WithinCallback() {
             @Override
@@ -34,8 +36,21 @@ public abstract class HtmlExportModule {
             }
         });
         endDefaultStyles(editText, out, spanControllers);
+        endProperties(editText, out, properties);
         out.append("</p>");
         return out.toString();
+    }
+
+    private static void startProperties(BaseRichEditText editText, StringBuilder out, List<PersistableProperty> properties) {
+        for (PersistableProperty property : properties) {
+            out.append(property.beginTag(editText));
+        }
+    }
+
+    private static void endProperties(BaseRichEditText editText, StringBuilder out, List<PersistableProperty> properties) {
+        for (PersistableProperty property : properties) {
+            out.append(property.endTag(editText));
+        }
     }
 
     private static void startDefaultStyles(BaseRichEditText editText, StringBuilder out, Collection<SpanController<?>> spanControllers) {
@@ -46,7 +61,6 @@ public abstract class HtmlExportModule {
         }
     }
 
-
     private static void endDefaultStyles(BaseRichEditText editText, StringBuilder out, Collection<SpanController<?>> spanControllers) {
         for (SpanController<?> spanController : spanControllers) {
             if (spanController instanceof MultiStyleController && ((MultiStyleController) spanController).defaultStyle(editText).length() > 0) {
@@ -54,7 +68,6 @@ public abstract class HtmlExportModule {
             }
         }
     }
-
 
     private static void within(Class<?> clazz, StringBuilder out, EditText editText, int start, int end,
                                Collection<SpanController<?>> spanControllers, WithinCallback withinCallback) {

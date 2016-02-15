@@ -5,6 +5,7 @@ import android.text.Layout;
 import android.util.AttributeSet;
 
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
+import com.github.kubatatami.richedittext.properties.LineHeight;
 import com.github.kubatatami.richedittext.styles.binary.BoldSpanController;
 import com.github.kubatatami.richedittext.styles.binary.ItalicSpanController;
 import com.github.kubatatami.richedittext.styles.binary.StrikeThroughSpanController;
@@ -47,6 +48,7 @@ public class RichEditText extends BaseRichEditText {
         registerController(AlignmentSpanController.class, new AlignmentSpanController());
         registerController(LinkSpanController.class, new LinkSpanController());
         registerController(TypefaceSpanController.class, new TypefaceSpanController());
+        registerProperty(new LineHeight());
     }
 
     public void boldClick() {

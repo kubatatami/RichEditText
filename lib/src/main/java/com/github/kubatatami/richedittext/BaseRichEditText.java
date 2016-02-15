@@ -12,10 +12,12 @@ import com.github.kubatatami.richedittext.modules.HistoryModule;
 import com.github.kubatatami.richedittext.modules.HtmlExportModule;
 import com.github.kubatatami.richedittext.modules.HtmlImportModule;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
+import com.github.kubatatami.richedittext.other.CompatUtils;
 import com.github.kubatatami.richedittext.other.SpanUtil;
 import com.github.kubatatami.richedittext.other.TextWatcherAdapter;
 import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
+import com.github.kubatatami.richedittext.styles.base.PersistableProperty;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 
 import java.io.IOException;
@@ -36,6 +38,8 @@ public class BaseRichEditText extends EditText {
     private final HistoryModule historyModule = new HistoryModule(this);
 
     private final Map<Class<?>, SpanController<?>> spanControllerMap = new HashMap<>();
+
+    private final List<PersistableProperty> properties = new ArrayList<>();
 
     private final List<OnFocusChangeListener> onFocusChangeListeners = new ArrayList<>();
 
@@ -147,12 +151,12 @@ public class BaseRichEditText extends EditText {
     }
 
     public void isValidHtml(String html) throws IOException {
-        HtmlImportModule.fromHtml(html, spanControllerMap.values());
+        HtmlImportModule.fromHtml(this, html, spanControllerMap.values(), properties);
     }
 
     public void setHtml(String html) {
         try {
-            setText(HtmlImportModule.fromHtml(html, spanControllerMap.values()));
+            setText(HtmlImportModule.fromHtml(this, html, spanControllerMap.values(), properties));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -160,6 +164,10 @@ public class BaseRichEditText extends EditText {
 
     public <T extends SpanController<?>> void registerController(Class<T> clazz, T controller) {
         spanControllerMap.put(clazz, controller);
+    }
+
+    public void registerProperty(PersistableProperty property) {
+        properties.add(property);
     }
 
     @SuppressWarnings("unchecked")
@@ -193,7 +201,7 @@ public class BaseRichEditText extends EditText {
     }
 
     public String getHtml() {
-        return HtmlExportModule.getHtml(this, spanControllerMap.values());
+        return HtmlExportModule.getHtml(this, spanControllerMap.values(), properties);
     }
 
     public void undo() {
@@ -253,4 +261,11 @@ public class BaseRichEditText extends EditText {
         void onValueChange(T value);
     }
 
+    public float getLineSpacingMultiplierCompat() {
+        return CompatUtils.getLineSpacingMultiplier(this);
+    }
+
+    public float getLineSpacingExtraCompat() {
+        return CompatUtils.getLineSpacingExtra(this);
+    }
 }

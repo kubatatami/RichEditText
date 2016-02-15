@@ -100,6 +100,7 @@ public class TestActivity extends AppCompatActivity {
                 "fonts/", "LiberationMono");
         TypefaceSpanController.registerFonts(arialFont, timesFont, courierFont);
         richEditText.typefaceClick(courierFont);
+        richEditText.setLineSpacing(1f, 2f);
     }
 
     @Override

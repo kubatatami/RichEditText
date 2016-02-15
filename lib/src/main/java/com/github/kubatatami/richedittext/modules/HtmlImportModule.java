@@ -5,7 +5,9 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.SpannedString;
 
+import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
+import com.github.kubatatami.richedittext.styles.base.PersistableProperty;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 
 import org.ccil.cowan.tagsoup.HTMLSchema;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,7 +39,8 @@ public abstract class HtmlImportModule {
 
     private static boolean endingMode = false;
 
-    public static Spanned fromHtml(String source, Collection<SpanController<?>> spanControllers) throws IOException {
+    public static Spanned fromHtml(BaseRichEditText baseRichEditText, String source, Collection<SpanController<?>> spanControllers,
+                                   List<PersistableProperty> properties) throws IOException {
         if (source == null || source.length() == 0) {
             return new SpannedString("");
         }
@@ -50,12 +54,14 @@ public abstract class HtmlImportModule {
             throw new RuntimeException(e);
         }
 
-        HtmlToSpannedConverter converter = new HtmlToSpannedConverter(source, parser, spanControllers);
+        HtmlToSpannedConverter converter = new HtmlToSpannedConverter(baseRichEditText, source, parser, spanControllers, properties);
         return converter.convert();
     }
 
 
     static class HtmlToSpannedConverter implements ContentHandler {
+
+        private final BaseRichEditText baseRichEditText;
 
         private final String mSource;
 
@@ -65,11 +71,15 @@ public abstract class HtmlImportModule {
 
         private final Collection<SpanController<?>> mSpanControllers;
 
+        private final List<PersistableProperty> properties;
+
         public HtmlToSpannedConverter(
-                String source,
-                Parser parser, Collection<SpanController<?>> spanControllers) {
+                BaseRichEditText baseRichEditText, String source,
+                Parser parser, Collection<SpanController<?>> spanControllers, List<PersistableProperty> properties) {
+            this.baseRichEditText = baseRichEditText;
             mSource = source;
             mSpanControllers = spanControllers;
+            this.properties = properties;
             mSpannableStringBuilder = new SpannableStringBuilder();
             mReader = parser;
         }
@@ -107,17 +117,26 @@ public abstract class HtmlImportModule {
             for (SpanController<?> spanController : mSpanControllers) {
                 Object object = spanController.createSpanFromTag(tag, styleMap, attributes);
                 if (object != null) {
-                    start(mSpannableStringBuilder, object);
-                    if (endingMode) {
-                        throw new SAXException("Start new tag(" + tag + " " + attrToString(attributes) + ") before end previous");
-                    }
-                    tagCounter++;
+                    addSpan(tag, attributes, object);
+                    return;
+                }
+            }
+            for (PersistableProperty property : properties) {
+                if (property.createSpanFromTag(baseRichEditText, tag, styleMap, attributes)) {
                     return;
                 }
             }
             if (!tag.equals("html") && !tag.equals("body") && !(tag.equals("p") && attributes.getLength() == 0)) {
                 throw new SAXException("Unsupported tag: " + tag + " " + attrToString(attributes));
             }
+        }
+
+        private void addSpan(String tag, Attributes attributes, Object object) throws SAXException {
+            start(mSpannableStringBuilder, object);
+            if (endingMode) {
+                throw new SAXException("Start new tag(" + tag + " " + attrToString(attributes) + ") before end previous");
+            }
+            tagCounter++;
         }
 
         private String attrToString(Attributes attrs) {

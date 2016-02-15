@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.text.Editable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
@@ -18,7 +19,9 @@ import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,6 +36,8 @@ public class BaseRichEditText extends EditText {
     private final HistoryModule historyModule = new HistoryModule(this);
 
     private final Map<Class<?>, SpanController<?>> spanControllerMap = new HashMap<>();
+
+    private final List<OnFocusChangeListener> onFocusChangeListeners = new ArrayList<>();
 
     private static Context appContext;
 
@@ -53,6 +58,14 @@ public class BaseRichEditText extends EditText {
 
     private void init(Context context) {
         appContext = context.getApplicationContext();
+        super.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                for(OnFocusChangeListener listener : onFocusChangeListeners){
+                    listener.onFocusChange(v, hasFocus);
+                }
+            }
+        });
     }
 
     public static Context getAppContext() {
@@ -107,6 +120,19 @@ public class BaseRichEditText extends EditText {
     public void setTextColor(ColorStateList colors) {
         super.setTextColor(colors);
         checkAfterChange(false);
+    }
+
+    @Override
+    public void setOnFocusChangeListener(OnFocusChangeListener l) {
+        throw new UnsupportedOperationException("Use addOnFocusChangeListener!");
+    }
+
+    public void addOnFocusChangeListener(OnFocusChangeListener listener) {
+        onFocusChangeListeners.add(listener);
+    }
+
+    public void removeOnFocusChangeListener(OnFocusChangeListener listener) {
+        onFocusChangeListeners.remove(listener);
     }
 
     public void isValidHtml(String html) throws IOException {

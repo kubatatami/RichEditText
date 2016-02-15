@@ -135,6 +135,10 @@ public class BaseRichEditText extends EditText {
         onFocusChangeListeners.remove(listener);
     }
 
+    public void clearOnFocusChangeListener() {
+        onFocusChangeListeners.clear();
+    }
+
     public void isValidHtml(String html) throws IOException {
         HtmlImportModule.fromHtml(html, spanControllerMap.values());
     }

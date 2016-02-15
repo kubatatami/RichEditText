@@ -40,6 +40,15 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
         this.onValueChangeListeners.add(onValueChangeListener);
     }
 
+    public void removeOnValueChangeListener(BaseRichEditText.OnValueChangeListener<Z> onValueChangeListener) {
+        this.onValueChangeListeners.remove(onValueChangeListener);
+    }
+
+    @Override
+    public void clearOnValueChangeListeners() {
+        this.onValueChangeListeners.clear();
+    }
+
     public boolean perform(Z value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
         boolean result = clearStyles(editable, styleSelectionInfo);
         result = selectStyle(value, editable, styleSelectionInfo) || result;

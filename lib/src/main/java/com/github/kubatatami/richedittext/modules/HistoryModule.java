@@ -82,6 +82,14 @@ public class HistoryModule {
         onHistoryChangeListener.onHistoryChange(undoList.size(), redoList.size());
     }
 
+    public void removeOnHistoryChangeListener(OnHistoryChangeListener onHistoryChangeListener) {
+        onHistoryChangeListeners.remove(onHistoryChangeListener);
+    }
+
+    public void clearOnHistoryChangeListeners() {
+        onHistoryChangeListeners.clear();
+    }
+
     static class EditHistory {
 
         final Editable editable;

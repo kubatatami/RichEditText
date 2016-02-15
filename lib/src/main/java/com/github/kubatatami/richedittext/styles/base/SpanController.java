@@ -56,6 +56,8 @@ public abstract class SpanController<T> {
 
     public abstract T createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes);
 
+    public abstract void clearOnValueChangeListeners();
+
     public Class<?> spanFromEndTag(String tag) {
         if (tag.equals(tagName)) {
             return clazz;

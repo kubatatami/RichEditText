@@ -33,6 +33,15 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
         this.onValueChangeListeners.add(onValueChangeListener);
     }
 
+    public void removeOnValueChangeListener(BaseRichEditText.OnValueChangeListener<Boolean> onValueChangeListener) {
+        this.onValueChangeListeners.remove(onValueChangeListener);
+    }
+
+    @Override
+    public void clearOnValueChangeListeners() {
+        this.onValueChangeListeners.clear();
+    }
+
     protected T add(Editable editable, int selectionStart, int selectionEnd, int flags) {
         try {
             T result = clazz.newInstance();

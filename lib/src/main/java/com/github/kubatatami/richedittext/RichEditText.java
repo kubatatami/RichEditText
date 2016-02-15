@@ -258,4 +258,10 @@ public class RichEditText extends BaseRichEditText {
         return getModule(StrikeThroughSpanController.class).getCurrentValue(getText(), StyleSelectionInfo.getStyleSelectionInfo(this));
     }
 
+    public void clearAllListeners() {
+        clearOnFocusChangeListeners();
+        clearOnHistoryChangeListeners();
+        clearValueChangeListeners();
+    }
+
 }

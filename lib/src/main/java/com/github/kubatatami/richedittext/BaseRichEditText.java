@@ -61,7 +61,7 @@ public class BaseRichEditText extends EditText {
         super.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                for(OnFocusChangeListener listener : onFocusChangeListeners){
+                for (OnFocusChangeListener listener : onFocusChangeListeners) {
                     listener.onFocusChange(v, hasFocus);
                 }
             }
@@ -135,8 +135,15 @@ public class BaseRichEditText extends EditText {
         onFocusChangeListeners.remove(listener);
     }
 
-    public void clearOnFocusChangeListener() {
+    public void clearOnFocusChangeListeners() {
         onFocusChangeListeners.clear();
+    }
+
+    public void clearValueChangeListeners() {
+        onFocusChangeListeners.clear();
+        for (SpanController controller : spanControllerMap.values()) {
+            controller.clearOnValueChangeListeners();
+        }
     }
 
     public void isValidHtml(String html) throws IOException {
@@ -231,6 +238,14 @@ public class BaseRichEditText extends EditText {
 
     public void addOnHistoryChangeListener(HistoryModule.OnHistoryChangeListener onHistoryChangeListener) {
         historyModule.addOnHistoryChangeListener(onHistoryChangeListener);
+    }
+
+    public void removeOnHistoryChangeListener(HistoryModule.OnHistoryChangeListener onHistoryChangeListener) {
+        historyModule.removeOnHistoryChangeListener(onHistoryChangeListener);
+    }
+
+    public void clearOnHistoryChangeListeners() {
+        historyModule.clearOnHistoryChangeListeners();
     }
 
     public interface OnValueChangeListener<T> {

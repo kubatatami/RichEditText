@@ -39,11 +39,6 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
     }
 
     @Override
-    public String defaultStyle(BaseRichEditText editText) {
-        return "";
-    }
-
-    @Override
     public String getDefaultValue(BaseRichEditText editText) {
         return "";
     }
@@ -61,11 +56,8 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
 
 
     @Override
-    public LinkSpanController.RichURLSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if (tag.equals(tagName)) {
-            return new RichURLSpan(attributes.getValue("href"));
-        }
-        return null;
+    protected RichURLSpan createSpan(Map<String, String> styleMap, Attributes attributes) {
+        return new RichURLSpan(attributes.getValue("href"));
     }
 
 

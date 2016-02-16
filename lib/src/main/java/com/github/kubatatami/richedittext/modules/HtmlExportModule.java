@@ -7,9 +7,8 @@ import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.other.SpanUtil;
-import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
-import com.github.kubatatami.richedittext.styles.base.PersistableProperty;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
+import com.github.kubatatami.richedittext.styles.base.StyleProperty;
 
 import java.util.Collection;
 import java.util.List;
@@ -19,11 +18,13 @@ import java.util.List;
  */
 public abstract class HtmlExportModule {
 
-    public static String getHtml(BaseRichEditText editText, Collection<SpanController<?>> spanControllers, List<PersistableProperty> properties) {
+    public static String getHtml(BaseRichEditText editText, Collection<SpanController<?>> spanControllers, List<StyleProperty> properties, boolean standalone) {
         StringBuilder out = new StringBuilder();
-        out.append("<p>");
-        startProperties(editText, out, properties);
-        startDefaultStyles(editText, out, spanControllers);
+        if (standalone) {
+            out.append("<p style=\"");
+            out.append(getCssStyle(editText, spanControllers, properties));
+            out.append("\">");
+        }
         within(ParagraphStyle.class, out, editText, 0, editText.getText().length(), spanControllers, new WithinCallback() {
             @Override
             public void nextWithin(Class<?> clazz, StringBuilder out, EditText editText, int start, int end, Collection<SpanController<?>> spanControllers) {
@@ -35,38 +36,32 @@ public abstract class HtmlExportModule {
                 });
             }
         });
-        endDefaultStyles(editText, out, spanControllers);
-        endProperties(editText, out, properties);
-        out.append("</p>");
+        if (standalone) {
+            out.append("</p>");
+        }
         return out.toString();
     }
 
-    private static void startProperties(BaseRichEditText editText, StringBuilder out, List<PersistableProperty> properties) {
-        for (PersistableProperty property : properties) {
-            out.append(property.beginTag(editText));
-        }
+    public static String getCssStyle(BaseRichEditText editText, Collection<SpanController<?>> spanControllers, List<StyleProperty> properties) {
+        return getProperties(editText, properties) + getDefaultStyles(editText, spanControllers);
     }
 
-    private static void endProperties(BaseRichEditText editText, StringBuilder out, List<PersistableProperty> properties) {
-        for (PersistableProperty property : properties) {
-            out.append(property.endTag(editText));
+    private static String getProperties(BaseRichEditText editText, List<StyleProperty> properties) {
+        StringBuilder result = new StringBuilder();
+        for (StyleProperty property : properties) {
+            result.append(property.createStyle(editText));
         }
+        return result.toString();
     }
 
-    private static void startDefaultStyles(BaseRichEditText editText, StringBuilder out, Collection<SpanController<?>> spanControllers) {
+    private static String getDefaultStyles(BaseRichEditText editText, Collection<SpanController<?>> spanControllers) {
+        StringBuilder result = new StringBuilder();
         for (SpanController<?> spanController : spanControllers) {
-            if (spanController instanceof MultiStyleController) {
-                out.append(((MultiStyleController) spanController).defaultStyle(editText));
+            if (spanController instanceof StyleProperty) {
+                result.append(((StyleProperty) spanController).createStyle(editText));
             }
         }
-    }
-
-    private static void endDefaultStyles(BaseRichEditText editText, StringBuilder out, Collection<SpanController<?>> spanControllers) {
-        for (SpanController<?> spanController : spanControllers) {
-            if (spanController instanceof MultiStyleController && ((MultiStyleController) spanController).defaultStyle(editText).length() > 0) {
-                out.append(((MultiStyleController) spanController).endTag());
-            }
-        }
+        return result.toString();
     }
 
     private static void within(Class<?> clazz, StringBuilder out, EditText editText, int start, int end,
@@ -76,21 +71,21 @@ public abstract class HtmlExportModule {
         int next;
         for (int i = start; i < end; i = next) {
             next = text.nextSpanTransition(i, end, clazz);
-            Object[] style = text.getSpans(i, next,
+            Object[] spans = text.getSpans(i, next,
                     clazz);
 
-            for (Object aStyle : style) {
-                SpanController<?> controller = SpanUtil.acceptController(spanControllers, aStyle);
-                if (controller != null && text.getSpanStart(aStyle) != text.getSpanEnd(aStyle)) {
-                    out.append(controller.beginTag(aStyle));
+            for (Object span : spans) {
+                SpanController<?> controller = SpanUtil.acceptController(spanControllers, span);
+                if (controller != null && text.getSpanStart(span) != text.getSpanEnd(span)) {
+                    out.append(controller.beginTag(span));
                 }
             }
             if (withinCallback != null) {
                 withinCallback.nextWithin(clazz, out, editText, i, next, spanControllers);
             }
 
-            for (int j = style.length - 1; j >= 0; j--) {
-                SpanController<?> controller = SpanUtil.acceptController(spanControllers, style[j]);
+            for (int j = spans.length - 1; j >= 0; j--) {
+                SpanController<?> controller = SpanUtil.acceptController(spanControllers, spans[j]);
                 if (controller != null) {
                     out.append(controller.endTag());
                 }

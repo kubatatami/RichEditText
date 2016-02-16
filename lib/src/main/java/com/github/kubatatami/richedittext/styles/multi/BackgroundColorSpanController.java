@@ -5,16 +5,11 @@ import android.text.Editable;
 import android.text.style.BackgroundColorSpan;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
-import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 
-import org.xml.sax.Attributes;
-
-import java.util.Map;
-
-public class BackgroundColorSpanController extends MultiStyleController<BackgroundColorSpanController.RichBackgroundColorSpan, Integer> {
+public class BackgroundColorSpanController extends StyleController<BackgroundColorSpanController.RichBackgroundColorSpan, Integer> {
 
     public BackgroundColorSpanController() {
-        super(RichBackgroundColorSpan.class, "span");
+        super(RichBackgroundColorSpan.class, "span", "background-color");
     }
 
     @Override
@@ -30,11 +25,6 @@ public class BackgroundColorSpanController extends MultiStyleController<Backgrou
     }
 
     @Override
-    public String defaultStyle(BaseRichEditText editText) {
-        return beginTag(new RichBackgroundColorSpan(getDefaultValue(editText)));
-    }
-
-    @Override
     public Integer getDefaultValue(BaseRichEditText editText) {
         return Color.TRANSPARENT;
     }
@@ -45,26 +35,26 @@ public class BackgroundColorSpanController extends MultiStyleController<Backgrou
     }
 
     @Override
-    public String beginTag(Object span) {
-        int spanValue = getValueFromSpan((RichBackgroundColorSpan) span);
-        if(spanValue == Color.TRANSPARENT){
+    protected String getStyleValue(Integer spanValue) {
+        if (spanValue == Color.TRANSPARENT) {
             return "";
         }
         String color = Integer.toHexString(spanValue + 0x01000000);
         while (color.length() < 6) {
             color = "0" + color;
         }
-        return "<span style=\"background-color: " + "#" + color + ";\">";
+        return "#" + color;
     }
 
     @Override
-    public BackgroundColorSpanController.RichBackgroundColorSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if (tag.equals(tagName) && styleMap.containsKey("background-color")) {
-            return new RichBackgroundColorSpan(Color.parseColor(styleMap.get("background-color")));
-        }
-        return null;
+    protected void setDefaultProperty(BaseRichEditText editText, String style) {
+
     }
 
+    @Override
+    protected RichBackgroundColorSpan createSpan(String styleValue) {
+        return new RichBackgroundColorSpan(Color.parseColor(styleValue));
+    }
 
     @Override
     public String getDebugValueFromSpan(RichBackgroundColorSpan span) {

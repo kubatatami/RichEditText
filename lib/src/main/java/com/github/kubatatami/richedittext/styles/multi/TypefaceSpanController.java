@@ -41,11 +41,6 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
     }
 
     @Override
-    public String defaultStyle(BaseRichEditText editText) {
-        return "";
-    }
-
-    @Override
     public String getDefaultValue(BaseRichEditText editText) {
         return "";
     }
@@ -63,8 +58,8 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
     }
 
     @Override
-    public TypefaceSpanController.FontSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if (tag.equals(tagName) && styleMap.containsKey("font-family")) {
+    protected FontSpan createSpan(Map<String, String> styleMap, Attributes attributes) {
+        if (styleMap.containsKey("font-family")) {
             int i = 0;
             List<Font> fonts = getFonts();
             String fontFamilyValue = styleMap.get("font-family");

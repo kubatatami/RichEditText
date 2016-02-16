@@ -5,19 +5,12 @@ import android.text.style.AbsoluteSizeSpan;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.other.DimenUtil;
-import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 
-import org.xml.sax.Attributes;
-
-import java.util.Map;
-
-public class SizeSpanController extends MultiStyleController<SizeSpanController.RichAbsoluteSizeSpan, Float> {
-
+public class SizeSpanController extends StyleController<SizeSpanController.RichAbsoluteSizeSpan, Float> {
 
     public SizeSpanController() {
-        super(RichAbsoluteSizeSpan.class, "span");
+        super(RichAbsoluteSizeSpan.class, "span", "font-size");
     }
-
 
     @Override
     public Float getValueFromSpan(RichAbsoluteSizeSpan span) {
@@ -32,11 +25,6 @@ public class SizeSpanController extends MultiStyleController<SizeSpanController.
     }
 
     @Override
-    public String defaultStyle(BaseRichEditText editText) {
-        return beginTag(new RichAbsoluteSizeSpan((int) DimenUtil.convertDpToPixel(getDefaultValue(editText))));
-    }
-
-    @Override
     public Float getDefaultValue(BaseRichEditText editText) {
         return DimenUtil.convertPixelsToDp(editText.getTextSize());
     }
@@ -47,20 +35,21 @@ public class SizeSpanController extends MultiStyleController<SizeSpanController.
     }
 
     @Override
-    public String beginTag(Object span) {
-        float spanValue = getValueFromSpan((RichAbsoluteSizeSpan) span);
-        return "<span style=\"font-size: " + Size.getTag(spanValue) + ";\">";
+    protected String getStyleValue(Float spanValue) {
+        return Size.getTag(spanValue);
     }
 
     @Override
-    public SizeSpanController.RichAbsoluteSizeSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if (tag.equals(tagName) && styleMap.containsKey("font-size")) {
-            float value = Size.getByName(styleMap.get("font-size")).size;
-            return new RichAbsoluteSizeSpan((int) DimenUtil.convertDpToPixel(value));
-        }
-        return null;
+    protected void setDefaultProperty(BaseRichEditText editText, String style) {
+        float value = Size.getByName(style).size;
+        editText.setTextSize((int) DimenUtil.convertDpToPixel(value));
     }
 
+    @Override
+    protected RichAbsoluteSizeSpan createSpan(String styleValue) {
+        float value = Size.getByName(styleValue).size;
+        return new RichAbsoluteSizeSpan((int) DimenUtil.convertDpToPixel(value));
+    }
 
     public enum Size {
         XX_SMALL(12, "xx-small"),

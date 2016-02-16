@@ -17,8 +17,8 @@ import com.github.kubatatami.richedittext.other.SpanUtil;
 import com.github.kubatatami.richedittext.other.TextWatcherAdapter;
 import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
-import com.github.kubatatami.richedittext.styles.base.PersistableProperty;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
+import com.github.kubatatami.richedittext.styles.base.StyleProperty;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class BaseRichEditText extends EditText {
 
     private final Map<Class<?>, SpanController<?>> spanControllerMap = new HashMap<>();
 
-    private final List<PersistableProperty> properties = new ArrayList<>();
+    private final List<StyleProperty> properties = new ArrayList<>();
 
     private final List<OnFocusChangeListener> onFocusChangeListeners = new ArrayList<>();
 
@@ -151,12 +151,20 @@ public class BaseRichEditText extends EditText {
     }
 
     public void isValidHtml(String html) throws IOException {
-        HtmlImportModule.fromHtml(this, html, spanControllerMap.values(), properties);
+        isValidHtml(html, "");
+    }
+
+    public void isValidHtml(String html, String style) throws IOException {
+        HtmlImportModule.fromHtml(this, html, spanControllerMap.values(), properties, style);
     }
 
     public void setHtml(String html) {
+        setHtml(html, "");
+    }
+
+    public void setHtml(String html, String style) {
         try {
-            setText(HtmlImportModule.fromHtml(this, html, spanControllerMap.values(), properties));
+            setText(HtmlImportModule.fromHtml(this, html, spanControllerMap.values(), properties, style));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -166,7 +174,7 @@ public class BaseRichEditText extends EditText {
         spanControllerMap.put(clazz, controller);
     }
 
-    public void registerProperty(PersistableProperty property) {
+    public void registerProperty(StyleProperty property) {
         properties.add(property);
     }
 
@@ -201,7 +209,15 @@ public class BaseRichEditText extends EditText {
     }
 
     public String getHtml() {
-        return HtmlExportModule.getHtml(this, spanControllerMap.values(), properties);
+        return getHtml(true);
+    }
+
+    public String getHtml(boolean standalone) {
+        return HtmlExportModule.getHtml(this, spanControllerMap.values(), properties, standalone);
+    }
+
+    public String getCssStyle() {
+        return HtmlExportModule.getCssStyle(this, spanControllerMap.values(), properties);
     }
 
     public void undo() {

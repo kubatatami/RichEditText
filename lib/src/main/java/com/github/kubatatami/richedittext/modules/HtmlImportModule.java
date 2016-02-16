@@ -1,5 +1,6 @@
 package com.github.kubatatami.richedittext.modules;
 
+import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -7,8 +8,9 @@ import android.text.SpannedString;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
-import com.github.kubatatami.richedittext.styles.base.PersistableProperty;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
+import com.github.kubatatami.richedittext.styles.base.StyleProperty;
+import com.github.kubatatami.richedittext.styles.multi.StyleController;
 
 import org.ccil.cowan.tagsoup.HTMLSchema;
 import org.ccil.cowan.tagsoup.Parser;
@@ -40,7 +42,7 @@ public abstract class HtmlImportModule {
     private static boolean endingMode = false;
 
     public static Spanned fromHtml(BaseRichEditText baseRichEditText, String source, Collection<SpanController<?>> spanControllers,
-                                   List<PersistableProperty> properties) throws IOException {
+                                   List<StyleProperty> properties, String style) throws IOException {
         if (source == null || source.length() == 0) {
             return new SpannedString("");
         }
@@ -54,7 +56,7 @@ public abstract class HtmlImportModule {
             throw new RuntimeException(e);
         }
 
-        HtmlToSpannedConverter converter = new HtmlToSpannedConverter(baseRichEditText, source, parser, spanControllers, properties);
+        HtmlToSpannedConverter converter = new HtmlToSpannedConverter(baseRichEditText, source, parser, spanControllers, properties, style);
         return converter.convert();
     }
 
@@ -71,17 +73,20 @@ public abstract class HtmlImportModule {
 
         private final Collection<SpanController<?>> mSpanControllers;
 
-        private final List<PersistableProperty> properties;
+        private final List<StyleProperty> properties;
 
         public HtmlToSpannedConverter(
                 BaseRichEditText baseRichEditText, String source,
-                Parser parser, Collection<SpanController<?>> spanControllers, List<PersistableProperty> properties) {
+                Parser parser, Collection<SpanController<?>> spanControllers, List<StyleProperty> properties, String style) {
             this.baseRichEditText = baseRichEditText;
             mSource = source;
             mSpanControllers = spanControllers;
             this.properties = properties;
             mSpannableStringBuilder = new SpannableStringBuilder();
             mReader = parser;
+            for (StyleProperty property : properties) {
+                property.setPropertyFromTag(baseRichEditText, getStyleStringMap(style));
+            }
         }
 
         public Spanned convert() throws IOException {
@@ -101,8 +106,34 @@ public abstract class HtmlImportModule {
                 mSpannableStringBuilder.append('\n');
                 return;
             }
+            Map<String, String> styleMap = getStyleStringMap(attributes.getValue("style"));
+            if (tag.equals("p")) {
+                for (StyleProperty property : properties) {
+                    property.setPropertyFromTag(baseRichEditText, styleMap);
+                }
+                for (SpanController<?> spanController : mSpanControllers) {
+                    if (spanController instanceof StyleController) {
+                        ((StyleController) spanController).setPropertyFromTag(baseRichEditText, styleMap);
+                    }
+                }
+                return;
 
-            String styles = attributes.getValue("style");
+            }
+            for (SpanController<?> spanController : mSpanControllers) {
+                Object object = spanController.createSpanFromTag(tag, styleMap, attributes);
+                if (object != null) {
+                    addSpan(tag, attributes, object);
+                    return;
+                }
+            }
+
+            if (!tag.equals("html") && !tag.equals("body") && !(tag.equals("p") && attributes.getLength() == 0)) {
+                throw new SAXException("Unsupported tag: " + tag + " " + attrToString(attributes));
+            }
+        }
+
+        @NonNull
+        private Map<String, String> getStyleStringMap(String styles) {
             Map<String, String> styleMap = new HashMap<>();
             if (styles != null) {
                 for (String style : styles.split(";")) {
@@ -114,21 +145,7 @@ public abstract class HtmlImportModule {
                     }
                 }
             }
-            for (SpanController<?> spanController : mSpanControllers) {
-                Object object = spanController.createSpanFromTag(tag, styleMap, attributes);
-                if (object != null) {
-                    addSpan(tag, attributes, object);
-                    return;
-                }
-            }
-            for (PersistableProperty property : properties) {
-                if (property.createSpanFromTag(baseRichEditText, tag, styleMap, attributes)) {
-                    return;
-                }
-            }
-            if (!tag.equals("html") && !tag.equals("body") && !(tag.equals("p") && attributes.getLength() == 0)) {
-                throw new SAXException("Unsupported tag: " + tag + " " + attrToString(attributes));
-            }
+            return styleMap;
         }
 
         private void addSpan(String tag, Attributes attributes, Object object) throws SAXException {

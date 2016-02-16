@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Created by Kuba on 19/11/14.
  */
-public class BoldSpanController extends StyleSpanController {
+public class BoldSpanController extends FontStyleSpanController {
 
     public BoldSpanController() {
         super(Typeface.BOLD, "b");

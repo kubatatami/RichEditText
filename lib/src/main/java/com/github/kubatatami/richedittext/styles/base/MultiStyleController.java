@@ -6,8 +6,11 @@ import android.text.Spanned;
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 
+import org.xml.sax.Attributes;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Kuba on 12/11/14.
@@ -179,8 +182,14 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
         }
     }
 
-    public abstract String defaultStyle(BaseRichEditText editText);
+    public final T createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
+        if (tag.equals(tagName)) {
+            return createSpan(styleMap, attributes);
+        }
+        return null;
+    }
 
+    protected abstract T createSpan(Map<String, String> styleMap, Attributes attributes);
 
     protected abstract Z getDefaultValue(BaseRichEditText editText);
 

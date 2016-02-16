@@ -32,11 +32,6 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpanCo
     }
 
     @Override
-    public String defaultStyle(BaseRichEditText editText) {
-        return "";
-    }
-
-    @Override
     public Layout.Alignment getDefaultValue(BaseRichEditText editText) {
         return Layout.Alignment.ALIGN_NORMAL;
     }
@@ -66,8 +61,8 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpanCo
     }
 
     @Override
-    public AlignmentSpanController.RichAlignmentSpanStandard createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if (tag.equals(tagName) && styleMap.containsKey("text-align")) {
+    protected RichAlignmentSpanStandard createSpan(Map<String, String> styleMap, Attributes attributes) {
+        if (styleMap.containsKey("text-align")) {
             switch (styleMap.get("text-align")) {
                 case "center":
                     return new RichAlignmentSpanStandard(Layout.Alignment.ALIGN_CENTER);

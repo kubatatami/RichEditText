@@ -5,16 +5,11 @@ import android.text.Editable;
 import android.text.style.ForegroundColorSpan;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
-import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 
-import org.xml.sax.Attributes;
-
-import java.util.Map;
-
-public class ColorSpanController extends MultiStyleController<ColorSpanController.RichForegroundColorSpan, Integer> {
+public class ColorSpanController extends StyleController<ColorSpanController.RichForegroundColorSpan, Integer> {
 
     public ColorSpanController() {
-        super(RichForegroundColorSpan.class, "span");
+        super(RichForegroundColorSpan.class, "span", "color");
     }
 
     @Override
@@ -30,11 +25,6 @@ public class ColorSpanController extends MultiStyleController<ColorSpanControlle
     }
 
     @Override
-    public String defaultStyle(BaseRichEditText editText) {
-        return beginTag(new RichForegroundColorSpan(getDefaultValue(editText)));
-    }
-
-    @Override
     public Integer getDefaultValue(BaseRichEditText editText) {
         return editText.getCurrentTextColor();
     }
@@ -45,30 +35,29 @@ public class ColorSpanController extends MultiStyleController<ColorSpanControlle
     }
 
     @Override
-    public String beginTag(Object span) {
-        int spanValue = getValueFromSpan((RichForegroundColorSpan) span);
+    protected String getStyleValue(Integer spanValue) {
         String color = Integer.toHexString(spanValue + 0x01000000);
         while (color.length() < 6) {
             color = "0" + color;
         }
-        return "<span style=\"color: " + "#" + color + ";\">";
+        return "#" + color;
     }
 
     @Override
-    public ColorSpanController.RichForegroundColorSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if (tag.equals(tagName) && styleMap.containsKey("color")) {
-            return new RichForegroundColorSpan(Color.parseColor(styleMap.get("color")));
-        }
-        return null;
+    protected void setDefaultProperty(BaseRichEditText editText, String style) {
+        editText.setTextColor(Color.parseColor(style));
     }
 
+    @Override
+    protected RichForegroundColorSpan createSpan(String styleValue) {
+        return new RichForegroundColorSpan(Color.parseColor(styleValue));
+    }
 
     @Override
     public String getDebugValueFromSpan(RichForegroundColorSpan span) {
         int spanValue = getValueFromSpan(span);
         return "rgb(" + Color.red(spanValue) + "," + Color.green(spanValue) + "," + Color.blue(spanValue) + ")";
     }
-
 
     public static class RichForegroundColorSpan extends ForegroundColorSpan {
 

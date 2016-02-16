@@ -1,9 +1,11 @@
 package com.github.kubatatami.richedittext.example;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,6 +64,7 @@ public class TestActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         String html = richEditText.getHtml();
+                        Log.i("html", html);
                         htmlView.setText(html);
                         webView.getSettings().setDefaultTextEncodingName("utf-8");
                         webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);

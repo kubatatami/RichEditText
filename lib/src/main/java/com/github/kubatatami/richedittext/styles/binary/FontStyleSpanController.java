@@ -9,18 +9,18 @@ import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public abstract class StyleSpanController extends BinaryStyleController<StyleSpanController.RichStyleSpan> {
+public abstract class FontStyleSpanController extends BinaryStyleController<FontStyleSpanController.RichStyleSpan> {
 
     final int typeface;
 
 
-    public StyleSpanController(int typeface, String tagName) {
+    public FontStyleSpanController(int typeface, String tagName) {
         super(RichStyleSpan.class, tagName);
         this.typeface = typeface;
     }
 
     @Override
-    public StyleSpanController.RichStyleSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
+    public FontStyleSpanController.RichStyleSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
         if (tag.equals(tagName)) {
             return new RichStyleSpan(typeface);
         }

@@ -25,6 +25,11 @@ public class BackgroundColorSpanController extends StyleController<BackgroundCol
     }
 
     @Override
+    public String createStyle(BaseRichEditText editText) {
+        return "";
+    }
+
+    @Override
     public Integer getDefaultValue(BaseRichEditText editText) {
         return Color.TRANSPARENT;
     }

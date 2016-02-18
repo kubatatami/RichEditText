@@ -36,29 +36,43 @@ public class SizeSpanController extends StyleController<SizeSpanController.RichA
 
     @Override
     protected String getStyleValue(Float spanValue) {
-        return Size.getTag(spanValue);
+        return spanValue + "px";
     }
 
     @Override
     protected void setDefaultProperty(BaseRichEditText editText, String style) {
-        float value = Size.getByName(style).size;
+        float value = parseSize(style);
         editText.setTextSize((int) DimenUtil.convertDpToPixel(value));
     }
 
     @Override
     protected RichAbsoluteSizeSpan createSpan(String styleValue) {
-        float value = Size.getByName(styleValue).size;
+        float value = parseSize(styleValue);
         return new RichAbsoluteSizeSpan((int) DimenUtil.convertDpToPixel(value));
     }
 
+    private float parseSize(String style) {
+        Size size = Size.getByName(style);
+        if (size != null) {
+            return size.getSize();
+        }
+        style = style.replaceAll("[^\\d.]", "");
+        try {
+            return Float.parseFloat(style);
+        } catch (NumberFormatException ignored) {
+            return Size.MEDIUM.getSize();
+        }
+    }
+
     public enum Size {
-        XX_SMALL(12, "xx-small"),
-        X_SMALL(15, "x-small"),
-        SMALL(18, "small"),
-        MEDIUM(20, "medium"),
-        LARGE(24, "large"),
-        X_LARGE(30, "x-large"),
-        XX_LARGE(40, "xx-large");
+        XX_SMALL(9, "xx-small"),
+        X_SMALL(10, "x-small"),
+        SMALL(13, "small"),
+        MEDIUM(16, "medium"),
+        LARGE(18, "large"),
+        LARGER(19, "larger"),
+        X_LARGE(24, "x-large"),
+        XX_LARGE(32, "xx-large");
 
         private final String name;
 
@@ -79,22 +93,14 @@ public class SizeSpanController extends StyleController<SizeSpanController.RichA
             return size + "";
         }
 
-        public static String getTag(float size) {
-            for (Size sizeEnum : values()) {
-                if (Float.compare(sizeEnum.size, size) == 0) {
-                    return sizeEnum.name;
-                }
-            }
-            return size + "px";
-        }
 
         public static Size getByName(String name) {
             for (Size size : values()) {
-                if (size.name.equals(name)) {
+                if (size.name.equalsIgnoreCase(name)) {
                     return size;
                 }
             }
-            return SMALL;
+            return null;
         }
     }
 

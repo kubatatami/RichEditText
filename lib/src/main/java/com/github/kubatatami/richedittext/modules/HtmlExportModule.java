@@ -21,13 +21,17 @@ public abstract class HtmlExportModule {
     public static String getHtml(BaseRichEditText editText, Collection<SpanController<?>> spanControllers, List<StyleProperty> properties, boolean standalone) {
         StringBuilder out = new StringBuilder();
         if (standalone) {
-            out.append("<p style=\"");
+            out.append("<div style=\"");
             out.append(getCssStyle(editText, spanControllers, properties));
             out.append("\">");
         }
         within(ParagraphStyle.class, out, editText, 0, editText.getText().length(), spanControllers, new WithinCallback() {
             @Override
             public void nextWithin(Class<?> clazz, StringBuilder out, EditText editText, int start, int end, Collection<SpanController<?>> spanControllers) {
+                Editable text = editText.getText();
+                if (text.charAt(start) == '\n') {
+                    start++;
+                }
                 within(CharacterStyle.class, out, editText, start, end, spanControllers, new WithinCallback() {
                     @Override
                     public void nextWithin(Class<?> clazz, StringBuilder out, EditText editText, int start, int end, Collection<SpanController<?>> spanControllers) {
@@ -37,7 +41,7 @@ public abstract class HtmlExportModule {
             }
         });
         if (standalone) {
-            out.append("</p>");
+            out.append("</div>");
         }
         return out.toString();
     }
@@ -71,8 +75,7 @@ public abstract class HtmlExportModule {
         int next;
         for (int i = start; i < end; i = next) {
             next = text.nextSpanTransition(i, end, clazz);
-            Object[] spans = text.getSpans(i, next,
-                    clazz);
+            Object[] spans = text.getSpans(i, next, clazz);
 
             for (Object span : spans) {
                 SpanController<?> controller = SpanUtil.acceptController(spanControllers, span);

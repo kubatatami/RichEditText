@@ -7,6 +7,7 @@ import android.text.Spanned;
 import android.text.SpannedString;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
+import com.github.kubatatami.richedittext.styles.base.LineStyleController;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 import com.github.kubatatami.richedittext.styles.base.StyleProperty;
@@ -107,7 +108,7 @@ public abstract class HtmlImportModule {
                 return;
             }
             Map<String, String> styleMap = getStyleStringMap(attributes.getValue("style"));
-            if (tag.equals("p")) {
+            if (tag.equals("div") && tagBaseCounter == null) {
                 for (StyleProperty property : properties) {
                     property.setPropertyFromTag(baseRichEditText, styleMap);
                 }
@@ -122,6 +123,9 @@ public abstract class HtmlImportModule {
             for (SpanController<?> spanController : mSpanControllers) {
                 Object object = spanController.createSpanFromTag(tag, styleMap, attributes);
                 if (object != null) {
+                    if(spanController instanceof LineStyleController){
+                        mSpannableStringBuilder.append('\n');
+                    }
                     addSpan(tag, attributes, object);
                     return;
                 }

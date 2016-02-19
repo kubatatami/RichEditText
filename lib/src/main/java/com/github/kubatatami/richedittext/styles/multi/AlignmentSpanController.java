@@ -14,8 +14,10 @@ import java.util.Map;
 public class AlignmentSpanController extends LineStyleController<AlignmentSpanController.RichAlignmentSpanStandard, Layout.Alignment> {
 
 
+    private static final String TEXT_ALIGN = "text-align";
+
     public AlignmentSpanController() {
-        super(RichAlignmentSpanStandard.class, "p");
+        super(RichAlignmentSpanStandard.class, "div");
     }
 
 
@@ -57,13 +59,13 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpanCo
                 alignValue = "left";
                 break;
         }
-        return "<p style=\"text-align: " + alignValue + ";\">";
+        return "<div style=\"" + TEXT_ALIGN + ": " + alignValue + ";\">";
     }
 
     @Override
     protected RichAlignmentSpanStandard createSpan(Map<String, String> styleMap, Attributes attributes) {
-        if (styleMap.containsKey("text-align")) {
-            switch (styleMap.get("text-align")) {
+        if (styleMap.containsKey(TEXT_ALIGN)) {
+            switch (styleMap.get(TEXT_ALIGN)) {
                 case "center":
                     return new RichAlignmentSpanStandard(Layout.Alignment.ALIGN_CENTER);
                 case "right":

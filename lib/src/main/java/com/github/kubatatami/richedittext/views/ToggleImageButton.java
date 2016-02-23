@@ -2,16 +2,11 @@ package com.github.kubatatami.richedittext.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.AttributeSet;
 import android.widget.Checkable;
 import android.widget.ImageButton;
@@ -96,17 +91,10 @@ public class ToggleImageButton extends ImageButton implements Checkable {
 
     private void setImageDrawable(Drawable drawable, int tint) {
         StateListDrawable stateListDrawable = new StateListDrawable();
-
-        Bitmap oneCopy = Bitmap.createBitmap(drawable.getMinimumWidth(), drawable.getMinimumHeight(), Bitmap.Config.ARGB_8888);
-
-        Canvas c = new Canvas(oneCopy);
-        Paint p = new Paint();
-        p.setColorFilter(new PorterDuffColorFilter(tint, PorterDuff.Mode.SRC_IN));
-        c.drawBitmap(((BitmapDrawable) drawable).getBitmap(), 0, 0, p);
-
-        stateListDrawable.addState(new int[]{android.R.attr.state_checked}, new BitmapDrawable(getResources(), oneCopy));
-        stateListDrawable.addState(new int[]{}, drawable);
-
+        Drawable checkedDrawable = drawable.getConstantState().newDrawable().mutate();
+        DrawableCompat.setTint(checkedDrawable, tint);
+        stateListDrawable.addState(new int[]{android.R.attr.state_checked}, checkedDrawable);
+        stateListDrawable.addState(new int[]{}, drawable.mutate());
         super.setImageDrawable(stateListDrawable);
     }
 

@@ -35,6 +35,8 @@ public class BaseRichEditText extends EditText {
 
     private boolean inflateFinished;
 
+    private boolean oneStyleMode;
+
     private final HistoryModule historyModule = new HistoryModule(this);
 
     private final Map<Class<?>, SpanController<?>> spanControllerMap = new HashMap<>();
@@ -249,14 +251,22 @@ public class BaseRichEditText extends EditText {
     }
 
     void binaryClick(Class<? extends BinaryStyleController<?>> clazz) {
-        if (getModule(clazz).perform(getText(), StyleSelectionInfo.getStyleSelectionInfo(this))) {
+        if (getModule(clazz).perform(getText(), getCurrentSelection())) {
             historyModule.saveHistory();
         }
     }
 
     <T> void multiClick(T value, Class<? extends MultiStyleController<?, T>> clazz) {
-        if (getModule(clazz).perform(value, getText(), StyleSelectionInfo.getStyleSelectionInfo(this))) {
+        if (getModule(clazz).perform(value, getText(), getCurrentSelection())) {
             historyModule.saveHistory();
+        }
+    }
+
+    protected StyleSelectionInfo getCurrentSelection() {
+        if (oneStyleMode) {
+            return getAllSelectionInfo();
+        } else {
+            return StyleSelectionInfo.getStyleSelectionInfo(this);
         }
     }
 
@@ -283,5 +293,13 @@ public class BaseRichEditText extends EditText {
 
     public float getLineSpacingExtraCompat() {
         return CompatUtils.getLineSpacingExtra(this);
+    }
+
+    public boolean isOneStyleMode() {
+        return oneStyleMode;
+    }
+
+    public void setOneStyleMode(boolean oneStyleMode) {
+        this.oneStyleMode = oneStyleMode;
     }
 }

@@ -36,12 +36,6 @@ public abstract class HtmlImportModule {
 
     private static final HTMLSchema schema = new HTMLSchema();
 
-    private static int tagCounter = 0;
-
-    private static Integer tagBaseCounter = null;
-
-    private static boolean endingMode = false;
-
     public static Spanned fromHtml(BaseRichEditText baseRichEditText, String source,
                                    Collection<SpanController<?>> spanControllers,
                                    List<StyleProperty> properties,
@@ -49,9 +43,6 @@ public abstract class HtmlImportModule {
         if (source == null || source.length() == 0) {
             return new SpannedString("");
         }
-        tagBaseCounter = null;
-        tagCounter = 0;
-        endingMode = false;
         Parser parser = new Parser();
         try {
             parser.setProperty(Parser.schemaProperty, schema);
@@ -124,7 +115,7 @@ public abstract class HtmlImportModule {
                 return;
             }
             Map<String, String> styleMap = getStyleStringMap(attributes.getValue("style"));
-            if (tag.equals("div") && tagBaseCounter == null) {
+            if (tag.equals("div")) {
                 for (StyleProperty property : properties) {
                     property.setPropertyFromTag(baseRichEditText, styleMap);
                 }
@@ -143,15 +134,9 @@ public abstract class HtmlImportModule {
                     if (spanController instanceof LineStyleController) {
                         mSpannableStringBuilder.append('\n');
                     }
-                    addSpan(tag, attributes, object);
+                    start(mSpannableStringBuilder, object);
                     supported = true;
                 }
-            }
-            if (supported) {
-                if (endingMode) {
-                    throw new SAXException("Start new tag(" + tag + " " + attrToString(attributes) + ") before end previous");
-                }
-                tagCounter++;
             }
             if (!supported && strict
                     && !tag.equals("html")
@@ -177,10 +162,6 @@ public abstract class HtmlImportModule {
             return styleMap;
         }
 
-        private void addSpan(String tag, Attributes attributes, Object object) throws SAXException {
-            start(mSpannableStringBuilder, object);
-        }
-
         private String attrToString(Attributes attrs) {
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < attrs.getLength(); i++) {
@@ -196,14 +177,7 @@ public abstract class HtmlImportModule {
             for (SpanController<?> spanController : mSpanControllers) {
                 Class<?> spanClass = spanController.spanFromEndTag(tag);
                 if (spanClass != null) {
-                    if (end(mSpannableStringBuilder, spanClass, spanController)) {
-                        tagCounter--;
-                        if (tagBaseCounter == null) {
-                            throw new SAXException("End tag before start any");
-                        }
-                        endingMode = tagCounter > tagBaseCounter;
-                        return;
-                    }
+                    end(mSpannableStringBuilder, spanClass, spanController);
                 }
             }
         }
@@ -301,9 +275,6 @@ public abstract class HtmlImportModule {
 
         @Override
         public void characters(char ch[], int start, int length) throws SAXException {
-            if (tagBaseCounter == null) {
-                tagBaseCounter = tagCounter;
-            }
             StringBuilder sb = new StringBuilder();
 
             for (int i = 0; i < length; i++) {

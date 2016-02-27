@@ -140,16 +140,21 @@ public abstract class HtmlImportModule {
             for (SpanController<?> spanController : mSpanControllers) {
                 Object object = spanController.createSpanFromTag(tag, styleMap, attributes);
                 if (object != null) {
-                    if(spanController instanceof LineStyleController){
+                    if (spanController instanceof LineStyleController) {
                         mSpannableStringBuilder.append('\n');
                     }
                     addSpan(tag, attributes, object);
                     supported = true;
                 }
             }
-
+            if (supported) {
+                if (endingMode) {
+                    throw new SAXException("Start new tag(" + tag + " " + attrToString(attributes) + ") before end previous");
+                }
+                tagCounter++;
+            }
             if (!supported && strict
-                    &&!tag.equals("html")
+                    && !tag.equals("html")
                     && !tag.equals("body")
                     && !(tag.equals("p") && attributes.getLength() == 0)) {
                 throw new SAXException("Unsupported tag: " + tag + " " + attrToString(attributes));
@@ -174,10 +179,6 @@ public abstract class HtmlImportModule {
 
         private void addSpan(String tag, Attributes attributes, Object object) throws SAXException {
             start(mSpannableStringBuilder, object);
-            if (endingMode) {
-                throw new SAXException("Start new tag(" + tag + " " + attrToString(attributes) + ") before end previous");
-            }
-            tagCounter++;
         }
 
         private String attrToString(Attributes attrs) {

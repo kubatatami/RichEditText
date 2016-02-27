@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.text.style.ForegroundColorSpan;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
+import com.github.kubatatami.richedittext.utils.HtmlUtils;
 
 public class ColorSpanController extends StyleController<ColorSpanController.RichForegroundColorSpan, Integer> {
 
@@ -36,11 +37,7 @@ public class ColorSpanController extends StyleController<ColorSpanController.Ric
 
     @Override
     protected String getStyleValue(Integer spanValue) {
-        String color = Integer.toHexString(spanValue + 0x01000000);
-        while (color.length() < 6) {
-            color = "0" + color;
-        }
-        return "#" + color;
+        return HtmlUtils.getColor(spanValue);
     }
 
     @Override
@@ -50,7 +47,7 @@ public class ColorSpanController extends StyleController<ColorSpanController.Ric
 
     @Override
     protected RichForegroundColorSpan createSpan(String styleValue) {
-        return new RichForegroundColorSpan(Color.parseColor(styleValue));
+        return new RichForegroundColorSpan(HtmlUtils.parseColor(styleValue));
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.text.style.BackgroundColorSpan;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
+import com.github.kubatatami.richedittext.utils.HtmlUtils;
 
 public class BackgroundColorSpanController extends StyleController<BackgroundColorSpanController.RichBackgroundColorSpan, Integer> {
 
@@ -44,11 +45,7 @@ public class BackgroundColorSpanController extends StyleController<BackgroundCol
         if (spanValue == Color.TRANSPARENT) {
             return "";
         }
-        String color = Integer.toHexString(spanValue + 0x01000000);
-        while (color.length() < 6) {
-            color = "0" + color;
-        }
-        return "#" + color;
+        return HtmlUtils.getColor(spanValue);
     }
 
     @Override
@@ -58,7 +55,7 @@ public class BackgroundColorSpanController extends StyleController<BackgroundCol
 
     @Override
     protected RichBackgroundColorSpan createSpan(String styleValue) {
-        return new RichBackgroundColorSpan(Color.parseColor(styleValue));
+        return new RichBackgroundColorSpan(HtmlUtils.parseColor(styleValue));
     }
 
     @Override

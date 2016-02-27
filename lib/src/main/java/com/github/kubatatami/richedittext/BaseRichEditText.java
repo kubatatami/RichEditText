@@ -157,7 +157,7 @@ public class BaseRichEditText extends EditText {
     }
 
     public void isValidHtml(String html, String style) throws IOException {
-        HtmlImportModule.fromHtml(this, html, spanControllerMap.values(), properties, style);
+        HtmlImportModule.fromHtml(this, html, spanControllerMap.values(), properties, style, true);
     }
 
     public void setHtml(String html) {
@@ -166,7 +166,7 @@ public class BaseRichEditText extends EditText {
 
     public void setHtml(String html, String style) {
         try {
-            setText(HtmlImportModule.fromHtml(this, html, spanControllerMap.values(), properties, style));
+            setText(HtmlImportModule.fromHtml(this, html, spanControllerMap.values(), properties, style, false));
         } catch (IOException e) {
             e.printStackTrace();
         }

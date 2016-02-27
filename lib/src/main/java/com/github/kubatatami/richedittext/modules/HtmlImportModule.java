@@ -42,8 +42,10 @@ public abstract class HtmlImportModule {
 
     private static boolean endingMode = false;
 
-    public static Spanned fromHtml(BaseRichEditText baseRichEditText, String source, Collection<SpanController<?>> spanControllers,
-                                   List<StyleProperty> properties, String style) throws IOException {
+    public static Spanned fromHtml(BaseRichEditText baseRichEditText, String source,
+                                   Collection<SpanController<?>> spanControllers,
+                                   List<StyleProperty> properties,
+                                   String style, boolean strict) throws IOException {
         if (source == null || source.length() == 0) {
             return new SpannedString("");
         }
@@ -57,7 +59,14 @@ public abstract class HtmlImportModule {
             throw new RuntimeException(e);
         }
 
-        HtmlToSpannedConverter converter = new HtmlToSpannedConverter(baseRichEditText, source, parser, spanControllers, properties, style);
+        HtmlToSpannedConverter converter =
+                new HtmlToSpannedConverter(baseRichEditText,
+                        source,
+                        parser,
+                        spanControllers,
+                        properties,
+                        style,
+                        strict);
         return converter.convert();
     }
 
@@ -76,13 +85,20 @@ public abstract class HtmlImportModule {
 
         private final List<StyleProperty> properties;
 
+        private final boolean strict;
+
         public HtmlToSpannedConverter(
                 BaseRichEditText baseRichEditText, String source,
-                Parser parser, Collection<SpanController<?>> spanControllers, List<StyleProperty> properties, String style) {
+                Parser parser,
+                Collection<SpanController<?>> spanControllers,
+                List<StyleProperty> properties,
+                String style,
+                boolean strict) {
             this.baseRichEditText = baseRichEditText;
             mSource = source;
             mSpanControllers = spanControllers;
             this.properties = properties;
+            this.strict = strict;
             mSpannableStringBuilder = new SpannableStringBuilder();
             mReader = parser;
             for (StyleProperty property : properties) {
@@ -120,6 +136,7 @@ public abstract class HtmlImportModule {
                 return;
 
             }
+            boolean supported = false;
             for (SpanController<?> spanController : mSpanControllers) {
                 Object object = spanController.createSpanFromTag(tag, styleMap, attributes);
                 if (object != null) {
@@ -127,11 +144,14 @@ public abstract class HtmlImportModule {
                         mSpannableStringBuilder.append('\n');
                     }
                     addSpan(tag, attributes, object);
-                    return;
+                    supported = true;
                 }
             }
 
-            if (!tag.equals("html") && !tag.equals("body") && !(tag.equals("p") && attributes.getLength() == 0)) {
+            if (!supported && strict
+                    &&!tag.equals("html")
+                    && !tag.equals("body")
+                    && !(tag.equals("p") && attributes.getLength() == 0)) {
                 throw new SAXException("Unsupported tag: " + tag + " " + attrToString(attributes));
             }
         }

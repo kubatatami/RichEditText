@@ -48,7 +48,7 @@ public abstract class StyleController<T, Z> extends MultiStyleController<T, Z> i
         return null;
     }
 
-    public boolean setPropertyFromTag(BaseRichEditText editText, Map<String, String> styleMap){
+    public boolean setPropertyFromTag(BaseRichEditText editText, Map<String, String> styleMap) {
         if (styleMap.containsKey(styleName)) {
             setDefaultProperty(editText, styleMap.get(styleName));
             return true;

@@ -136,6 +136,7 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
 
     public Z getCurrentValue(BaseRichEditText editText, StyleSelectionInfo styleSelectionInfo) {
         T[] spans = editText.getText().getSpans(styleSelectionInfo.realSelectionStart, styleSelectionInfo.realSelectionEnd, getClazz());
+        spans = (T[]) filter(spans).toArray();
         Z newValue = spans.length > 0 ? getValueFromSpan(spans[0]) : getDefaultValue(editText);
         if (spans.length > 1 && styleSelectionInfo.realSelectionStart == styleSelectionInfo.realSelectionEnd) {
             if (editText.getText().getSpanFlags(spans[0]) == Spanned.SPAN_INCLUSIVE_EXCLUSIVE) {

@@ -193,7 +193,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
 
         if (where != len && where != -1) {
             for (int i = where; i <= len; i++) {
-                if ((checkSpans(text, kind, spanController, i) || i == len) && i != where) {
+                if ((spanController.checkSpans(text, kind, i) || i == len) && i != where) {
                     text.setSpan(obj, where, i, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     where = i;
                 }
@@ -204,15 +204,6 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         }
     }
 
-    private static boolean checkSpans(SpannableStringBuilder text, Class kind, SpanController<?> spanController, int i) {
-        Object[] objs = text.getSpans(i, i, kind);
-        for (Object obj : objs) {
-            if (spanController.acceptSpan(obj)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes)

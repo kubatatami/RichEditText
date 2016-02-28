@@ -1,6 +1,7 @@
 package com.github.kubatatami.richedittext.styles.base;
 
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
@@ -34,6 +35,16 @@ public abstract class SpanController<T> {
             }
         }
         return result;
+    }
+
+    public boolean checkSpans(SpannableStringBuilder text, Class kind, int i) {
+        Object[] objs = text.getSpans(i, i, kind);
+        for (Object obj : objs) {
+            if (acceptSpan(obj)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean acceptSpan(Object span) {

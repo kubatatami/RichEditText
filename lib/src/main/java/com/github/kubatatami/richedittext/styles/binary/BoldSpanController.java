@@ -27,7 +27,7 @@ public class BoldSpanController extends FontStyleSpanController {
 
 
     public Class<?> spanFromEndTag(String tag) {
-        if (tag.equals("b") || tag.equals("strong")) {
+        if (tag.equals("b") || tag.equals("strong") || tag.equals("span")) {
             return clazz;
         }
         return null;

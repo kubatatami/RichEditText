@@ -89,7 +89,7 @@ public class ToggleImageButton extends ImageButton implements Checkable {
         }
     }
 
-    private void setImageDrawable(Drawable drawable, int tint) {
+    public void setImageDrawable(Drawable drawable, int tint) {
         StateListDrawable stateListDrawable = new StateListDrawable();
         Drawable checkedDrawable = drawable.getConstantState().newDrawable().mutate();
         DrawableCompat.setTint(checkedDrawable, tint);

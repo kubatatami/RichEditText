@@ -106,7 +106,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         for (SpanController<?> spanController : mSpanControllers) {
             Object object = spanController.createSpanFromTag(tag, styleMap, attributes);
             if (object != null) {
-                if (spanController instanceof LineStyleController) {
+                if (spanController instanceof LineStyleController && mSpannableStringBuilder.length() > 0) {
                     mSpannableStringBuilder.append('\n');
                 }
                 start(mSpannableStringBuilder, object);

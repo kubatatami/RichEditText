@@ -42,7 +42,7 @@ public class ColorSpanController extends StyleController<ColorSpanController.Ric
 
     @Override
     protected void setDefaultProperty(BaseRichEditText editText, String style) {
-        editText.setTextColor(Color.parseColor(style));
+        editText.setTextColor(HtmlUtils.parseColor(style));
     }
 
     @Override

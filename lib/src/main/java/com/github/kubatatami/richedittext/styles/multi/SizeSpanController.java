@@ -2,6 +2,7 @@ package com.github.kubatatami.richedittext.styles.multi;
 
 import android.text.Editable;
 import android.text.style.AbsoluteSizeSpan;
+import android.util.TypedValue;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.other.DimenUtil;
@@ -42,7 +43,7 @@ public class SizeSpanController extends StyleController<SizeSpanController.RichA
     @Override
     protected void setDefaultProperty(BaseRichEditText editText, String style) {
         float value = parseSize(style);
-        editText.setTextSize((int) DimenUtil.convertPixelsToDp(value));
+        editText.setTextSize(TypedValue.COMPLEX_UNIT_PX,(int) DimenUtil.convertDpToPixel(value));
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.github.kubatatami.richedittext.styles.multi;
+package com.github.kubatatami.richedittext.styles.line;
 
 import android.text.Editable;
 import android.text.Layout;

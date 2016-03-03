@@ -41,6 +41,10 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
 
     private final boolean strict;
 
+    private final boolean standalone;
+
+    private boolean firstTag = true;
+
     public HtmlToSpannedConverter(
             BaseRichEditText baseRichEditText, String source,
             Parser parser,
@@ -55,13 +59,23 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         this.strict = strict;
         mSpannableStringBuilder = new SpannableStringBuilder();
         mReader = parser;
-        for (StyleProperty property : properties) {
-            property.setPropertyFromTag(baseRichEditText, getStyleStringMap(style));
+        if (style != null) {
+            Map<String, String> styleMap = getStyleStringMap(style);
+            for (StyleProperty property : properties) {
+                property.setPropertyFromTag(baseRichEditText, styleMap);
+            }
+            for (SpanController<?> spanController : mSpanControllers) {
+                if (spanController instanceof StyleController) {
+                    ((StyleController) spanController).setPropertyFromTag(baseRichEditText, styleMap);
+                }
+            }
+            standalone = true;
+        }else{
+            standalone = false;
         }
     }
 
     public Spanned convert() throws IOException {
-
         mReader.setContentHandler(this);
         try {
             mReader.parse(new InputSource(new StringReader(mSource)));
@@ -78,7 +92,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
             return;
         }
         Map<String, String> styleMap = getStyleStringMap(attributes.getValue("style"));
-        if (tag.equals("div")) {
+        if (standalone && tag.equals("div") && firstTag) {
             for (StyleProperty property : properties) {
                 property.setPropertyFromTag(baseRichEditText, styleMap);
             }
@@ -87,8 +101,6 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
                     ((StyleController) spanController).setPropertyFromTag(baseRichEditText, styleMap);
                 }
             }
-            return;
-
         }
         boolean supported = false;
         for (SpanController<?> spanController : mSpanControllers) {
@@ -99,6 +111,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
                 }
                 start(mSpannableStringBuilder, object);
                 supported = true;
+                firstTag = false;
             }
         }
         if (!supported && strict

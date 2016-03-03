@@ -10,7 +10,7 @@ import com.github.kubatatami.richedittext.styles.binary.BoldSpanController;
 import com.github.kubatatami.richedittext.styles.binary.ItalicSpanController;
 import com.github.kubatatami.richedittext.styles.binary.StrikeThroughSpanController;
 import com.github.kubatatami.richedittext.styles.binary.UnderlineSpanController;
-import com.github.kubatatami.richedittext.styles.multi.AlignmentSpanController;
+import com.github.kubatatami.richedittext.styles.line.AlignmentSpanController;
 import com.github.kubatatami.richedittext.styles.multi.BackgroundColorSpanController;
 import com.github.kubatatami.richedittext.styles.multi.ColorSpanController;
 import com.github.kubatatami.richedittext.styles.multi.LinkSpanController;

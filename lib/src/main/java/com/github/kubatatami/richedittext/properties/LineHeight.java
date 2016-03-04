@@ -20,7 +20,7 @@ public class LineHeight implements StyleProperty {
     public boolean setPropertyFromTag(BaseRichEditText editText, Map<String, String> styleMap) {
         if (styleMap.containsKey("line-height")) {
             float lineHeight = Float.parseFloat(styleMap.get("line-height"));
-            editText.setLineSpacing(1f, lineHeight);
+            editText.setLineSpacing(0f, lineHeight);
             return true;
         }
         return false;

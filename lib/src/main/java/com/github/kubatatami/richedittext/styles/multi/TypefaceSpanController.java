@@ -199,8 +199,14 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
         private void apply(final Paint paint) {
             final Typeface oldTypeface = paint.getTypeface();
             final int oldStyle = oldTypeface != null ? oldTypeface.getStyle() : 0;
-            final boolean bold = (oldStyle & Typeface.BOLD) != 0;
-            final boolean italic = (oldStyle & Typeface.ITALIC) != 0;
+            final boolean bold = ((oldStyle & Typeface.BOLD) != 0 || paint.isFakeBoldText());
+            final boolean italic = ((oldStyle & Typeface.ITALIC) != 0 || paint.getTextSkewX() != 0);
+            if (paint.isFakeBoldText()) {
+                paint.setFakeBoldText(false);
+            }
+            if (paint.getTextSkewX() != 0f) {
+                paint.setTextSkewX(0f);
+            }
             String path;
             if (bold && italic) {
                 path = font.getBoldItalicTypefacePath();

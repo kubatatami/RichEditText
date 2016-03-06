@@ -89,6 +89,17 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
         return new ArrayList<>(fontMap.values());
     }
 
+    public static Typeface create(Typeface family, int style) {
+        final boolean bold = (style & Typeface.BOLD) != 0;
+        final boolean italic = (style & Typeface.ITALIC) != 0;
+        for (Font font : getFonts()) {
+            if (font.isSupported(family)) {
+                return font.getTypeface(bold, italic);
+            }
+        }
+        return null;
+    }
+
 
     @Override
     public String getDebugValueFromSpan(FontSpan span) {
@@ -166,6 +177,33 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
             return boldItalicTypefacePath;
         }
 
+        private String[] getPaths() {
+            return new String[]{normalTypefacePath, boldTypefacePath, italicTypefacePath, boldItalicTypefacePath};
+        }
+
+        private boolean isSupported(Typeface typeface) {
+            for (String path : getPaths()) {
+                if (FontCache.getTypeface(path, BaseRichEditText.getAppContext()).equals(typeface)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public Typeface getTypeface(boolean bold, boolean italic) {
+            String path;
+            if (bold && italic) {
+                path = getBoldItalicTypefacePath();
+            } else if (bold) {
+                path = getBoldTypefacePath();
+            } else if (italic) {
+                path = getItalicTypefacePath();
+            } else {
+                path = getNormalTypefacePath();
+            }
+            return FontCache.getTypeface(path, BaseRichEditText.getAppContext());
+        }
+
         @Override
         public String toString() {
             return fontName;
@@ -207,18 +245,8 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
             if (paint.getTextSkewX() != 0f) {
                 paint.setTextSkewX(0f);
             }
-            String path;
-            if (bold && italic) {
-                path = font.getBoldItalicTypefacePath();
-            } else if (bold) {
-                path = font.getBoldTypefacePath();
-            } else if (italic) {
-                path = font.getItalicTypefacePath();
-            } else {
-                path = font.getNormalTypefacePath();
-            }
             paint.setSubpixelText(true);
-            paint.setTypeface(FontCache.getTypeface(path, BaseRichEditText.getAppContext()));
+            paint.setTypeface(font.getTypeface(bold, italic));
         }
 
         public Font getTypeface() {

@@ -145,7 +145,13 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
                 newValue = getValueFromSpan(spans[0]);
             }
         } else if (spans.length > 1) {
-            newValue = getMultiValue();
+            for(T span : spans){
+                Z value = getValueFromSpan(span);
+                if(!value.equals(newValue)){
+                    newValue = getMultiValue();
+                    break;
+                }
+            }
         } else if (spans.length == 1 && !getValueFromSpan(spans[0]).equals(getDefaultValue(editText))) {
             int spanStart = editText.getText().getSpanStart(spans[0]);
             int spanEnd = editText.getText().getSpanEnd(spans[0]);

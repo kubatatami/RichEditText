@@ -44,13 +44,6 @@ public abstract class HtmlImportModule {
                         properties,
                         style,
                         strict);
-        Spanned spanned = converter.convert();
-        removeDoubleSpan();
-        return spanned;
+        return converter.convert();
     }
-
-    private static void removeDoubleSpan() {
-
-    }
-
 }

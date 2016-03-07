@@ -236,7 +236,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         for (int i = 0; i < length; i++) {
             char c = ch[i + start];
 
-            if (c == ' ' || c == '\n') {
+            if (c == ' ') {
                 char pred;
                 int len = sb.length();
 
@@ -255,7 +255,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
                 if (pred != ' ' && pred != '\n') {
                     sb.append(' ');
                 }
-            } else {
+            } else if(c != '\n'){
                 sb.append(c);
             }
         }

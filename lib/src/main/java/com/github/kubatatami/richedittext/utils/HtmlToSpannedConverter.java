@@ -70,7 +70,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
                 }
             }
             standalone = true;
-        }else{
+        } else {
             standalone = false;
         }
     }
@@ -107,7 +107,9 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
             Object object = spanController.createSpanFromTag(tag, styleMap, attributes);
             if (object != null) {
                 if (spanController instanceof LineStyleController && mSpannableStringBuilder.length() > 0) {
-                    mSpannableStringBuilder.append('\n');
+                    if (mSpannableStringBuilder.charAt(mSpannableStringBuilder.length() - 1) != '\n') {
+                        mSpannableStringBuilder.append('\n');
+                    }
                 }
                 start(mSpannableStringBuilder, object);
                 supported = true;
@@ -255,7 +257,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
                 if (pred != ' ' && pred != '\n') {
                     sb.append(' ');
                 }
-            } else if(c != '\n'){
+            } else if (c != '\n') {
                 sb.append(c);
             }
         }

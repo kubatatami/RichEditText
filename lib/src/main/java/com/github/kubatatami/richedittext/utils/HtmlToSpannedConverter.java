@@ -234,7 +234,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
     @Override
     public void characters(char ch[], int start, int length) throws SAXException {
         StringBuilder sb = new StringBuilder();
-
+        boolean ignoreNextWhite = false;
         for (int i = 0; i < length; i++) {
             char c = ch[i + start];
 
@@ -254,11 +254,14 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
                     pred = sb.charAt(len - 1);
                 }
 
-                if (pred != ' ' && pred != '\n') {
+                if (!ignoreNextWhite && pred != ' ' && pred != '\n') {
                     sb.append(' ');
                 }
-            } else if (c != '\n') {
+            } else if (c == '\n') {
+                ignoreNextWhite = true;
+            } else {
                 sb.append(c);
+                ignoreNextWhite = false;
             }
         }
 

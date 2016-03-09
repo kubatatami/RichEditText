@@ -15,54 +15,54 @@ import java.util.Map;
 /**
  * Created by Kuba on 05/01/15.
  */
-public class LinkSpanController extends MultiStyleController<LinkSpanController.RichURLSpan, String> {
+public class LinkSpanController extends MultiStyleController<LinkSpanController.RichURLSpan, LinkSpanController.Link> {
 
     public LinkSpanController() {
         super(RichURLSpan.class, "a");
     }
 
     @Override
-    public String getValueFromSpan(RichURLSpan span) {
-        return span.getURL();
+    public Link getValueFromSpan(RichURLSpan span) {
+        return span.getUrlModel();
     }
 
     @Override
-    public void add(String value, Editable editable, int selectionStart, int selectionEnd) {
+    public void add(Link value, Editable editable, int selectionStart, int selectionEnd) {
         add(value, editable, selectionStart, selectionEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     @Override
-    public RichURLSpan add(String value, Editable editable, int selectionStart, int selectionEnd, int flags) {
+    public RichURLSpan add(Link value, Editable editable, int selectionStart, int selectionEnd, int flags) {
         RichURLSpan result = new RichURLSpan(value);
         editable.setSpan(result, selectionStart, selectionEnd, flags);
         return result;
     }
 
     @Override
-    public String getDefaultValue(BaseRichEditText editText) {
-        return "";
+    public Link getDefaultValue(BaseRichEditText editText) {
+        return null;
     }
 
     @Override
-    protected String getMultiValue() {
-        return "";
+    protected Link getMultiValue() {
+        return null;
     }
 
     @Override
     public String beginTag(Object span) {
         RichURLSpan urlSpan = (RichURLSpan) span;
-        return "<a href=\"" + urlSpan.getURL() + "\">";
+        return "<a href=\"" + urlSpan.getUrlModel().getUrl() + "\" alt=\"" + urlSpan.getUrlModel().getAlt() + "\">";
     }
-
 
     @Override
     protected RichURLSpan createSpan(Map<String, String> styleMap, Attributes attributes) {
-        return new RichURLSpan(attributes.getValue("href"));
+        Link link = new Link(attributes.getValue("href"), attributes.getValue("alt"));
+        return new RichURLSpan(link);
     }
 
 
     @Override
-    public boolean perform(String value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
+    public boolean perform(Link value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
         return false;
     }
 
@@ -78,8 +78,35 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
 
     public static class RichURLSpan extends URLSpan {
 
-        public RichURLSpan(String url) {
-            super(url);
+        private Link link;
+
+        public RichURLSpan(Link link) {
+            super(link.getUrl());
+            this.link = link;
+        }
+
+        public Link getUrlModel() {
+            return link;
+        }
+    }
+
+    public static class Link {
+
+        private String url;
+
+        private String alt;
+
+        public Link(String url, String alt) {
+            this.url = url;
+            this.alt = alt;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public String getAlt() {
+            return alt;
         }
     }
 }

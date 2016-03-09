@@ -95,13 +95,16 @@ public class RichEditText extends BaseRichEditText {
         multiClick(font, TypefaceSpanController.class);
     }
 
-    public void addLink(String url) {
-        addLink(url, url);
-    }
-
-    public void addLink(String name, String url) {
-        getText().replace(getSelectionStart(), getSelectionEnd(), name);
-        getModule(LinkSpanController.class).add(url, getText(), getSelectionStart() - name.length(), getSelectionStart());
+    public void addLink(String alt, String url) {
+        int start = getSelectionStart();
+        int stop = getSelectionEnd();
+        LinkSpanController.Link link = new LinkSpanController.Link(url, alt);
+        if (start == stop) {
+            getText().replace(getSelectionStart(), getSelectionEnd(), url);
+            start = getSelectionStart() - url.length();
+            stop = getSelectionStart();
+        }
+        getModule(LinkSpanController.class).add(link, getText(), start, stop);
     }
 
     public void addOnAlignmentChangeListener(OnValueChangeListener<Layout.Alignment> onAlignmentChangeListener) {
@@ -138,6 +141,10 @@ public class RichEditText extends BaseRichEditText {
 
     public void addOnFontChangeListener(OnValueChangeListener<String> onFontChangeListener) {
         getModule(TypefaceSpanController.class).addOnValueChangeListener(onFontChangeListener);
+    }
+
+    public void addOnLinkChangeListener(OnValueChangeListener<LinkSpanController.Link> onLinkChangeListener) {
+        getModule(LinkSpanController.class).addOnValueChangeListener(onLinkChangeListener);
     }
 
     public String getOverallFont() {

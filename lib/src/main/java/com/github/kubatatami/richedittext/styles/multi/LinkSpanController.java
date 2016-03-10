@@ -61,7 +61,6 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
         return new RichURLSpan(link);
     }
 
-
     @Override
     public boolean perform(Link value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
         return false;
@@ -108,6 +107,14 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
 
         public String getAlt() {
             return alt;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public void setAlt(String alt) {
+            this.alt = alt;
         }
     }
 }

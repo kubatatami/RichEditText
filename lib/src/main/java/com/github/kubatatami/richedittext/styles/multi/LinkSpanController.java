@@ -35,6 +35,7 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
     public RichURLSpan add(Link value, Editable editable, int selectionStart, int selectionEnd, int flags) {
         RichURLSpan result = new RichURLSpan(value);
         editable.setSpan(result, selectionStart, selectionEnd, flags);
+        onValueChange(result.link);
         return result;
     }
 

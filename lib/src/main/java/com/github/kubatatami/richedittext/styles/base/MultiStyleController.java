@@ -125,7 +125,7 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
         spanInfo = null;
     }
 
-    private void onValueChange(Z newValue) {
+    protected void onValueChange(Z newValue) {
         if ((newValue == null && value != null) || (newValue != null && value == null) || (value != null && !newValue.equals(value))) {
             value = newValue;
             for (BaseRichEditText.OnValueChangeListener<Z> onValueChangeListener : onValueChangeListeners) {

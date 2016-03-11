@@ -145,12 +145,18 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
         public Font(String fontName,
                     String[] familyValues,
                     String path, String name) {
+            this(fontName, familyValues, path, name, "ttf");
+        }
+
+        public Font(String fontName,
+                    String[] familyValues,
+                    String path, String name, String extension) {
             this.fontName = fontName;
             this.familyValues = familyValues;
-            this.normalTypefacePath = path + name + "-Regular.ttf";
-            this.boldTypefacePath = path + name + "-Bold.ttf";
-            this.italicTypefacePath = path + name + "-Italic.ttf";
-            this.boldItalicTypefacePath = path + name + "-BoldItalic.ttf";
+            this.normalTypefacePath = path + name + "-Regular." + extension;
+            this.boldTypefacePath = path + name + "-Bold." + extension;
+            this.italicTypefacePath = path + name + "-Italic." + extension;
+            this.boldItalicTypefacePath = path + name + "-BoldItalic." + extension;
         }
 
         public String getFontName() {

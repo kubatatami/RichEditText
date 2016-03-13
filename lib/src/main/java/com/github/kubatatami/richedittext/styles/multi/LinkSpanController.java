@@ -57,7 +57,9 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
 
     @Override
     protected RichURLSpan createSpan(Map<String, String> styleMap, Attributes attributes) {
-        Link link = new Link(attributes.getValue("href"), attributes.getValue("alt"));
+        String href = attributes.getValue("href");
+        String alt = attributes.getValue("alt");
+        Link link = new Link(href == null ? "" : href, alt == null ? "" : alt);
         return new RichURLSpan(link);
     }
 

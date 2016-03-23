@@ -1,6 +1,5 @@
 package com.github.kubatatami.richedittext.example;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ShareCompat;
@@ -119,7 +118,7 @@ public class TestActivity extends AppCompatActivity {
                 panelView.toggle(false);
                 break;
             case R.id.menu_add_link:
-                richEditText.addLink("http://www.google.pl");
+                richEditText.addLink("", "http://www.google.pl");
                 break;
             case R.id.menu_arial:
                 richEditText.typefaceClick(arialFont);

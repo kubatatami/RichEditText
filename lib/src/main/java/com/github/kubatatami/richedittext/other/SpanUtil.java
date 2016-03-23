@@ -34,7 +34,7 @@ public class SpanUtil {
                 if (controller != null) {
                     int spanStart = editable.getSpanStart(span);
                     int spanEnd = editable.getSpanEnd(span);
-                    if (spanStart == spanEnd || start != spanEnd - 1) {
+                    if (spanStart == spanEnd) {
                         Log.i("removeUnusedSpans", spanStart + " " + spanEnd);
                         spansToRemove.add(new Pair<SpanController<?>, Object>(controller, span));
                     }

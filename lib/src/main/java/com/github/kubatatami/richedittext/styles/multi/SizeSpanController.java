@@ -43,7 +43,7 @@ public class SizeSpanController extends StyleController<SizeSpanController.RichA
     @Override
     protected void setDefaultProperty(BaseRichEditText editText, String style) {
         float value = parseSize(style);
-        editText.setTextSize(TypedValue.COMPLEX_UNIT_PX,(int) DimenUtil.convertDpToPixel(value));
+        editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) DimenUtil.convertDpToPixel(value));
     }
 
     @Override

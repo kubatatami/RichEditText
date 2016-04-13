@@ -33,6 +33,10 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
         return getValueFromSpan(span).toString();
     }
 
+    public boolean performSpan(T span, Editable editable, StyleSelectionInfo styleSelectionInfo) {
+        return perform(getValueFromSpan(span), editable, styleSelectionInfo);
+    }
+
     protected abstract T add(Z value, Editable editable, int selectionStart, int selectionEnd, int flags);
 
     protected void add(Z value, Editable editable, int selectionStart, int selectionEnd) {
@@ -145,9 +149,9 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
                 newValue = getValueFromSpan(spans[0]);
             }
         } else if (spans.length > 1) {
-            for(T span : spans){
+            for (T span : spans) {
                 Z value = getValueFromSpan(span);
-                if(!value.equals(newValue)){
+                if (!value.equals(newValue)) {
                     newValue = getMultiValue();
                     break;
                 }

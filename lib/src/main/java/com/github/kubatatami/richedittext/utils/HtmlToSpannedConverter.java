@@ -6,6 +6,8 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
+import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
+import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
 import com.github.kubatatami.richedittext.styles.base.LineStyleController;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
@@ -20,6 +22,7 @@ import org.xml.sax.XMLReader;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +41,8 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
     private final Collection<SpanController<?>> mSpanControllers;
 
     private final List<StyleProperty> properties;
+
+    private final List<SpanInfo> spanInfoList;
 
     private final boolean strict;
 
@@ -58,6 +63,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         this.properties = properties;
         this.strict = strict;
         mSpannableSb = new SpannableStringBuilder();
+        spanInfoList = new ArrayList<>();
         mReader = parser;
         if (style != null) {
             Map<String, String> styleMap = getStyleStringMap(style);
@@ -79,21 +85,26 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         mReader.setContentHandler(this);
         try {
             mReader.parse(new InputSource(new StringReader(mSource)));
+            applySpans();
         } catch (SAXException e) {
             throw new IOException(e.getMessage());
         }
-
-        fixSpanFlags();
         return mSpannableSb;
     }
 
-    private void fixSpanFlags() {
-        Object[] spans = mSpannableSb.getSpans(0, mSpannableSb.length(), Object.class);
-        for (Object span : spans) {
-            int start = mSpannableSb.getSpanStart(span);
-            int end = mSpannableSb.getSpanEnd(span);
-            mSpannableSb.removeSpan(span);
-            mSpannableSb.setSpan(span, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+    @SuppressWarnings("unchecked")
+    private void applySpans() {
+        for (SpanInfo spanInfo : spanInfoList) {
+            for (SpanController<?> spanController : mSpanControllers) {
+                if (spanController.acceptSpan(spanInfo.span)) {
+                    StyleSelectionInfo selectionInfo = new StyleSelectionInfo(spanInfo.start, spanInfo.end, spanInfo.start, spanInfo.end, true);
+                    if (spanController instanceof BinaryStyleController) {
+                        ((BinaryStyleController) spanController).perform(mSpannableSb, selectionInfo);
+                    } else if (spanController instanceof MultiStyleController) {
+                        ((MultiStyleController) spanController).performSpan(spanInfo.span, mSpannableSb, selectionInfo);
+                    }
+                }
+            }
         }
     }
 
@@ -200,7 +211,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         text.setSpan(mark, len, len, Spannable.SPAN_MARK_MARK);
     }
 
-    private static boolean end(SpannableStringBuilder text, Class kind, SpanController<?> spanController) {
+    private boolean end(SpannableStringBuilder text, Class kind, SpanController<?> spanController) {
         int len = text.length();
         Object obj = getLast(text, kind, spanController);
 
@@ -220,7 +231,9 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         if (where != len && where != -1) {
             for (int i = where; i <= len; i++) {
                 if ((spanController.checkSpans(text, kind, i) || i == len) && i != where) {
-                    text.setSpan(obj, where, i, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    SpanInfo spanInfo = new SpanInfo(where, i, obj);
+                    spanInfoList.add(spanInfo);
+                    //text.setSpan(obj, where, i, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     where = i;
                 }
             }
@@ -277,6 +290,21 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         }
 
         mSpannableSb.append(sb);
+    }
+
+    static class SpanInfo {
+
+        int start;
+
+        int end;
+
+        Object span;
+
+        public SpanInfo(int start, int end, Object span) {
+            this.start = start;
+            this.end = end;
+            this.span = span;
+        }
     }
 
 }

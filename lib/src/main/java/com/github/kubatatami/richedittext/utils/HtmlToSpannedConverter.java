@@ -209,7 +209,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         if (where != len && where != -1) {
             for (int i = where; i <= len; i++) {
                 if ((spanController.checkSpans(text, kind, i) || i == len) && i != where) {
-                    text.setSpan(obj, where, i, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    text.setSpan(obj, where, i, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
                     where = i;
                 }
             }

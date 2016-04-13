@@ -33,7 +33,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
 
     private final XMLReader mReader;
 
-    private final SpannableStringBuilder mSpannableStringBuilder;
+    private final SpannableStringBuilder mSpannableSb;
 
     private final Collection<SpanController<?>> mSpanControllers;
 
@@ -57,7 +57,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         mSpanControllers = spanControllers;
         this.properties = properties;
         this.strict = strict;
-        mSpannableStringBuilder = new SpannableStringBuilder();
+        mSpannableSb = new SpannableStringBuilder();
         mReader = parser;
         if (style != null) {
             Map<String, String> styleMap = getStyleStringMap(style);
@@ -83,12 +83,23 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
             throw new IOException(e.getMessage());
         }
 
-        return mSpannableStringBuilder;
+        fixSpanFlags();
+        return mSpannableSb;
+    }
+
+    private void fixSpanFlags() {
+        Object[] spans = mSpannableSb.getSpans(0, mSpannableSb.length(), Object.class);
+        for (Object span : spans) {
+            int start = mSpannableSb.getSpanStart(span);
+            int end = mSpannableSb.getSpanEnd(span);
+            mSpannableSb.removeSpan(span);
+            mSpannableSb.setSpan(span, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        }
     }
 
     private void handleStartTag(String tag, Attributes attributes) throws SAXException {
         if (tag.equals("br")) {
-            mSpannableStringBuilder.append('\n');
+            mSpannableSb.append('\n');
             return;
         }
         Map<String, String> styleMap = getStyleStringMap(attributes.getValue("style"));
@@ -106,12 +117,12 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         for (SpanController<?> spanController : mSpanControllers) {
             Object object = spanController.createSpanFromTag(tag, styleMap, attributes);
             if (object != null) {
-                if (spanController instanceof LineStyleController && mSpannableStringBuilder.length() > 0) {
-                    if (mSpannableStringBuilder.charAt(mSpannableStringBuilder.length() - 1) != '\n') {
-                        mSpannableStringBuilder.append('\n');
+                if (spanController instanceof LineStyleController && mSpannableSb.length() > 0) {
+                    if (mSpannableSb.charAt(mSpannableSb.length() - 1) != '\n') {
+                        mSpannableSb.append('\n');
                     }
                 }
-                start(mSpannableStringBuilder, object);
+                start(mSpannableSb, object);
                 supported = true;
                 firstTag = false;
             }
@@ -155,7 +166,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         for (SpanController<?> spanController : mSpanControllers) {
             Class<?> spanClass = spanController.spanFromEndTag(tag);
             if (spanClass != null) {
-                end(mSpannableStringBuilder, spanClass, spanController);
+                end(mSpannableSb, spanClass, spanController);
             }
         }
     }
@@ -209,7 +220,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         if (where != len && where != -1) {
             for (int i = where; i <= len; i++) {
                 if ((spanController.checkSpans(text, kind, i) || i == len) && i != where) {
-                    text.setSpan(obj, where, i, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+                    text.setSpan(obj, where, i, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     where = i;
                 }
             }
@@ -243,12 +254,12 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
                 int len = sb.length();
 
                 if (len == 0) {
-                    len = mSpannableStringBuilder.length();
+                    len = mSpannableSb.length();
 
                     if (len == 0) {
                         pred = '\n';
                     } else {
-                        pred = mSpannableStringBuilder.charAt(len - 1);
+                        pred = mSpannableSb.charAt(len - 1);
                     }
                 } else {
                     pred = sb.charAt(len - 1);
@@ -265,7 +276,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
             }
         }
 
-        mSpannableStringBuilder.append(sb);
+        mSpannableSb.append(sb);
     }
 
 }

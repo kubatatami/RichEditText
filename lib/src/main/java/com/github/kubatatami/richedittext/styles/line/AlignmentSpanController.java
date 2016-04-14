@@ -86,7 +86,7 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpanCo
         if (styleMap.containsKey(TEXT_ALIGN)) {
             RichAlignmentSpanStandard span = createSpan(styleMap, null);
             if (span != null) {
-                performSpan(createSpan(styleMap, null), editable, StyleSelectionInfo.getStyleSelectionInfo(editable));
+                performSpan(span, editable, StyleSelectionInfo.getStyleSelectionInfo(editable));
                 return true;
             }
         }

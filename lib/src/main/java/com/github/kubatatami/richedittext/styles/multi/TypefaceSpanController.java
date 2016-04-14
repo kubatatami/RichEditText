@@ -5,12 +5,15 @@ import android.graphics.Typeface;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.style.TypefaceSpan;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
+import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.other.FontCache;
 import com.github.kubatatami.richedittext.other.StringUtils;
+import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 
 import org.xml.sax.Attributes;
@@ -20,7 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TypefaceSpanController extends MultiStyleController<TypefaceSpanController.FontSpan, String> {
+public class TypefaceSpanController extends MultiStyleController<TypefaceSpanController.FontSpan, String> implements EndStyleProperty {
+
+    private static final String STYLE_NAME = "font-family";
 
     private static Map<String, Font> fontMap = new HashMap<>();
 
@@ -54,15 +59,15 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
     @Override
     public String beginTag(Object span) {
         String[] familyValues = ((FontSpan) span).getTypeface().getFamilyValues();
-        return "<span style=\"font-family: " + StringUtils.join(familyValues, ", ") + ";\">";
+        return "<span style=\"" + STYLE_NAME + ": " + StringUtils.join(familyValues, ", ") + ";\">";
     }
 
     @Override
     protected FontSpan createSpan(Map<String, String> styleMap, Attributes attributes) {
-        if (styleMap.containsKey("font-family")) {
+        if (styleMap.containsKey(STYLE_NAME)) {
             int i = 0;
             List<Font> fonts = getFonts();
-            String fontFamilyValue = styleMap.get("font-family");
+            String fontFamilyValue = styleMap.get(STYLE_NAME);
             for (String fontFamily : fontFamilyValue.split(",")) {
                 fontFamily = fontFamily.trim();
                 boolean stop;
@@ -114,6 +119,18 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
 
     public static void registerFont(Font font) {
         fontMap.put(font.fontName, font);
+    }
+
+    @Override
+    public boolean setPropertyFromTag(SpannableStringBuilder editable, Map<String, String> styleMap) {
+        if (styleMap.containsKey(STYLE_NAME)) {
+            FontSpan span = createSpan(styleMap, null);
+            if (span != null) {
+                performSpan(span, editable, StyleSelectionInfo.getStyleSelectionInfo(editable));
+                return true;
+            }
+        }
+        return false;
     }
 
     public static class Font {

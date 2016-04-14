@@ -69,14 +69,13 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
             List<Font> fonts = getFonts();
             String fontFamilyValue = styleMap.get(STYLE_NAME);
             for (String fontFamily : fontFamilyValue.split(",")) {
-                fontFamily = fontFamily.trim();
                 boolean stop;
                 do {
                     stop = true;
                     for (Font font : fonts) {
                         String[] values = font.getFamilyValues();
                         if (i < values.length) {
-                            if (values[i].equals(fontFamily)) {
+                            if (equalFont(values[i], fontFamily)) {
                                 return new FontSpan(font);
                             }
                             stop = false;
@@ -87,6 +86,16 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
             }
         }
         return null;
+    }
+
+    private boolean equalFont(String font1, String font2) {
+        font1 = normalizeFontName(font1);
+        font2 = normalizeFontName(font2);
+        return font1.equals(font2);
+    }
+
+    private String normalizeFontName(String font) {
+        return font.replaceAll("'", "").replaceAll("\"", "").trim();
     }
 
     @NonNull

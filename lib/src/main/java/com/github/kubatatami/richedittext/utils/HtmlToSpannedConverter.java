@@ -8,11 +8,11 @@ import android.text.Spanned;
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
+import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
 import com.github.kubatatami.richedittext.styles.base.LineStyleController;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
-import com.github.kubatatami.richedittext.styles.base.StyleProperty;
-import com.github.kubatatami.richedittext.styles.multi.StyleController;
+import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
 
 import org.ccil.cowan.tagsoup.Parser;
 import org.xml.sax.Attributes;
@@ -40,7 +40,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
 
     private final Collection<SpanController<?>> mSpanControllers;
 
-    private final List<StyleProperty> properties;
+    private final List<StartStyleProperty> properties;
 
     private final List<SpanInfo> spanInfoList;
 
@@ -50,11 +50,13 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
 
     private boolean firstTag = true;
 
+    private Map<String, String> styleMap;
+
     public HtmlToSpannedConverter(
             BaseRichEditText baseRichEditText, String source,
             Parser parser,
             Collection<SpanController<?>> spanControllers,
-            List<StyleProperty> properties,
+            List<StartStyleProperty> properties,
             String style,
             boolean strict) {
         this.baseRichEditText = baseRichEditText;
@@ -66,13 +68,13 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         spanInfoList = new ArrayList<>();
         mReader = parser;
         if (style != null) {
-            Map<String, String> styleMap = getStyleStringMap(style);
-            for (StyleProperty property : properties) {
+            styleMap = getStyleStringMap(style);
+            for (StartStyleProperty property : properties) {
                 property.setPropertyFromTag(baseRichEditText, styleMap);
             }
             for (SpanController<?> spanController : mSpanControllers) {
-                if (spanController instanceof StyleController) {
-                    ((StyleController) spanController).setPropertyFromTag(baseRichEditText, styleMap);
+                if (spanController instanceof StartStyleProperty) {
+                    ((StartStyleProperty) spanController).setPropertyFromTag(baseRichEditText, styleMap);
                 }
             }
             standalone = true;
@@ -86,6 +88,13 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         try {
             mReader.parse(new InputSource(new StringReader(mSource)));
             applySpans();
+            if (styleMap != null) {
+                for (SpanController<?> spanController : mSpanControllers) {
+                    if (spanController instanceof EndStyleProperty) {
+                        ((EndStyleProperty) spanController).setPropertyFromTag(mSpannableSb, styleMap);
+                    }
+                }
+            }
         } catch (SAXException e) {
             throw new IOException(e.getMessage());
         }
@@ -115,12 +124,12 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         }
         Map<String, String> styleMap = getStyleStringMap(attributes.getValue("style"));
         if (standalone && tag.equals("div") && firstTag) {
-            for (StyleProperty property : properties) {
+            for (StartStyleProperty property : properties) {
                 property.setPropertyFromTag(baseRichEditText, styleMap);
             }
             for (SpanController<?> spanController : mSpanControllers) {
-                if (spanController instanceof StyleController) {
-                    ((StyleController) spanController).setPropertyFromTag(baseRichEditText, styleMap);
+                if (spanController instanceof StartStyleProperty) {
+                    ((StartStyleProperty) spanController).setPropertyFromTag(baseRichEditText, styleMap);
                 }
             }
         }

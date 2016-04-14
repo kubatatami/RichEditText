@@ -26,6 +26,10 @@ public class StyleSelectionInfo {
         this.selection = selection;
     }
 
+    public static StyleSelectionInfo getStyleSelectionInfo(CharSequence text) {
+        return new StyleSelectionInfo(0, text.length(), 0, text.length(), true);
+    }
+
     public static StyleSelectionInfo getStyleSelectionInfo(BaseRichEditText richEditText) {
         StyleSelectionInfo result = new StyleSelectionInfo();
         int selectionStart = richEditText.getSelectionStart();

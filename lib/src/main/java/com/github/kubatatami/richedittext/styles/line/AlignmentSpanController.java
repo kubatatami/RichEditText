@@ -2,16 +2,19 @@ package com.github.kubatatami.richedittext.styles.line;
 
 import android.text.Editable;
 import android.text.Layout;
+import android.text.SpannableStringBuilder;
 import android.text.style.AlignmentSpan;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
+import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
+import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
 import com.github.kubatatami.richedittext.styles.base.LineStyleController;
 
 import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public class AlignmentSpanController extends LineStyleController<AlignmentSpanController.RichAlignmentSpanStandard, Layout.Alignment> {
+public class AlignmentSpanController extends LineStyleController<AlignmentSpanController.RichAlignmentSpanStandard, Layout.Alignment> implements EndStyleProperty {
 
 
     private static final String TEXT_ALIGN = "text-align";
@@ -76,6 +79,18 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpanCo
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean setPropertyFromTag(SpannableStringBuilder editable, Map<String, String> styleMap) {
+        if (styleMap.containsKey(TEXT_ALIGN)) {
+            RichAlignmentSpanStandard span = createSpan(styleMap, null);
+            if (span != null) {
+                performSpan(createSpan(styleMap, null), editable, StyleSelectionInfo.getStyleSelectionInfo(editable));
+                return true;
+            }
+        }
+        return false;
     }
 
     public static class RichAlignmentSpanStandard extends AlignmentSpan.Standard {

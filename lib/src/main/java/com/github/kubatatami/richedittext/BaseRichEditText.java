@@ -18,7 +18,7 @@ import com.github.kubatatami.richedittext.other.TextWatcherAdapter;
 import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
-import com.github.kubatatami.richedittext.styles.base.StyleProperty;
+import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class BaseRichEditText extends EditText {
 
     private final Map<Class<?>, SpanController<?>> spanControllerMap = new HashMap<>();
 
-    private final List<StyleProperty> properties = new ArrayList<>();
+    private final List<StartStyleProperty> properties = new ArrayList<>();
 
     private final List<OnFocusChangeListener> onFocusChangeListeners = new ArrayList<>();
 
@@ -176,7 +176,7 @@ public class BaseRichEditText extends EditText {
         spanControllerMap.put(clazz, controller);
     }
 
-    public void registerProperty(StyleProperty property) {
+    public void registerProperty(StartStyleProperty property) {
         properties.add(property);
     }
 

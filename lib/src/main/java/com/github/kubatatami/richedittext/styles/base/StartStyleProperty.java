@@ -4,7 +4,7 @@ import com.github.kubatatami.richedittext.BaseRichEditText;
 
 import java.util.Map;
 
-public interface StyleProperty {
+public interface StartStyleProperty {
 
     String createStyle(BaseRichEditText editText);
 

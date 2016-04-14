@@ -8,7 +8,7 @@ import android.widget.EditText;
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.other.SpanUtil;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
-import com.github.kubatatami.richedittext.styles.base.StyleProperty;
+import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 public abstract class HtmlExportModule {
 
-    public static String getHtml(BaseRichEditText editText, Collection<SpanController<?>> spanControllers, List<StyleProperty> properties, boolean standalone) {
+    public static String getHtml(BaseRichEditText editText, Collection<SpanController<?>> spanControllers, List<StartStyleProperty> properties, boolean standalone) {
         StringBuilder out = new StringBuilder();
         if (standalone) {
             out.append("<div style=\"");
@@ -46,13 +46,13 @@ public abstract class HtmlExportModule {
         return out.toString();
     }
 
-    public static String getCssStyle(BaseRichEditText editText, Collection<SpanController<?>> spanControllers, List<StyleProperty> properties) {
+    public static String getCssStyle(BaseRichEditText editText, Collection<SpanController<?>> spanControllers, List<StartStyleProperty> properties) {
         return getProperties(editText, properties) + getDefaultStyles(editText, spanControllers);
     }
 
-    private static String getProperties(BaseRichEditText editText, List<StyleProperty> properties) {
+    private static String getProperties(BaseRichEditText editText, List<StartStyleProperty> properties) {
         StringBuilder result = new StringBuilder();
-        for (StyleProperty property : properties) {
+        for (StartStyleProperty property : properties) {
             result.append(property.createStyle(editText));
         }
         return result.toString();
@@ -61,8 +61,8 @@ public abstract class HtmlExportModule {
     private static String getDefaultStyles(BaseRichEditText editText, Collection<SpanController<?>> spanControllers) {
         StringBuilder result = new StringBuilder();
         for (SpanController<?> spanController : spanControllers) {
-            if (spanController instanceof StyleProperty) {
-                result.append(((StyleProperty) spanController).createStyle(editText));
+            if (spanController instanceof StartStyleProperty) {
+                result.append(((StartStyleProperty) spanController).createStyle(editText));
             }
         }
         return result.toString();

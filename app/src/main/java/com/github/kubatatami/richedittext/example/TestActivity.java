@@ -77,7 +77,7 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    richEditText.isValidHtml(richEditText.getHtml());
+                    richEditText.isValidHtml(richEditText.getHtml(false));
                     ShareCompat.IntentBuilder builder = ShareCompat.IntentBuilder.from(TestActivity.this);
                     builder.setType("text/plain");
                     builder.setText(richEditText.getTextOrHtml());

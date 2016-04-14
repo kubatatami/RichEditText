@@ -3,24 +3,32 @@ package com.github.kubatatami.richedittext.styles.binary;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.style.StyleSpan;
 
+import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
+import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
 import com.github.kubatatami.richedittext.styles.multi.TypefaceSpanController;
 
 import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public abstract class FontStyleSpanController extends BinaryStyleController<FontStyleSpanController.RichStyleSpan> {
+public abstract class FontStyleSpanController extends BinaryStyleController<FontStyleSpanController.RichStyleSpan> implements EndStyleProperty {
 
     final int typeface;
 
+    private final String styleName;
 
-    public FontStyleSpanController(int typeface, String tagName) {
+    private final String styleValue;
+
+    public FontStyleSpanController(int typeface, String tagName, String styleName, String styleValue) {
         super(RichStyleSpan.class, tagName);
         this.typeface = typeface;
+        this.styleName = styleName;
+        this.styleValue = styleValue;
     }
 
     @Override
@@ -40,6 +48,15 @@ public abstract class FontStyleSpanController extends BinaryStyleController<Font
         RichStyleSpan result = new RichStyleSpan(typeface);
         editable.setSpan(result, selectionStart, selectionEnd, flags);
         return result;
+    }
+
+    @Override
+    public boolean setPropertyFromTag(SpannableStringBuilder editable, Map<String, String> styleMap) {
+        if (styleValue.equals(styleMap.get(styleName))) {
+            perform(editable, StyleSelectionInfo.getStyleSelectionInfo(editable));
+            return true;
+        }
+        return false;
     }
 
     public static class RichStyleSpan extends StyleSpan {

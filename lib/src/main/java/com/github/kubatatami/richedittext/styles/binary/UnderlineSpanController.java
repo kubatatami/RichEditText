@@ -1,14 +1,17 @@
 package com.github.kubatatami.richedittext.styles.binary;
 
+import android.text.SpannableStringBuilder;
 import android.text.style.UnderlineSpan;
 
+import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
+import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
 
 import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public class UnderlineSpanController extends BinaryStyleController<UnderlineSpanController.RichUnderlineSpan> {
+public class UnderlineSpanController extends BinaryStyleController<UnderlineSpanController.RichUnderlineSpan> implements EndStyleProperty{
 
     public UnderlineSpanController() {
         super(RichUnderlineSpan.class, "u");
@@ -31,6 +34,15 @@ public class UnderlineSpanController extends BinaryStyleController<UnderlineSpan
             return clazz;
         }
         return null;
+    }
+
+    @Override
+    public boolean setPropertyFromTag(SpannableStringBuilder editable, Map<String, String> styleMap) {
+        if ("underline".equals(styleMap.get("text-decoration"))) {
+            perform(editable, StyleSelectionInfo.getStyleSelectionInfo(editable));
+            return true;
+        }
+        return false;
     }
 
     public static class RichUnderlineSpan extends UnderlineSpan {

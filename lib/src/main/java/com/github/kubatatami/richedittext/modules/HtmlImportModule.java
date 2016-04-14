@@ -5,7 +5,7 @@ import android.text.SpannedString;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
-import com.github.kubatatami.richedittext.styles.base.StyleProperty;
+import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
 import com.github.kubatatami.richedittext.utils.HtmlToSpannedConverter;
 
 import org.ccil.cowan.tagsoup.HTMLSchema;
@@ -24,7 +24,7 @@ public abstract class HtmlImportModule {
 
     public static Spanned fromHtml(BaseRichEditText baseRichEditText, String source,
                                    Collection<SpanController<?>> spanControllers,
-                                   List<StyleProperty> properties,
+                                   List<StartStyleProperty> properties,
                                    String style, boolean strict) throws IOException {
         if (source == null || source.length() == 0) {
             return new SpannedString("");

@@ -4,13 +4,13 @@ import android.support.annotation.NonNull;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
-import com.github.kubatatami.richedittext.styles.base.StyleProperty;
+import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
 
 import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public abstract class StyleController<T, Z> extends MultiStyleController<T, Z> implements StyleProperty {
+public abstract class StyleController<T, Z> extends MultiStyleController<T, Z> implements StartStyleProperty {
 
     private final String styleName;
 

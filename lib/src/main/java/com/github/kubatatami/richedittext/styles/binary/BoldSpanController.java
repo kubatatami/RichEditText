@@ -12,7 +12,7 @@ import java.util.Map;
 public class BoldSpanController extends FontStyleSpanController {
 
     public BoldSpanController() {
-        super(Typeface.BOLD, "b");
+        super(Typeface.BOLD, "b", "font-weight", "bold");
     }
 
 

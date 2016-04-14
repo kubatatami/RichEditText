@@ -1,14 +1,17 @@
 package com.github.kubatatami.richedittext.styles.binary;
 
+import android.text.SpannableStringBuilder;
 import android.text.style.StrikethroughSpan;
 
+import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
+import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
 
 import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public class StrikeThroughSpanController extends BinaryStyleController<StrikethroughSpan> {
+public class StrikeThroughSpanController extends BinaryStyleController<StrikethroughSpan> implements EndStyleProperty {
 
     public StrikeThroughSpanController() {
         super(StrikethroughSpan.class, "strike");
@@ -20,5 +23,14 @@ public class StrikeThroughSpanController extends BinaryStyleController<Strikethr
             return new StrikethroughSpan();
         }
         return null;
+    }
+
+    @Override
+    public boolean setPropertyFromTag(SpannableStringBuilder editable, Map<String, String> styleMap) {
+        if ("line-through".equals(styleMap.get("text-decoration"))) {
+            perform(editable, StyleSelectionInfo.getStyleSelectionInfo(editable));
+            return true;
+        }
+        return false;
     }
 }

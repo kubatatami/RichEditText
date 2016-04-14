@@ -1,11 +1,11 @@
 package com.github.kubatatami.richedittext.properties;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
-import com.github.kubatatami.richedittext.styles.base.StyleProperty;
+import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
 
 import java.util.Map;
 
-public class LineHeight implements StyleProperty {
+public class LineHeight implements StartStyleProperty {
 
     @Override
     public String createStyle(BaseRichEditText editText) {

@@ -9,13 +9,21 @@ import java.util.Map;
 public class ItalicSpanController extends FontStyleSpanController {
 
     public ItalicSpanController() {
-        super(Typeface.ITALIC, "i");
+        super(Typeface.ITALIC, "i", "font-style", "italic");
     }
 
     @Override
     public RichStyleSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
         if (tag.equals("i") || (tag.equals("span") && "italic".equals(styleMap.get("font-style")))) {
             return new RichStyleSpan(typeface);
+        }
+        return null;
+    }
+
+    @Override
+    public Class<?> spanFromEndTag(String tag) {
+        if (tag.equals("i") || tag.equals("span")) {
+            return clazz;
         }
         return null;
     }

@@ -65,32 +65,30 @@ public abstract class LineStyleController<T, Z> extends MultiStyleController<T, 
         return true;
     }
 
-
-    private LineInfo getLineInfo(Editable editable, StyleSelectionInfo styleSelectionInfo) {
-        int start = Math.max(0, Math.min(styleSelectionInfo.realSelectionStart, editable.length() - 1));
-        int end = Math.max(0, Math.min(styleSelectionInfo.realSelectionEnd, editable.length() - 1));
-        if (editable.length() > 0) {
-            if (start != end || editable.charAt(start) != '\n') {
-                while (start - 1 >= 0 && editable.charAt(start - 1) != '\n') {
-                    start--;
-                }
-                while (end + 1 < editable.length() && editable.charAt(end + 1) != '\n') {
-                    end++;
-                }
-            }
-            return new LineInfo(start, end + 1);
+    public static LineInfo getLineInfo(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+        int startSel = Math.max(0, Math.min(styleSelectionInfo.realSelectionStart, editable.length()));
+        int endSel = Math.max(0, Math.min(styleSelectionInfo.realSelectionEnd, editable.length()));
+        String text = editable.toString();
+        int start = text.substring(0, startSel).lastIndexOf("\n");
+        int end = endSel > 0 && text.charAt(endSel - 1) == '\n' ? endSel : text.indexOf("\n", endSel);
+        if (start == -1) {
+            start = 0;
         } else {
-            return new LineInfo(0, 0);
+            start++;
         }
+        if (end == -1) {
+            end = editable.length();
+        }
+        return new LineInfo(start, end);
     }
 
-    class LineInfo {
+    public static class LineInfo {
 
-        final int start;
+        public final int start;
 
-        final int end;
+        public final int end;
 
-        LineInfo(int start, int end) {
+        public LineInfo(int start, int end) {
             this.start = start;
             this.end = end;
         }

@@ -9,10 +9,12 @@ import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
 import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
+import com.github.kubatatami.richedittext.styles.base.LineChangingController;
 import com.github.kubatatami.richedittext.styles.base.LineStyleController;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
+import com.github.kubatatami.richedittext.styles.list.ListController;
 
 import org.ccil.cowan.tagsoup.Parser;
 import org.xml.sax.Attributes;
@@ -107,7 +109,10 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
             for (SpanController<?> spanController : mSpanControllers) {
                 if (spanController.acceptSpan(spanInfo.span)) {
                     StyleSelectionInfo selectionInfo = new StyleSelectionInfo(spanInfo.start, spanInfo.end, spanInfo.start, spanInfo.end, true);
-                    if (spanController instanceof BinaryStyleController) {
+                    if (spanController instanceof ListController) {
+                        LineStyleController.LineInfo lineInfo = new LineStyleController.LineInfo(spanInfo.start, spanInfo.end);
+                        ((ListController) spanController).perform(mSpannableSb, lineInfo);
+                    } else if (spanController instanceof BinaryStyleController) {
                         ((BinaryStyleController) spanController).perform(mSpannableSb, selectionInfo);
                     } else if (spanController instanceof MultiStyleController) {
                         ((MultiStyleController) spanController).performSpan(spanInfo.span, mSpannableSb, selectionInfo);
@@ -145,6 +150,9 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
                 start(mSpannableSb, object);
                 supported = true;
                 firstTag = false;
+            }
+            if (spanController instanceof LineChangingController) {
+                ((LineChangingController) spanController).changeLineStart(mSpannableSb, tag);
             }
         }
         if (!supported && strict
@@ -187,6 +195,11 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
             Class<?> spanClass = spanController.spanFromEndTag(tag);
             if (spanClass != null) {
                 end(mSpannableSb, spanClass, spanController);
+            }
+        }
+        for (SpanController<?> spanController : mSpanControllers) {
+            if (spanController instanceof LineChangingController) {
+                ((LineChangingController) spanController).changeLineEnd(mSpannableSb, tag);
             }
         }
     }
@@ -242,7 +255,6 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
                 if ((spanController.checkSpans(text, kind, i) || i == len) && i != where) {
                     SpanInfo spanInfo = new SpanInfo(where, i, obj);
                     spanInfoList.add(spanInfo);
-                    //text.setSpan(obj, where, i, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     where = i;
                 }
             }

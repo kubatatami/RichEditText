@@ -11,6 +11,8 @@ import com.github.kubatatami.richedittext.styles.binary.ItalicSpanController;
 import com.github.kubatatami.richedittext.styles.binary.StrikeThroughSpanController;
 import com.github.kubatatami.richedittext.styles.binary.UnderlineSpanController;
 import com.github.kubatatami.richedittext.styles.line.AlignmentSpanController;
+import com.github.kubatatami.richedittext.styles.list.BulletListController;
+import com.github.kubatatami.richedittext.styles.list.NumberListController;
 import com.github.kubatatami.richedittext.styles.multi.BackgroundColorSpanController;
 import com.github.kubatatami.richedittext.styles.multi.ColorSpanController;
 import com.github.kubatatami.richedittext.styles.multi.LinkSpanController;
@@ -48,6 +50,8 @@ public class RichEditText extends BaseRichEditText {
         registerController(AlignmentSpanController.class, new AlignmentSpanController());
         registerController(LinkSpanController.class, new LinkSpanController());
         registerController(TypefaceSpanController.class, new TypefaceSpanController());
+        registerController(NumberListController.class, new NumberListController());
+        registerController(BulletListController.class, new BulletListController());
         registerProperty(new LineHeight());
     }
 
@@ -65,6 +69,14 @@ public class RichEditText extends BaseRichEditText {
 
     public void strikeThroughClick() {
         binaryClick(StrikeThroughSpanController.class);
+    }
+
+    public void numberListClick() {
+        binaryClick(NumberListController.class);
+    }
+
+    public void bulletListClick() {
+        binaryClick(BulletListController.class);
     }
 
     public void sizeClick(SizeSpanController.Size size) {
@@ -125,6 +137,14 @@ public class RichEditText extends BaseRichEditText {
 
     public void addOnBoldChangeListener(OnValueChangeListener<Boolean> onBoldChangeListener) {
         getModule(BoldSpanController.class).addOnValueChangeListener(onBoldChangeListener);
+    }
+
+    public void addOnNumberListChangeListener(OnValueChangeListener<Boolean> onNumberListChangeListener) {
+        getModule(NumberListController.class).addOnValueChangeListener(onNumberListChangeListener);
+    }
+
+    public void addOnBulletListChangeListener(OnValueChangeListener<Boolean> onBulletListChangeListener) {
+        getModule(BulletListController.class).addOnValueChangeListener(onBulletListChangeListener);
     }
 
     public void addOnItalicChangeListener(OnValueChangeListener<Boolean> onItalicChangeListener) {

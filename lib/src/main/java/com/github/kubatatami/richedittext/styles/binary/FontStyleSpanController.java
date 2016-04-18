@@ -8,7 +8,7 @@ import android.text.TextPaint;
 import android.text.style.StyleSpan;
 
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
-import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
+import com.github.kubatatami.richedittext.styles.base.BinaryStyleBaseController;
 import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
 import com.github.kubatatami.richedittext.styles.multi.TypefaceSpanController;
 
@@ -16,7 +16,7 @@ import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public abstract class FontStyleSpanController extends BinaryStyleController<FontStyleSpanController.RichStyleSpan> implements EndStyleProperty {
+public abstract class FontStyleSpanController extends BinaryStyleBaseController<FontStyleSpanController.RichStyleSpan> implements EndStyleProperty {
 
     final int typeface;
 

@@ -4,14 +4,14 @@ import android.text.SpannableStringBuilder;
 import android.text.style.UnderlineSpan;
 
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
-import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
+import com.github.kubatatami.richedittext.styles.base.BinaryStyleBaseController;
 import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
 
 import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public class UnderlineSpanController extends BinaryStyleController<UnderlineSpanController.RichUnderlineSpan> implements EndStyleProperty{
+public class UnderlineSpanController extends BinaryStyleBaseController<UnderlineSpanController.RichUnderlineSpan> implements EndStyleProperty {
 
     public UnderlineSpanController() {
         super(RichUnderlineSpan.class, "u");

@@ -27,7 +27,7 @@ public abstract class SpanController<T> {
     }
 
     @SuppressWarnings("unchecked")
-    List<T> filter(Object[] spans) {
+    protected List<T> filter(Object[] spans) {
         List<T> result = new ArrayList<>();
         for (Object span : spans) {
             if (acceptSpan(span)) {
@@ -63,7 +63,7 @@ public abstract class SpanController<T> {
 
     public abstract void checkAfterChange(BaseRichEditText editText, StyleSelectionInfo styleSelectionInfo, boolean passive);
 
-    public abstract String beginTag(Object span);
+    public abstract String beginTag(Object span, boolean continuation);
 
     public abstract T createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes);
 
@@ -76,7 +76,7 @@ public abstract class SpanController<T> {
         return null;
     }
 
-    public String endTag() {
+    public String endTag(Object span, boolean end) {
         return "</" + tagName + ">";
     }
 }

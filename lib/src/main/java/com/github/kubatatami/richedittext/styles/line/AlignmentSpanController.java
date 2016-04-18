@@ -47,7 +47,7 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpanCo
     }
 
     @Override
-    public String beginTag(Object span) {
+    public String beginTag(Object span, boolean continuation) {
         Layout.Alignment spanValue = getValueFromSpan((RichAlignmentSpanStandard) span);
         String alignValue;
         switch (spanValue) {

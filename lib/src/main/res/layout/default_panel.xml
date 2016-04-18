@@ -1,11 +1,11 @@
-<merge xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:id="@+id/main_panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
 
 
         <LinearLayout
@@ -19,11 +19,11 @@
                 android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                app:checkedTint="@color/blue"
-                android:src="@drawable/bold"
                 android:background="@null"
+                android:src="@drawable/bold"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:checkedTint="@color/blue" />
 
             <com.github.kubatatami.richedittext.views.ToggleImageButton
                 android:id="@+id/italic_button"
@@ -31,9 +31,9 @@
                 android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                app:checkedTint="@color/blue"
                 android:background="@null"
-                android:src="@drawable/italics" />
+                android:src="@drawable/italics"
+                app:checkedTint="@color/blue" />
 
             <com.github.kubatatami.richedittext.views.ToggleImageButton
                 android:id="@+id/underline_button"
@@ -41,9 +41,9 @@
                 android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                app:checkedTint="@color/blue"
                 android:background="@null"
-                android:src="@drawable/underline" />
+                android:src="@drawable/underline"
+                app:checkedTint="@color/blue" />
 
             <com.github.kubatatami.richedittext.views.ToggleImageButton
                 android:id="@+id/strikethrough_button"
@@ -51,9 +51,9 @@
                 android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                app:checkedTint="@color/blue"
                 android:background="@null"
-                android:src="@drawable/strike"/>
+                android:src="@drawable/strike"
+                app:checkedTint="@color/blue" />
         </LinearLayout>
 
         <View
@@ -74,8 +74,7 @@
                 android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:scaleType="centerInside"
-                android:src="@drawable/undo_arrow"
-                />
+                android:src="@drawable/undo_arrow" />
 
             <ImageView
                 android:id="@+id/redo_button"
@@ -87,19 +86,17 @@
                 android:src="@drawable/redo_arrow" />
 
 
-
-
             <com.github.kubatatami.richedittext.views.ToggleImageButton
                 android:id="@+id/left_button"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                android:padding="7dp"
-                app:checkedTint="@color/blue"
                 android:background="@null"
                 android:checked="true"
-                android:src="@drawable/left_align" />
+                android:padding="7dp"
+                android:src="@drawable/left_align"
+                app:checkedTint="@color/blue" />
 
             <com.github.kubatatami.richedittext.views.ToggleImageButton
                 android:id="@+id/center_button"
@@ -107,10 +104,10 @@
                 android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                android:padding="7dp"
-                app:checkedTint="@color/blue"
                 android:background="@null"
-                android:src="@drawable/center_align" />
+                android:padding="7dp"
+                android:src="@drawable/center_align"
+                app:checkedTint="@color/blue" />
 
             <com.github.kubatatami.richedittext.views.ToggleImageButton
                 android:id="@+id/right_button"
@@ -118,10 +115,10 @@
                 android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                android:padding="7dp"
-                app:checkedTint="@color/blue"
                 android:background="@null"
-                android:src="@drawable/right_align" />
+                android:padding="7dp"
+                android:src="@drawable/right_align"
+                app:checkedTint="@color/blue" />
 
 
         </LinearLayout>
@@ -131,84 +128,119 @@
             android:layout_height="1px"
             android:background="@color/gray" />
 
-
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:padding="10dp">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/font_size_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:text="Size"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/normal_font" />
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="55dp"
+                android:layout_weight="1"
+                android:padding="10dp">
 
-            <ImageView
-                android:id="@+id/font_size_value_right_arrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:padding="7dp"
-                android:layout_marginRight="-7dp"
-                android:layout_centerVertical="true"
-                android:src="@drawable/up_arrow"/>
+                <TextView
+                    android:id="@+id/font_size_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="Size"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font" />
 
-            <TextView
-                android:id="@+id/font_size_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/font_size_value_right_arrow"
-                android:layout_centerVertical="true" />
+                <ImageView
+                    android:id="@+id/font_size_value_right_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="-7dp"
+                    android:padding="7dp"
+                    android:src="@drawable/up_arrow" />
 
-
-            <ImageView
-                android:id="@+id/font_size_value_left_arrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="7dp"
-                android:layout_toLeftOf="@id/font_size_value"
-                android:layout_centerVertical="true"
-                android:src="@drawable/down_arrow"/>
+                <TextView
+                    android:id="@+id/font_size_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/font_size_value_right_arrow" />
 
 
+                <ImageView
+                    android:id="@+id/font_size_value_left_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/font_size_value"
+                    android:padding="7dp"
+                    android:src="@drawable/down_arrow" />
 
-        </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="55dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/font_color_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="Color"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font" />
+
+
+                <com.github.kubatatami.richedittext.views.CircleView
+                    android:id="@+id/color_picker_value"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:background="@color/gray" />
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:orientation="horizontal"
             android:padding="10dp">
 
-            <TextView
-                android:id="@+id/font_color_text"
+            <com.github.kubatatami.richedittext.views.ToggleImageButton
+                android:id="@+id/number_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:text="Color"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/normal_font" />
+                android:layout_margin="3dp"
+                android:background="@null"
+                android:padding="7dp"
+                android:src="@drawable/format_list_numbers"
+                app:checkedTint="@color/blue" />
 
+            <com.github.kubatatami.richedittext.views.ToggleImageButton
+                android:id="@+id/bullet_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:background="@null"
+                android:padding="7dp"
+                android:src="@drawable/format_list_bulleted"
+                app:checkedTint="@color/blue" />
 
-            <com.github.kubatatami.richedittext.views.CircleView
-                android:id="@+id/color_picker_value"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"/>
-
-        </RelativeLayout>
-
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
@@ -216,7 +248,6 @@
             android:background="@color/gray" />
 
     </LinearLayout>
-
 
 
     <View

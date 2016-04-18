@@ -26,6 +26,8 @@ import static com.github.kubatatami.richedittext.styles.multi.TypefaceSpanContro
 
 public class TestActivity extends AppCompatActivity {
 
+    private static final boolean LIVE_PREVIEW = true;
+
     private RichEditText richEditText;
 
     private RichEditText richEditTextPreview;
@@ -56,6 +58,10 @@ public class TestActivity extends AppCompatActivity {
         Button sendButton = (Button) findViewById(R.id.send_button);
         webView.setWebChromeClient(new WebChromeClient());
         webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+        if (!LIVE_PREVIEW) {
+            webView.setVisibility(View.GONE);
+            richEditTextPreview.setVisibility(View.GONE);
+        }
         richEditText.addOnHistoryChangeListener(new HistoryModule.OnHistoryChangeListener() {
             @Override
             public void onHistoryChange(int undoSteps, int redoSteps) {
@@ -64,10 +70,12 @@ public class TestActivity extends AppCompatActivity {
                     public void run() {
                         String html = richEditText.getHtml();
                         Log.i("html", html);
-                        htmlView.setText(html);
-                        webView.getSettings().setDefaultTextEncodingName("utf-8");
-                        webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
-                        richEditTextPreview.setHtml(html);
+                        if (LIVE_PREVIEW) {
+                            htmlView.setText(html);
+                            webView.getSettings().setDefaultTextEncodingName("utf-8");
+                            webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
+                            richEditTextPreview.setHtml(html);
+                        }
                     }
                 });
             }
@@ -101,8 +109,7 @@ public class TestActivity extends AppCompatActivity {
                 new String[]{"Courier New", "mono"},
                 "fonts/", "LiberationMono");
         TypefaceSpanController.registerFonts(arialFont, timesFont, courierFont);
-        richEditText.typefaceClick(courierFont);
-        richEditText.setLineSpacing(1f, 2f);
+        panelView.toggle(false);
     }
 
     @Override

@@ -20,7 +20,7 @@ public abstract class StyleController<T, Z> extends MultiStyleController<T, Z> i
     }
 
     @Override
-    public String beginTag(Object span) {
+    public String beginTag(Object span, boolean continuation) {
         Z spanValue = getValueFromSpan((T) span);
         String style = getStyle(spanValue);
         if (style.length() > 0) {

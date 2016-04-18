@@ -50,7 +50,7 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
     }
 
     @Override
-    public String beginTag(Object span) {
+    public String beginTag(Object span, boolean continuation) {
         RichURLSpan urlSpan = (RichURLSpan) span;
         return "<a href=\"" + urlSpan.getUrlModel().getUrl() + "\" alt=\"" + urlSpan.getUrlModel().getAlt() + "\">";
     }

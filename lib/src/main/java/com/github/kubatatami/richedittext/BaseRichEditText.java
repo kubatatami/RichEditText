@@ -47,6 +47,8 @@ public class BaseRichEditText extends EditText {
 
     private static Context appContext;
 
+    private boolean passiveStatus;
+
     public BaseRichEditText(Context context) {
         super(context);
         init(context);
@@ -107,25 +109,25 @@ public class BaseRichEditText extends EditText {
     @Override
     protected void onSelectionChanged(int selStart, int selEnd) {
         super.onSelectionChanged(selStart, selEnd);
-        checkAfterChange(false);
+        checkAfterChange(passiveStatus);
     }
 
     @Override
     public void setTextSize(int unit, float size) {
         super.setTextSize(unit, size);
-        checkAfterChange(false);
+        checkAfterChange(passiveStatus);
     }
 
     @Override
     public void setTextColor(int color) {
         super.setTextColor(color);
-        checkAfterChange(false);
+        checkAfterChange(passiveStatus);
     }
 
     @Override
     public void setTextColor(ColorStateList colors) {
         super.setTextColor(colors);
-        checkAfterChange(false);
+        checkAfterChange(passiveStatus);
     }
 
     @Override
@@ -166,7 +168,10 @@ public class BaseRichEditText extends EditText {
 
     public void setHtml(String html, String style) {
         try {
+            passiveStatus = true;
             setText(HtmlImportModule.fromHtml(this, html, spanControllerMap.values(), properties, style, false));
+            passiveStatus = false;
+            checkAfterChange(false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -253,6 +258,7 @@ public class BaseRichEditText extends EditText {
     void binaryClick(Class<? extends BinaryStyleController<?>> clazz) {
         if (getModule(clazz).perform(getText(), getCurrentSelection())) {
             historyModule.saveHistory();
+            checkAfterChange(true);
         }
     }
 

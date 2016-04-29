@@ -231,6 +231,22 @@ public class RichEditText extends BaseRichEditText {
         }
     }
 
+    public boolean getOverallNumberList() {
+        return getModule(NumberListController.class).getCurrentValue(getText(), getAllSelectionInfo());
+    }
+
+    public boolean getCurrentNumberList() {
+        return getModule(NumberListController.class).getCurrentValue(getText(), StyleSelectionInfo.getStyleSelectionInfo(this));
+    }
+
+    public boolean getOverallBulletList() {
+        return getModule(BulletListController.class).getCurrentValue(getText(), getAllSelectionInfo());
+    }
+
+    public boolean getCurrentBulletList() {
+        return getModule(BulletListController.class).getCurrentValue(getText(), StyleSelectionInfo.getStyleSelectionInfo(this));
+    }
+
     public boolean getOverallBold() {
         return getModule(BoldSpanController.class).getCurrentValue(getText(), getAllSelectionInfo());
     }

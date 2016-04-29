@@ -7,7 +7,6 @@ import android.text.Spannable;
 import android.text.style.LeadingMarginSpan;
 
 import com.github.kubatatami.richedittext.other.DimenUtil;
-import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
 
 public class NumberListController extends ListController<NumberListController.RichNumberIndentSpan> {
 
@@ -34,30 +33,18 @@ public class NumberListController extends ListController<NumberListController.Ri
                                       boolean first, Layout l) {
             if (first) {
                 start = ((Spannable) text).getSpanStart(this);
-                String spanText = text.subSequence(start < end ? start + 1 : start, end).toString();
                 int index = getIndex((Spannable) text, start);
-                float textSize = getTextSize((Spannable) text, spanText.lastIndexOf("\n") + start + 1, paint);
-                drawIndex(canvas, paint, x, dir, baseline, index, textSize);
+                drawIndex(canvas, paint, x, dir, baseline, index);
             }
-        }
-
-        private float getTextSize(Spannable spanText, int i, Paint paint) {
-            SizeSpanController.RichAbsoluteSizeSpan[] spans = spanText.getSpans(i, i, SizeSpanController.RichAbsoluteSizeSpan.class);
-            if (spans.length > 0) {
-                return spans[0].getSize();
-            }
-            return paint.getTextSize();
         }
 
         public void drawIndex(Canvas canvas, Paint paint, int x, int dir,
-                              int baseline, int index, float textSize) {
+                              int baseline, int index) {
             Paint.Style orgStyle = paint.getStyle();
-            float orgSize = paint.getTextSize();
             paint.setStyle(Paint.Style.FILL);
-            paint.setTextSize(textSize);
-            canvas.drawText(index + ".", (x) * dir, baseline, paint);
+            float width = paint.measureText("4.  ");
+            canvas.drawText(index + ".", (x - width + gapWidth) * dir, baseline, paint);
             paint.setStyle(orgStyle);
-            paint.setTextSize(orgSize);
         }
 
         private int getIndex(Spannable spanText, int start) {

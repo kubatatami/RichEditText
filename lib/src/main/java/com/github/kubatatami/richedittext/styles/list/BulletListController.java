@@ -36,28 +36,30 @@ public class BulletListController extends ListController<BulletListController.Ri
 
         @Override
         public void drawLeadingMargin(Canvas c, Paint p, int x, int dir, int top, int baseline, int bottom, CharSequence text, int start, int end, boolean first, Layout layout) {
-            Paint.Style style = p.getStyle();
-            int oldcolor = p.getColor();
-            p.setColor(mColor);
-            p.setStyle(Paint.Style.FILL);
-            int y = baseline - BULLET_RADIUS;
-            if (c.isHardwareAccelerated()) {
-                if (sBulletPath == null) {
-                    sBulletPath = new Path();
-                    // Bullet is slightly better to avoid aliasing artifacts on mdpi devices.
-                    sBulletPath.addCircle(0.0f, 0.0f, 1.2f * BULLET_RADIUS, Path.Direction.CW);
+            if (first) {
+                Paint.Style style = p.getStyle();
+                int oldcolor = p.getColor();
+                p.setColor(mColor);
+                p.setStyle(Paint.Style.FILL);
+                int y = baseline - BULLET_RADIUS;
+                if (c.isHardwareAccelerated()) {
+                    if (sBulletPath == null) {
+                        sBulletPath = new Path();
+                        // Bullet is slightly better to avoid aliasing artifacts on mdpi devices.
+                        sBulletPath.addCircle(0.0f, 0.0f, 1.2f * BULLET_RADIUS, Path.Direction.CW);
+                    }
+
+                    c.save();
+                    c.translate(x, y);
+                    c.drawPath(sBulletPath, p);
+                    c.restore();
+                } else {
+                    c.drawCircle(x, y, BULLET_RADIUS, p);
                 }
 
-                c.save();
-                c.translate(x, y);
-                c.drawPath(sBulletPath, p);
-                c.restore();
-            } else {
-                c.drawCircle(x, y, BULLET_RADIUS, p);
+                p.setColor(oldcolor);
+                p.setStyle(style);
             }
-
-            p.setColor(oldcolor);
-            p.setStyle(style);
         }
     }
 

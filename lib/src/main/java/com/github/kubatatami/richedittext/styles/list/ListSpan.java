@@ -42,7 +42,9 @@ public class ListSpan implements LeadingMarginSpan, LineHeightSpan.WithDensity, 
     @Override
     public void chooseHeight(CharSequence text, int start, int end, int spanstartv, int v, Paint.FontMetricsInt fm, TextPaint paint) {
         if (((Spanned) text).getSpanStart(this) == start) {
-            fm.ascent -= VERTICAL_SPACING * paint.density;
+            if (start == 0 || ((Spanned) text).getSpans(start - 1, start - 1, ListSpan.class).length == 0) {
+                fm.ascent -= VERTICAL_SPACING * paint.density;
+            }
         }
         if (((Spanned) text).getSpanEnd(this) <= end) {
             fm.bottom += VERTICAL_SPACING * paint.density;

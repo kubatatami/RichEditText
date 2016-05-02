@@ -56,4 +56,5 @@ public class ListSpan implements LeadingMarginSpan, LineHeightSpan.WithDensity, 
     public void chooseHeight(CharSequence text, int start, int end, int spanstartv, int v, Paint.FontMetricsInt fm) {
 
     }
+
 }

@@ -9,13 +9,13 @@ import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
 import com.github.kubatatami.richedittext.styles.base.LineChangingController;
 import com.github.kubatatami.richedittext.styles.base.LineStyleController;
+import com.github.kubatatami.richedittext.styles.line.AlignmentSpanController;
+import com.github.kubatatami.richedittext.styles.line.AlignmentSpanController.RichAlignmentSpanStandard;
 
 import org.xml.sax.Attributes;
 
 import java.util.List;
 import java.util.Map;
-
-import static com.github.kubatatami.richedittext.styles.base.LineStyleController.getLineInfo;
 
 public class ListController<T extends ListItemSpan> extends BinaryStyleController<ListSpan> implements LineChangingController {
 
@@ -62,9 +62,14 @@ public class ListController<T extends ListItemSpan> extends BinaryStyleControlle
     }
 
     @Override
-    public String beginTag(Object span, boolean continuation) {
+    public String beginTag(Object span, boolean continuation, Object[] spans) {
         if (span.getClass().equals(internalClazz)) {
-            return "<" + LI + ">";
+            RichAlignmentSpanStandard alignmentSpanStandard = getAlignment(spans);
+            if (alignmentSpanStandard != null) {
+                return "<" + LI + " style=\"" + AlignmentSpanController.beginStyle(alignmentSpanStandard) + "\">";
+            } else {
+                return "<" + LI + ">";
+            }
         } else if (continuation) {
             return "";
         } else {
@@ -73,7 +78,7 @@ public class ListController<T extends ListItemSpan> extends BinaryStyleControlle
     }
 
     @Override
-    public String endTag(Object span, boolean end) {
+    public String endTag(Object span, boolean end, Object[] spans) {
         if (span.getClass().equals(internalClazz)) {
             return "</" + LI + ">";
         } else if (end) {
@@ -129,7 +134,7 @@ public class ListController<T extends ListItemSpan> extends BinaryStyleControlle
         int spanStart = editable.getSpanStart(span);
         int spanEnd = editable.getSpanEnd(span);
         int spanFlags = editable.getSpanFlags(span);
-        Class<? extends ListItemSpan> spanInternalClass = (Class<? extends ListItemSpan>) ((ListSpan)span).getInternalClazz();
+        Class<? extends ListItemSpan> spanInternalClass = (Class<? extends ListItemSpan>) ((ListSpan) span).getInternalClazz();
         removeSpan(span, editable);
         if (spanStart != lineInfo.start && spanEnd != lineInfo.end) {
             add(editable, spanStart, lineInfo.start - 1, spanFlags, spanInternalClass);
@@ -239,6 +244,32 @@ public class ListController<T extends ListItemSpan> extends BinaryStyleControlle
             text.setSpan(createInternalSpan(), i, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             i = end + 1;
         }
+    }
+
+    private RichAlignmentSpanStandard getAlignment(Object[] spans) {
+        for (Object otherSpan : spans) {
+            if (otherSpan instanceof RichAlignmentSpanStandard) {
+                return (RichAlignmentSpanStandard) otherSpan;
+            }
+        }
+        return null;
+    }
+
+    private LineStyleController.LineInfo getLineInfo(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+        int startSel = Math.max(0, Math.min(styleSelectionInfo.realSelectionStart, editable.length()));
+        int endSel = Math.max(0, Math.min(styleSelectionInfo.realSelectionEnd, editable.length()));
+        String text = editable.toString();
+        int start = text.substring(0, startSel).lastIndexOf("\n");
+        int end = endSel > 0 && text.charAt(endSel - 1) == '\n' ? endSel : text.indexOf("\n", endSel);
+        if (start == -1) {
+            start = 0;
+        } else {
+            start++;
+        }
+        if (end == -1) {
+            end = editable.length();
+        }
+        return new LineStyleController.LineInfo(start, end);
     }
 
     private T createInternalSpan() {

@@ -80,7 +80,7 @@ public abstract class HtmlExportModule {
             for (Object span : spans) {
                 SpanController<?> controller = SpanUtil.acceptController(spanControllers, span);
                 if (controller != null && text.getSpanStart(span) != text.getSpanEnd(span)) {
-                    out.append(controller.beginTag(span, text.getSpanStart(span) != i));
+                    out.append(controller.beginTag(span, text.getSpanStart(span) != i, spans));
                 }
             }
             if (withinCallback != null) {
@@ -90,7 +90,7 @@ public abstract class HtmlExportModule {
             for (int j = spans.length - 1; j >= 0; j--) {
                 SpanController<?> controller = SpanUtil.acceptController(spanControllers, spans[j]);
                 if (controller != null) {
-                    out.append(controller.endTag(spans[j], text.getSpanEnd(spans[j]) == next));
+                    out.append(controller.endTag(spans[j], text.getSpanEnd(spans[j]) == next, spans));
                 }
             }
         }

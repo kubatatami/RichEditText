@@ -112,7 +112,7 @@ public abstract class BinaryStyleBaseController<T> extends BinaryStyleController
     }
 
     @Override
-    public String beginTag(Object span, boolean continuation) {
+    public String beginTag(Object span, boolean continuation, Object[] spans) {
         return "<" + tagName + ">";
     }
 

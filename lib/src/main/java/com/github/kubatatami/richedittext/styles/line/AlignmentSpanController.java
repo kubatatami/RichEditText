@@ -9,6 +9,7 @@ import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
 import com.github.kubatatami.richedittext.styles.base.LineStyleController;
+import com.github.kubatatami.richedittext.styles.list.ListSpan;
 
 import org.xml.sax.Attributes;
 
@@ -22,7 +23,6 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpanCo
     public AlignmentSpanController() {
         super(RichAlignmentSpanStandard.class, "div");
     }
-
 
     @Override
     public Layout.Alignment getValueFromSpan(RichAlignmentSpanStandard span) {
@@ -47,8 +47,27 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpanCo
     }
 
     @Override
-    public String beginTag(Object span, boolean continuation) {
-        Layout.Alignment spanValue = getValueFromSpan((RichAlignmentSpanStandard) span);
+    public String beginTag(Object span, boolean continuation, Object[] spans) {
+        return isInsideList(spans) ? "" : "<div style=\"" + beginStyle(span) + ";\">";
+    }
+
+    private boolean isInsideList(Object[] spans) {
+        boolean insideList = false;
+        for (Object otherSpan : spans) {
+            if (otherSpan instanceof ListSpan) {
+                insideList = true;
+            }
+        }
+        return insideList;
+    }
+
+    @Override
+    public String endTag(Object span, boolean end, Object[] spans) {
+        return isInsideList(spans) ? "" : super.endTag(span, end, spans);
+    }
+
+    public static String beginStyle(Object span) {
+        Layout.Alignment spanValue = ((RichAlignmentSpanStandard) span).getAlignment();
         String alignValue;
         switch (spanValue) {
             case ALIGN_CENTER:
@@ -62,7 +81,7 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpanCo
                 alignValue = "left";
                 break;
         }
-        return "<div style=\"" + TEXT_ALIGN + ": " + alignValue + ";\">";
+        return TEXT_ALIGN + ": " + alignValue + ";";
     }
 
     @Override

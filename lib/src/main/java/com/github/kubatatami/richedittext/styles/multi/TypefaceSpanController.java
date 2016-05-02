@@ -57,7 +57,7 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
 
 
     @Override
-    public String beginTag(Object span, boolean continuation) {
+    public String beginTag(Object span, boolean continuation, Object[] spans) {
         String[] familyValues = ((FontSpan) span).getTypeface().getFamilyValues();
         return "<span style=\"" + STYLE_NAME + ": " + StringUtils.join(familyValues, ", ") + ";\">";
     }

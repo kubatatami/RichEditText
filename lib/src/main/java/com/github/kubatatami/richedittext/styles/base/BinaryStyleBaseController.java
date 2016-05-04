@@ -9,9 +9,6 @@ import org.xml.sax.Attributes;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Kuba on 11/11/14.
- */
 public abstract class BinaryStyleBaseController<T> extends BinaryStyleController<T> {
 
 

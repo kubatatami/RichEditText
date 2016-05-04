@@ -12,9 +12,6 @@ import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-/**
- * Created by Kuba on 05/01/15.
- */
 public class LinkSpanController extends MultiStyleController<LinkSpanController.RichURLSpan, LinkSpanController.Link> {
 
     public LinkSpanController() {

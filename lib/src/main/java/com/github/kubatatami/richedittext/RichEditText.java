@@ -19,9 +19,6 @@ import com.github.kubatatami.richedittext.styles.multi.LinkSpanController;
 import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
 import com.github.kubatatami.richedittext.styles.multi.TypefaceSpanController;
 
-/**
- * Created by Kuba on 20/11/14.
- */
 public class RichEditText extends BaseRichEditText {
 
     public RichEditText(Context context) {

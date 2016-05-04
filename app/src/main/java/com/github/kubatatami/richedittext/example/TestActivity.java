@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,7 +14,9 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.RichEditText;
 import com.github.kubatatami.richedittext.modules.HistoryModule;
 import com.github.kubatatami.richedittext.styles.multi.TypefaceSpanController;
@@ -110,6 +113,12 @@ public class TestActivity extends AppCompatActivity {
                 "fonts/", "LiberationMono");
         TypefaceSpanController.registerFonts(arialFont, timesFont, courierFont);
         panelView.toggle(false);
+        richEditText.addOnTextChangeListener(new BaseRichEditText.OnValueChangeListener<Editable>() {
+            @Override
+            public void onValueChange(Editable value) {
+                Toast.makeText(TestActivity.this, "TextChanged", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

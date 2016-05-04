@@ -3,9 +3,6 @@ package com.github.kubatatami.richedittext.other;
 import android.text.Editable;
 import android.text.TextWatcher;
 
-/**
- * Created by Kuba on 12/11/14.
- */
 public class TextWatcherAdapter implements TextWatcher {
 
     @Override

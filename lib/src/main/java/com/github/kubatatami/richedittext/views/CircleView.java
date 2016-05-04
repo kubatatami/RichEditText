@@ -6,9 +6,6 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
-/**
- * Created by Kuba on 27/01/15.
- */
 public class CircleView extends View {
 
     private final Paint paint = new Paint();

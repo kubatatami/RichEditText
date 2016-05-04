@@ -12,9 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Kuba on 12/11/14.
- */
 public abstract class MultiStyleController<T, Z> extends SpanController<T> {
 
     private Z value;
@@ -138,6 +135,7 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Z getCurrentValue(BaseRichEditText editText, StyleSelectionInfo styleSelectionInfo) {
         T[] spans = editText.getText().getSpans(styleSelectionInfo.realSelectionStart, styleSelectionInfo.realSelectionEnd, getClazz());
         spans = (T[]) filter(spans).toArray();

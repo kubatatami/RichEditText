@@ -17,9 +17,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * Created by Kuba on 19/11/14.
- */
 public class SpanUtil {
 
     public static boolean removeUnusedSpans(BaseRichEditText richEditText, Collection<SpanController<?>> controllers, int start, int count, int after) {

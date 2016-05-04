@@ -15,9 +15,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by Kuba on 02/01/15.
- */
 public abstract class HtmlImportModule {
 
     private static final HTMLSchema schema = new HTMLSchema();

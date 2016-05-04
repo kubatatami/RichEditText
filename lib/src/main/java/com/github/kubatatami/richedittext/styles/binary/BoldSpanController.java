@@ -6,9 +6,6 @@ import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-/**
- * Created by Kuba on 19/11/14.
- */
 public class BoldSpanController extends FontStyleSpanController {
 
     public BoldSpanController() {

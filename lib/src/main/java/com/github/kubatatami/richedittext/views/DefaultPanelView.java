@@ -30,9 +30,6 @@ import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
 
 import java.lang.reflect.Field;
 
-/**
- * Created by Kuba on 26/11/14.
- */
 public class DefaultPanelView extends RelativeLayout {
 
     private final static int ANIM_DURATION = 250;

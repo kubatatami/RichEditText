@@ -3,9 +3,6 @@ package com.github.kubatatami.richedittext.other;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
-/**
- * Created by Kuba on 12/11/14.
- */
 public class DimenUtil {
 
     public static float convertPixelsToDp(float px) {

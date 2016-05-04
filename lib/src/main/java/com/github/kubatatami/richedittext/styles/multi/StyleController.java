@@ -19,6 +19,7 @@ public abstract class StyleController<T, Z> extends MultiStyleController<T, Z> i
         this.styleName = styleName;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public String beginTag(Object span, boolean continuation, Object[] spans) {
         Z spanValue = getValueFromSpan((T) span);

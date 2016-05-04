@@ -5,9 +5,6 @@ import android.text.Spanned;
 
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 
-/**
- * Created by Kuba on 21/11/14.
- */
 public abstract class LineStyleController<T, Z> extends MultiStyleController<T, Z> {
 
     protected LineStyleController(Class<T> clazz, String tagName) {

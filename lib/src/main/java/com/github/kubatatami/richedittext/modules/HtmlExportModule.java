@@ -13,9 +13,6 @@ import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by Kuba on 20/11/14.
- */
 public abstract class HtmlExportModule {
 
     public static String getHtml(BaseRichEditText editText, Collection<SpanController<?>> spanControllers, List<StartStyleProperty> properties, boolean standalone) {

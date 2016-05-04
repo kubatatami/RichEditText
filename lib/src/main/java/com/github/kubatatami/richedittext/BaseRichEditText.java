@@ -2,6 +2,7 @@ package com.github.kubatatami.richedittext;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.os.Handler;
 import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -26,16 +27,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Kuba on 20/07/14.
- */
 public class BaseRichEditText extends EditText {
 
     private static final boolean DEBUG = false;
 
+    private static final long DEFAULT_TEXT_CHANGE_MS = 1000;
+
     private boolean inflateFinished;
 
     private boolean oneStyleMode;
+
+    private Handler handler;
 
     private final HistoryModule historyModule = new HistoryModule(this);
 
@@ -45,9 +47,20 @@ public class BaseRichEditText extends EditText {
 
     private final List<OnFocusChangeListener> onFocusChangeListeners = new ArrayList<>();
 
+    private final List<OnValueChangeListener<Editable>> onTextChangeListeners = new ArrayList<>();
+
     private static Context appContext;
 
     private boolean passiveStatus;
+
+    private long onTextChangeDelayMs = DEFAULT_TEXT_CHANGE_MS;
+
+    private Runnable textChangeRunnable = new Runnable() {
+        @Override
+        public void run() {
+            invokeTextChangeListeners();
+        }
+    };
 
     public BaseRichEditText(Context context) {
         super(context);
@@ -104,6 +117,16 @@ public class BaseRichEditText extends EditText {
             }
         });
         inflateFinished = true;
+    }
+
+    @Override
+    protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
+        super.onTextChanged(text, start, lengthBefore, lengthAfter);
+        if (handler == null) {
+            handler = new Handler();
+        }
+        handler.removeCallbacks(textChangeRunnable);
+        handler.postDelayed(textChangeRunnable, onTextChangeDelayMs);
     }
 
     @Override
@@ -274,6 +297,28 @@ public class BaseRichEditText extends EditText {
         } else {
             return StyleSelectionInfo.getStyleSelectionInfo(this);
         }
+    }
+
+    protected void invokeTextChangeListeners() {
+        for (OnValueChangeListener<Editable> listener : onTextChangeListeners) {
+            listener.onValueChange(getText());
+        }
+    }
+
+    public void addOnTextChangeListener(OnValueChangeListener<Editable> onValueChangeListener) {
+        onTextChangeListeners.add(onValueChangeListener);
+    }
+
+    public void removeOnTextChangeListener(OnValueChangeListener<Editable> onValueChangeListener) {
+        onTextChangeListeners.remove(onValueChangeListener);
+    }
+
+    public long getOnTextChangeDelay() {
+        return onTextChangeDelayMs;
+    }
+
+    public void setOnTextChangeDelay(long delayMs) {
+        this.onTextChangeDelayMs = delayMs;
     }
 
     public void addOnHistoryChangeListener(HistoryModule.OnHistoryChangeListener onHistoryChangeListener) {

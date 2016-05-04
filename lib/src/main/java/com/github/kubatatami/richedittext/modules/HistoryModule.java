@@ -10,9 +10,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by Kuba on 19/11/14.
- */
 public class HistoryModule {
 
     private final BaseRichEditText richEditText;

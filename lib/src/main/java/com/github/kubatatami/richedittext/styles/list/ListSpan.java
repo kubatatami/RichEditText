@@ -2,6 +2,7 @@ package com.github.kubatatami.richedittext.styles.list;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.Build;
 import android.text.Layout;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -18,6 +19,8 @@ public class ListSpan implements LeadingMarginSpan, LineHeightSpan.WithDensity, 
     private static final int VERTICAL_SPACING = 10;
 
     protected Class<?> internalClazz;
+
+    private int originalAscent;
 
     public ListSpan(Class<?> internalClazz) {
         this.internalClazz = internalClazz;
@@ -43,8 +46,13 @@ public class ListSpan implements LeadingMarginSpan, LineHeightSpan.WithDensity, 
     public void chooseHeight(CharSequence text, int start, int end, int spanstartv, int v, Paint.FontMetricsInt fm, TextPaint paint) {
         if (((Spanned) text).getSpanStart(this) == start) {
             if (start == 0 || ((Spanned) text).getSpans(start - 1, start - 1, ListSpan.class).length == 0) {
+                originalAscent = fm.ascent;
                 fm.ascent -= VERTICAL_SPACING * paint.density;
             }
+        }
+        //workaround for bug http://stackoverflow.com/a/33335794
+        else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
+            fm.ascent = originalAscent;
         }
         if (((Spanned) text).getSpanEnd(this) <= end) {
             fm.bottom += VERTICAL_SPACING * paint.density;

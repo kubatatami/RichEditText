@@ -25,9 +25,15 @@ public class ListController<T extends ListItemSpan> extends BinaryStyleControlle
 
     protected Class<T> internalClazz;
 
+    protected ListController oppositeController;
+
     protected ListController(Class<T> clazz, String tagName) {
         super(ListSpan.class, tagName);
         this.internalClazz = clazz;
+    }
+
+    public void setOppositeController(ListController oppositeController) {
+        this.oppositeController = oppositeController;
     }
 
     @Override
@@ -148,7 +154,6 @@ public class ListController<T extends ListItemSpan> extends BinaryStyleControlle
 
     @Override
     public void checkAfterChange(BaseRichEditText editText, StyleSelectionInfo styleSelectionInfo, boolean passive) {
-        super.checkAfterChange(editText, styleSelectionInfo, passive);
         if (!passive) {
             Editable text = editText.getEditableText();
             ListSpan[] spans = text.getSpans(0, text.length(), ListSpan.class);
@@ -179,6 +184,7 @@ public class ListController<T extends ListItemSpan> extends BinaryStyleControlle
             }
         }
         checkInternalSpans(editText.getEditableText());
+        super.checkAfterChange(editText, styleSelectionInfo, passive);
     }
 
     private boolean performInternal(Editable editable, StyleSelectionInfo styleSelectionInfo) {
@@ -189,6 +195,10 @@ public class ListController<T extends ListItemSpan> extends BinaryStyleControlle
                 add(editable, styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd);
                 return true;
             } else {
+                if (oppositeController != null) {
+                    oppositeController.clearSpanInfo();
+                    oppositeController.invokeListeners(false);
+                }
                 return false;
             }
         } else {

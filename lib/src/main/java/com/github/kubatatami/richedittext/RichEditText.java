@@ -37,19 +37,35 @@ public class RichEditText extends BaseRichEditText {
     }
 
     private void init() {
-        registerController(BoldSpanController.class, new BoldSpanController());
-        registerController(ItalicSpanController.class, new ItalicSpanController());
-        registerController(UnderlineSpanController.class, new UnderlineSpanController());
-        registerController(StrikeThroughSpanController.class, new StrikeThroughSpanController());
+        initBinary();
+        initMulti();
+        initList();
+        registerProperty(new LineHeight());
+    }
+
+    private void initList() {
+        NumberListController numberListController = new NumberListController();
+        BulletListController bulletListController = new BulletListController();
+        numberListController.setOppositeController(bulletListController);
+        bulletListController.setOppositeController(numberListController);
+        registerController(NumberListController.class, numberListController);
+        registerController(BulletListController.class, bulletListController);
+    }
+
+    private void initMulti() {
         registerController(SizeSpanController.class, new SizeSpanController());
         registerController(ColorSpanController.class, new ColorSpanController());
         registerController(BackgroundColorSpanController.class, new BackgroundColorSpanController());
         registerController(AlignmentSpanController.class, new AlignmentSpanController());
         registerController(LinkSpanController.class, new LinkSpanController());
         registerController(TypefaceSpanController.class, new TypefaceSpanController());
-        registerController(NumberListController.class, new NumberListController());
-        registerController(BulletListController.class, new BulletListController());
-        registerProperty(new LineHeight());
+    }
+
+    private void initBinary() {
+        registerController(BoldSpanController.class, new BoldSpanController());
+        registerController(ItalicSpanController.class, new ItalicSpanController());
+        registerController(UnderlineSpanController.class, new UnderlineSpanController());
+        registerController(StrikeThroughSpanController.class, new StrikeThroughSpanController());
     }
 
     public void boldClick() {

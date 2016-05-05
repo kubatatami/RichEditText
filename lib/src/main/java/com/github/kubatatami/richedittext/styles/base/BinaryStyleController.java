@@ -51,13 +51,17 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
                 add(editText.getText(), styleSelectionInfo.realSelectionEnd, spanInfo.end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
             }
         }
-        spanInfo = null;
+        clearSpanInfo();
         boolean currentValue = !isAdd(editText.getText(), styleSelectionInfo);
         boolean result = (currentValue != value);
         value = currentValue;
         if (result) {
             invokeListeners(value);
         }
+    }
+
+    public void clearSpanInfo() {
+        spanInfo = null;
     }
 
     @Override
@@ -74,7 +78,7 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
         if (spanInfo != null && spanInfo.span && styleSelectionInfo.selectionStart == styleSelectionInfo.selectionEnd
                 && spanInfo.start == styleSelectionInfo.selectionStart) {
             add(editable, spanInfo.start, spanInfo.end, spanInfo.flags);
-            spanInfo = null;
+            clearSpanInfo();
         }
     }
 
@@ -98,7 +102,7 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
             return false;
         }
         if (value && spanInfo != null) {
-            spanInfo = null;
+            clearSpanInfo();
             return false;
         }
         return true;

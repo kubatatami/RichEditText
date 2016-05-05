@@ -5,10 +5,11 @@ import android.graphics.Paint;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.style.LeadingMarginSpan;
+import android.text.style.UpdateLayout;
 
 import com.github.kubatatami.richedittext.other.DimenUtil;
 
-public abstract class ListItemSpan implements LeadingMarginSpan {
+public abstract class ListItemSpan implements LeadingMarginSpan, UpdateLayout {
 
     private final int gapWidth;
 

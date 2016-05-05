@@ -110,7 +110,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
                 if (spanController.acceptSpan(spanInfo.span)) {
                     StyleSelectionInfo selectionInfo = new StyleSelectionInfo(spanInfo.start, spanInfo.end, spanInfo.start, spanInfo.end, true);
                     if (spanController instanceof ListController) {
-                        LineStyleController.LineInfo lineInfo = new LineStyleController.LineInfo(spanInfo.start, spanInfo.end);
+                        LineStyleController.LineInfo lineInfo = new LineStyleController.LineInfo(spanInfo.start, spanInfo.end - 1);
                         ((ListController) spanController).perform(mSpannableSb, lineInfo);
                     } else if (spanController instanceof BinaryStyleController) {
                         ((BinaryStyleController) spanController).perform(mSpannableSb, selectionInfo);

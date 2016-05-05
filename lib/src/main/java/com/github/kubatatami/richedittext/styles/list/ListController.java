@@ -142,13 +142,11 @@ public class ListController<T extends ListItemSpan> extends BinaryStyleControlle
         int spanFlags = editable.getSpanFlags(span);
         Class<? extends ListItemSpan> spanInternalClass = (Class<? extends ListItemSpan>) ((ListSpan) span).getInternalClazz();
         removeSpan(span, editable);
-        if (spanStart < lineInfo.start && spanEnd > lineInfo.end) {
+        if (spanStart < lineInfo.start) {
             add(editable, spanStart, lineInfo.start - 1, spanFlags, spanInternalClass);
+        }
+        if (spanEnd > lineInfo.end) {
             add(editable, lineInfo.end + 1, spanEnd, spanFlags, spanInternalClass);
-        } else if (spanStart == lineInfo.start && spanEnd > lineInfo.end) {
-            add(editable, lineInfo.end + 1, spanEnd, spanFlags, spanInternalClass);
-        } else if (spanStart < lineInfo.start) {
-            add(editable, spanStart, lineInfo.start - 1, spanFlags, spanInternalClass);
         }
     }
 
@@ -270,7 +268,7 @@ public class ListController<T extends ListItemSpan> extends BinaryStyleControlle
         int endSel = Math.max(0, Math.min(styleSelectionInfo.realSelectionEnd, editable.length()));
         String text = editable.toString();
         int start = text.substring(0, startSel).lastIndexOf("\n");
-        int end = endSel > 0 && text.charAt(endSel - 1) == '\n' ? endSel : text.indexOf("\n", endSel);
+        int end = text.indexOf("\n", endSel);
         if (start == -1) {
             start = 0;
         } else {

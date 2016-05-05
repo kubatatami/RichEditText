@@ -20,7 +20,7 @@ public class ListSpan implements LeadingMarginSpan, LineHeightSpan.WithDensity, 
 
     protected Class<?> internalClazz;
 
-    private int originalAscent;
+    private int originalAscent = Integer.MIN_VALUE;
 
     public ListSpan(Class<?> internalClazz) {
         this.internalClazz = internalClazz;
@@ -51,7 +51,7 @@ public class ListSpan implements LeadingMarginSpan, LineHeightSpan.WithDensity, 
             }
         }
         //workaround for bug http://stackoverflow.com/a/33335794
-        else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
+        else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M && originalAscent != Integer.MIN_VALUE) {
             fm.ascent = originalAscent;
         }
         if (((Spanned) text).getSpanEnd(this) <= end) {

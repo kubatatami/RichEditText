@@ -2,7 +2,6 @@ package com.github.kubatatami.richedittext.styles.list;
 
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
-import android.text.style.LeadingMarginSpan;
 
 public class BulletListController extends ListController<BulletListController.RichBulletSpan> {
 
@@ -10,7 +9,7 @@ public class BulletListController extends ListController<BulletListController.Ri
         super(BulletListController.RichBulletSpan.class, "ul");
     }
 
-    public static class RichBulletSpan extends ListItemSpan implements LeadingMarginSpan {
+    public static class RichBulletSpan extends ListItemSpan {
 
         @NonNull
         protected String getText(int index) {

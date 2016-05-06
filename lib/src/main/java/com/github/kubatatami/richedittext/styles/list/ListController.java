@@ -245,12 +245,25 @@ public class ListController<T extends ListItemSpan> extends BinaryStyleControlle
         for (T internalSpan : text.getSpans(spanStart, spanEnd, internalClazz)) {
             text.removeSpan(internalSpan);
         }
+        for (TopMarginSpan internalSpan : text.getSpans(spanStart, spanEnd, TopMarginSpan.class)) {
+            text.removeSpan(internalSpan);
+        }
+        for (BottomMarginSpan internalSpan : text.getSpans(spanStart, spanEnd, BottomMarginSpan.class)) {
+            text.removeSpan(internalSpan);
+        }
         String[] lines = textStr.substring(spanStart, spanEnd).split("\n");
-        int i = spanStart;
+        int pos = spanStart;
+        int i = 0;
         for (String line : lines) {
-            int end = i + line.length();
-            text.setSpan(createInternalSpan(), i, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            i = end + 1;
+            int end = pos + line.length();
+            text.setSpan(createInternalSpan(), pos, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            if (i == 0 && (text.getSpans(pos - 1, pos - 1, ListSpan.class).length == 0)) {
+                text.setSpan(new TopMarginSpan(), pos, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            } else if (i == lines.length - 1) {
+                text.setSpan(new BottomMarginSpan(), pos, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            }
+            pos = end + 1;
+            i++;
         }
     }
 

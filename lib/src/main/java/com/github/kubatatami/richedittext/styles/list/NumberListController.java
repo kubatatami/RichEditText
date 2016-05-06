@@ -2,7 +2,6 @@ package com.github.kubatatami.richedittext.styles.list;
 
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
-import android.text.style.LeadingMarginSpan;
 
 public class NumberListController extends ListController<NumberListController.RichNumberIndentSpan> {
 
@@ -10,7 +9,7 @@ public class NumberListController extends ListController<NumberListController.Ri
         super(NumberListController.RichNumberIndentSpan.class, "ol");
     }
 
-    public static class RichNumberIndentSpan extends ListItemSpan implements LeadingMarginSpan {
+    public static class RichNumberIndentSpan extends ListItemSpan {
 
         @NonNull
         protected String getText(int index) {

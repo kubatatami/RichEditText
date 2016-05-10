@@ -121,6 +121,8 @@ public class DefaultPanelView extends RelativeLayout {
 
     private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onBulletListClickListeners = new ArrayList<>();
 
+    private View lists;
+
     public DefaultPanelView(Context context) {
         super(context);
         init();
@@ -333,6 +335,9 @@ public class DefaultPanelView extends RelativeLayout {
         redoButton.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
+    public void showLists(boolean show) {
+        lists.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
 
     public void connectWithRichEditText(final RichEditText richEditText) {
         this.richEditText = richEditText;
@@ -356,6 +361,8 @@ public class DefaultPanelView extends RelativeLayout {
         redoButton = (ImageView) findViewById(R.id.redo_button);
         fontSizeValueLeftArrow = (ImageView) findViewById(R.id.font_size_value_left_arrow);
         fontSizeValueRightArrow = (ImageView) findViewById(R.id.font_size_value_right_arrow);
+
+        lists = findViewById(R.id.lists);
 
         fontSizeText = (TextView) findViewById(R.id.font_size_text);
         fontColorText = (TextView) findViewById(R.id.font_color_text);
@@ -532,7 +539,7 @@ public class DefaultPanelView extends RelativeLayout {
             @Override
             public void onCheckedChanged(ToggleImageButton buttonView, boolean isChecked) {
                 richEditText.bulletListClick();
-                invokeListeners(onNumberListClickListeners, bulletListButton.isChecked());
+                invokeListeners(onBulletListClickListeners, bulletListButton.isChecked());
             }
         });
         richEditText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, adapter.getItem(0).getSize());

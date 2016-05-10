@@ -137,6 +137,7 @@
                 android:layout_width="0dp"
                 android:layout_height="55dp"
                 android:layout_alignParentLeft="true"
+                android:layout_alignWithParentIfMissing="true"
                 android:layout_toLeftOf="@+id/lists"
                 android:padding="10dp">
 

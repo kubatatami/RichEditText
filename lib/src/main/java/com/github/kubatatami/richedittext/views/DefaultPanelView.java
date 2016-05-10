@@ -29,6 +29,8 @@ import com.github.kubatatami.richedittext.modules.HistoryModule;
 import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DefaultPanelView extends RelativeLayout {
 
@@ -95,6 +97,29 @@ public class DefaultPanelView extends RelativeLayout {
 
     private View mainPanel;
 
+    private final List<BaseRichEditText.OnValueChangeListener<Layout.Alignment>> onAlignmentClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Float>> onSizeClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<ColorPanelVisibility>> onColorPanelShowListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Integer>> onColorClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onBoldClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onItalicClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onStrikeThroughClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onUnderlineClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Void>> onUndoClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Void>> onRedoClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onNumberListClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onBulletListClickListeners = new ArrayList<>();
 
     public DefaultPanelView(Context context) {
         super(context);
@@ -339,24 +364,28 @@ public class DefaultPanelView extends RelativeLayout {
             @Override
             public void onClick(View v) {
                 richEditText.boldClick();
+                invokeListeners(onBoldClickListeners, boldButton.isChecked());
             }
         });
         italicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 richEditText.italicClick();
+                invokeListeners(onItalicClickListeners, italicButton.isChecked());
             }
         });
         underlineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 richEditText.underlineClick();
+                invokeListeners(onUnderlineClickListeners, underlineButton.isChecked());
             }
         });
         strikethroughButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 richEditText.strikeThroughClick();
+                invokeListeners(onStrikeThroughClickListeners, strikethroughButton.isChecked());
             }
         });
 
@@ -370,7 +399,6 @@ public class DefaultPanelView extends RelativeLayout {
                 if (currentSizeItem > 0) {
                     currentSizeItem--;
                     setFontSize();
-                    richEditText.sizeClick(adapter.getItem(currentSizeItem));
                 }
             }
         });
@@ -381,7 +409,6 @@ public class DefaultPanelView extends RelativeLayout {
                 if (currentSizeItem < adapter.getCount() - 1) {
                     currentSizeItem++;
                     setFontSize();
-                    richEditText.sizeClick(adapter.getItem(currentSizeItem));
                 }
             }
         });
@@ -390,12 +417,14 @@ public class DefaultPanelView extends RelativeLayout {
             @Override
             public void onClick(View v) {
                 richEditText.undo();
+                invokeListeners(onUndoClickListeners, null);
             }
         });
         redoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 richEditText.redo();
+                invokeListeners(onRedoClickListeners, null);
             }
         });
 
@@ -439,7 +468,7 @@ public class DefaultPanelView extends RelativeLayout {
                     SizeSpanController.Size sizeEnum = adapter.getItem(i);
                     if (sizeEnum.getSize() == size) {
                         currentSizeItem = i;
-                        setFontSize();
+                        setFontSizeControls();
                         return;
                     }
                 }
@@ -449,7 +478,6 @@ public class DefaultPanelView extends RelativeLayout {
         richEditText.addOnColorChangeListener(new BaseRichEditText.OnValueChangeListener<Integer>() {
             @Override
             public void onValueChange(Integer value) {
-//                colorPicker.setNewCenterColor(value);
                 colorValue.setColor(value);
             }
         });
@@ -477,40 +505,34 @@ public class DefaultPanelView extends RelativeLayout {
         leftButton.setOnCheckedChangeListener(new ToggleImageButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(ToggleImageButton buttonView, boolean isChecked) {
-                setChecked(centerButton, false);
-                setChecked(rightButton, false);
-                richEditText.alignmentClick(Layout.Alignment.ALIGN_NORMAL);
-                setChecked(buttonView, true);
+                setAlignment(buttonView, centerButton, rightButton, Layout.Alignment.ALIGN_NORMAL);
             }
         });
         centerButton.setOnCheckedChangeListener(new ToggleImageButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(ToggleImageButton buttonView, boolean isChecked) {
-                setChecked(leftButton, false);
-                setChecked(rightButton, false);
-                richEditText.alignmentClick(Layout.Alignment.ALIGN_CENTER);
-                setChecked(buttonView, true);
+                setAlignment(buttonView, leftButton, rightButton, Layout.Alignment.ALIGN_CENTER);
             }
         });
         rightButton.setOnCheckedChangeListener(new ToggleImageButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(ToggleImageButton buttonView, boolean isChecked) {
-                setChecked(leftButton, false);
-                setChecked(centerButton, false);
-                richEditText.alignmentClick(Layout.Alignment.ALIGN_OPPOSITE);
-                setChecked(buttonView, true);
+                setAlignment(buttonView, leftButton, centerButton, Layout.Alignment.ALIGN_OPPOSITE);
             }
         });
         numberListButton.setOnCheckedChangeListener(new ToggleImageButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(ToggleImageButton buttonView, boolean isChecked) {
                 richEditText.numberListClick();
+                invokeListeners(onNumberListClickListeners, numberListButton.isChecked());
+
             }
         });
         bulletListButton.setOnCheckedChangeListener(new ToggleImageButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(ToggleImageButton buttonView, boolean isChecked) {
                 richEditText.bulletListClick();
+                invokeListeners(onNumberListClickListeners, bulletListButton.isChecked());
             }
         });
         richEditText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, adapter.getItem(0).getSize());
@@ -521,6 +543,27 @@ public class DefaultPanelView extends RelativeLayout {
                 showPrimaryColors();
             }
         });
+    }
+
+    protected void setAlignment(ToggleImageButton buttonView, ToggleImageButton other, ToggleImageButton other2, Layout.Alignment alignment) {
+        setChecked(other, false);
+        setChecked(other2, false);
+        invokeListeners(onAlignmentClickListeners, alignment);
+        richEditText.alignmentClick(alignment);
+        setChecked(buttonView, true);
+    }
+
+    protected void setFontSize() {
+        setFontSizeControls();
+        SizeSpanController.Size size = adapter.getItem(currentSizeItem);
+        richEditText.sizeClick(size);
+        invokeListeners(onSizeClickListeners, size.getSize());
+    }
+
+    private <T> void invokeListeners(List<BaseRichEditText.OnValueChangeListener<T>> listeners, T value) {
+        for (BaseRichEditText.OnValueChangeListener<T> listener : listeners) {
+            listener.onValueChange(value);
+        }
     }
 
     private void showPrimaryColors() {
@@ -576,8 +619,10 @@ public class DefaultPanelView extends RelativeLayout {
                 public void onClick(View v) {
                     hideAdditionalView();
                     setColorPanelVisibility(ColorPanelVisibility.INVISIBLE);
-                    colorValue.setColor(((CircleView) v).getColor());
-                    richEditText.colorClick(((CircleView) v).getColor());
+                    int color = ((CircleView) v).getColor();
+                    colorValue.setColor(color);
+                    richEditText.colorClick(color);
+                    invokeListeners(onColorClickListeners, color);
                 }
             });
         }
@@ -587,6 +632,8 @@ public class DefaultPanelView extends RelativeLayout {
 
     private void setColorPanelVisibility(ColorPanelVisibility visibility) {
         colorPanelVisibility = visibility;
+        invokeListeners(onColorPanelShowListeners, visibility);
+
     }
 
     public boolean onBack(boolean anim) {
@@ -613,7 +660,7 @@ public class DefaultPanelView extends RelativeLayout {
         fontColorText.setText(text);
     }
 
-    private void setFontSize() {
+    private void setFontSizeControls() {
         fontSizeSpinner.setText(adapter.getItem(currentSizeItem).getSize() + "");
         if (currentSizeItem == 0) {
             fontSizeValueLeftArrow.setColorFilter(grayColor);
@@ -646,6 +693,55 @@ public class DefaultPanelView extends RelativeLayout {
         INVISIBLE,
         PRIMARY,
         SECONDARY
+    }
+
+
+    public void addOnAlignmentClickListener(BaseRichEditText.OnValueChangeListener<Layout.Alignment> onAlignmentClickListener) {
+        onAlignmentClickListeners.add(onAlignmentClickListener);
+    }
+
+    public void addOnSizeClickListener(BaseRichEditText.OnValueChangeListener<Float> onSizeClickListener) {
+        onSizeClickListeners.add(onSizeClickListener);
+    }
+
+    public void addOnColorPanelShowListener(BaseRichEditText.OnValueChangeListener<ColorPanelVisibility> onColorPanelShowListener) {
+        onColorPanelShowListeners.add(onColorPanelShowListener);
+    }
+
+    public void addOnColorClickListener(BaseRichEditText.OnValueChangeListener<Integer> onColorClickListener) {
+        onColorClickListeners.add(onColorClickListener);
+    }
+
+    public void addOnBoldClickListener(BaseRichEditText.OnValueChangeListener<Boolean> onBoldClickListener) {
+        onBoldClickListeners.add(onBoldClickListener);
+    }
+
+    public void addOnItalicClickListener(BaseRichEditText.OnValueChangeListener<Boolean> onItalicClickListener) {
+        onItalicClickListeners.add(onItalicClickListener);
+    }
+
+    public void addOnStrikeThroughClickListener(BaseRichEditText.OnValueChangeListener<Boolean> onStrikeThroughClickListener) {
+        onStrikeThroughClickListeners.add(onStrikeThroughClickListener);
+    }
+
+    public void addOnUnderlineClickListener(BaseRichEditText.OnValueChangeListener<Boolean> onUnderlineClickListener) {
+        onUnderlineClickListeners.add(onUnderlineClickListener);
+    }
+
+    public void addOnUndoClickListener(BaseRichEditText.OnValueChangeListener<Void> onUndoClickListener) {
+        onUndoClickListeners.add(onUndoClickListener);
+    }
+
+    public void addOnRedoClickListener(BaseRichEditText.OnValueChangeListener<Void> onRedoClickListener) {
+        onRedoClickListeners.add(onRedoClickListener);
+    }
+
+    public void addOnNumberListClickListener(BaseRichEditText.OnValueChangeListener<Boolean> onNumberListClickListener) {
+        onNumberListClickListeners.add(onNumberListClickListener);
+    }
+
+    public void addOnBulletListClickListener(BaseRichEditText.OnValueChangeListener<Boolean> onBulletListClickListener) {
+        onBulletListClickListeners.add(onBulletListClickListener);
     }
 
 }

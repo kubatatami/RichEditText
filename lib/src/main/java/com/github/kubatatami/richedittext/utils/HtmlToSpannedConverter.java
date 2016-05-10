@@ -137,6 +137,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
                     ((StartStyleProperty) spanController).setPropertyFromTag(baseRichEditText, styleMap);
                 }
             }
+            return;
         }
         boolean supported = false;
         for (SpanController<?> spanController : mSpanControllers) {

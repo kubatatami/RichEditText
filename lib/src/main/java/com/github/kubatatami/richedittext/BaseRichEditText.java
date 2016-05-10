@@ -53,6 +53,8 @@ public class BaseRichEditText extends EditText {
 
     private boolean passiveStatus;
 
+    private boolean ignoreWindowFocusChange;
+
     private long onTextChangeDelayMs = DEFAULT_TEXT_CHANGE_MS;
 
     private Runnable textChangeRunnable = new Runnable() {
@@ -156,6 +158,13 @@ public class BaseRichEditText extends EditText {
     @Override
     public void setOnFocusChangeListener(OnFocusChangeListener l) {
         throw new UnsupportedOperationException("Use addOnFocusChangeListener!");
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasWindowFocus) {
+        if (!ignoreWindowFocusChange || hasWindowFocus) {
+            super.onWindowFocusChanged(true);
+        }
     }
 
     public void addOnFocusChangeListener(OnFocusChangeListener listener) {
@@ -352,5 +361,9 @@ public class BaseRichEditText extends EditText {
 
     public void setOneStyleMode(boolean oneStyleMode) {
         this.oneStyleMode = oneStyleMode;
+    }
+
+    public void setIgnoreWindowFocusChange(boolean ignoreWindowFocusChange) {
+        this.ignoreWindowFocusChange = ignoreWindowFocusChange;
     }
 }

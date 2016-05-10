@@ -128,7 +128,7 @@
             android:layout_height="1px"
             android:background="@color/gray" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -136,7 +136,8 @@
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="55dp"
-                android:layout_weight="1"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/lists"
                 android:padding="10dp">
 
                 <TextView
@@ -179,34 +180,37 @@
 
             </RelativeLayout>
 
-            <RelativeLayout
-                android:layout_width="0dp"
+            <LinearLayout
+                android:id="@+id/lists"
+                android:layout_width="wrap_content"
                 android:layout_height="55dp"
-                android:layout_weight="1"
+                android:layout_alignParentRight="true"
                 android:orientation="horizontal"
                 android:padding="10dp">
 
-                <TextView
-                    android:id="@+id/font_color_text"
+                <com.github.kubatatami.richedittext.views.ToggleImageButton
+                    android:id="@+id/number_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:text="Color"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font" />
+                    android:layout_margin="3dp"
+                    android:background="@null"
+                    android:padding="7dp"
+                    android:src="@drawable/format_list_numbers"
+                    app:checkedTint="@color/blue" />
 
+                <com.github.kubatatami.richedittext.views.ToggleImageButton
+                    android:id="@+id/bullet_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    android:background="@null"
+                    android:padding="7dp"
+                    android:src="@drawable/format_list_bulleted"
+                    app:checkedTint="@color/blue" />
 
-                <com.github.kubatatami.richedittext.views.CircleView
-                    android:id="@+id/color_picker_value"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true" />
+            </LinearLayout>
 
-            </RelativeLayout>
-
-        </LinearLayout>
+        </RelativeLayout>
 
 
         <View
@@ -214,33 +218,32 @@
             android:layout_height="1px"
             android:background="@color/gray" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:orientation="horizontal"
             android:padding="10dp">
 
-            <com.github.kubatatami.richedittext.views.ToggleImageButton
-                android:id="@+id/number_list"
+            <TextView
+                android:id="@+id/font_color_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="3dp"
-                android:background="@null"
-                android:padding="7dp"
-                android:src="@drawable/format_list_numbers"
-                app:checkedTint="@color/blue" />
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="Color"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/normal_font" />
 
-            <com.github.kubatatami.richedittext.views.ToggleImageButton
-                android:id="@+id/bullet_list"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dp"
-                android:background="@null"
-                android:padding="7dp"
-                android:src="@drawable/format_list_bulleted"
-                app:checkedTint="@color/blue" />
 
-        </LinearLayout>
+            <com.github.kubatatami.richedittext.views.CircleView
+                android:id="@+id/color_picker_value"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+
+        </RelativeLayout>
+
 
         <View
             android:layout_width="match_parent"

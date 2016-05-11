@@ -62,7 +62,8 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
 
     @Override
     public boolean perform(Link value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
-        return false;
+        add(value, editable, styleSelectionInfo.realSelectionStart, styleSelectionInfo.realSelectionEnd);
+        return true;
     }
 
     @Override

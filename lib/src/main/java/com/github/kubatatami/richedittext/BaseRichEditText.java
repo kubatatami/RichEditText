@@ -387,10 +387,14 @@ public class BaseRichEditText extends EditText {
     }
 
     public void addInseparable(String text) {
-        addInseparable(text, getSelectionStart());
+        if (getSelectionStart() != -1) {
+            addInseparable(text, getSelectionStart(), getSelectionEnd());
+        } else{
+            addInseparable(text, length(), length());
+        }
     }
 
-    public void addInseparable(String text, int position) {
-        InseparableModule.addInseparable(getEditableText(), text, position);
+    public void addInseparable(String text, int start, int end) {
+        InseparableModule.addInseparable(getEditableText(), text, start, end);
     }
 }

@@ -21,9 +21,9 @@ public abstract class InseparableModule {
 
     private static List<Inseparable> toRemove = new ArrayList<>();
 
-    public static void addInseparable(Editable editable, String inseparableText, int position) {
-        editable.insert(position, inseparableText);
-        setInseparable(editable, position, position + inseparableText.length());
+    public static void addInseparable(Editable editable, String inseparableText, int start, int end) {
+        editable.replace(start, end, inseparableText);
+        setInseparable(editable, start, start + inseparableText.length());
     }
 
     public static void check(Editable editable, int start, int count) {

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Handler;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -12,6 +14,7 @@ import android.widget.EditText;
 import com.github.kubatatami.richedittext.modules.HistoryModule;
 import com.github.kubatatami.richedittext.modules.HtmlExportModule;
 import com.github.kubatatami.richedittext.modules.HtmlImportModule;
+import com.github.kubatatami.richedittext.modules.InseparableModule;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.other.CompatUtils;
 import com.github.kubatatami.richedittext.other.SpanUtil;
@@ -23,6 +26,7 @@ import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +68,28 @@ public class BaseRichEditText extends EditText {
         }
     };
 
+    private TextWatcher mainTextChangedListener = new TextWatcherAdapter() {
+
+        private boolean removed;
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            historyModule.saveHistory();
+            checkBeforeChange(after > 0);
+            removed = SpanUtil.removeUnusedSpans(BaseRichEditText.this, spanControllerMap.values(), start, count, after);
+            InseparableModule.check(getEditableText(), start, count);
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            super.afterTextChanged(s);
+            if (removed) {
+                SpanUtil.inclusiveSpans(BaseRichEditText.this, spanControllerMap.values());
+            }
+            InseparableModule.remove(s);
+        }
+    };
+
     public BaseRichEditText(Context context) {
         super(context);
         init(context);
@@ -99,25 +125,7 @@ public class BaseRichEditText extends EditText {
     protected void onFinishInflate() {
         super.onFinishInflate();
         setInputType(getInputType() | EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        addTextChangedListener(new TextWatcherAdapter() {
-
-            boolean removed;
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                historyModule.saveHistory();
-                checkBeforeChange(after > 0);
-                removed = SpanUtil.removeUnusedSpans(BaseRichEditText.this, spanControllerMap.values(), start, count, after);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                super.afterTextChanged(s);
-                if (removed) {
-                    SpanUtil.inclusiveSpans(BaseRichEditText.this, spanControllerMap.values());
-                }
-            }
-        });
+        addTextChangedListener(mainTextChangedListener);
         inflateFinished = true;
     }
 
@@ -165,6 +173,13 @@ public class BaseRichEditText extends EditText {
         if (!ignoreWindowFocusChange || hasWindowFocus) {
             super.onWindowFocusChanged(true);
         }
+    }
+
+    @Override
+    public void setFilters(InputFilter[] filters) {
+        InputFilter[] result = Arrays.copyOf(filters, filters.length + 1);
+        result[filters.length] = InseparableModule.getFilter();
+        super.setFilters(result);
     }
 
     public void addOnFocusChangeListener(OnFocusChangeListener listener) {
@@ -365,5 +380,17 @@ public class BaseRichEditText extends EditText {
 
     public void setIgnoreWindowFocusChange(boolean ignoreWindowFocusChange) {
         this.ignoreWindowFocusChange = ignoreWindowFocusChange;
+    }
+
+    public void setInseparable(int start, int end) {
+        InseparableModule.setInseparable(getEditableText(), start, end);
+    }
+
+    public void addInseparable(String text) {
+        addInseparable(text, getSelectionStart());
+    }
+
+    public void addInseparable(String text, int position) {
+        InseparableModule.addInseparable(getEditableText(), text, position);
     }
 }

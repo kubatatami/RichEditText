@@ -4,5 +4,6 @@
     <string name="app_name">RichEditText</string>
     <string name="add_link">Add link</string>
     <string name="show_panel">Show panel</string>
+    <string name="add_inseparable">Add inseparable</string>
 
 </resources>

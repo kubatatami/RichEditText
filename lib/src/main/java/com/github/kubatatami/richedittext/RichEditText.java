@@ -320,6 +320,14 @@ public class RichEditText extends BaseRichEditText {
         return getModule(LinkSpanController.class).getCurrentValue(this, StyleSelectionInfo.getStyleSelectionInfo(this));
     }
 
+    public void setAutoUrlFix(boolean autoUrlFix) {
+        getModule(LinkSpanController.class).setAutoUrlFix(autoUrlFix);
+    }
+
+    public void setLinkInseparable(boolean inseparable) {
+        getModule(LinkSpanController.class).setInseparable(inseparable);
+    }
+
     public void clearAllListeners() {
         clearOnFocusChangeListeners();
         clearOnHistoryChangeListeners();

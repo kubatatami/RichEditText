@@ -133,8 +133,11 @@ public class TestActivity extends AppCompatActivity {
             case R.id.menu_show_panel:
                 panelView.toggle(false);
                 break;
+            case R.id.menu_add_inseparable:
+                richEditText.addInseparable("[[inseparable]]");
+                break;
             case R.id.menu_add_link:
-                richEditText.addLink("", "http://www.google.pl");
+                richEditText.addLink("", "www.google.pl");
                 break;
             case R.id.menu_arial:
                 richEditText.typefaceClick(arialFont);

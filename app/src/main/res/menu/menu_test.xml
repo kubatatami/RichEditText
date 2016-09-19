@@ -2,6 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item android:id="@+id/menu_add_inseparable"
+        app:showAsAction="never"
+        android:title="@string/add_inseparable"/>
+
     <item android:id="@+id/menu_add_link"
         android:icon="@android:drawable/stat_sys_upload_done"
         app:showAsAction="ifRoom"

@@ -57,7 +57,7 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
         return "<a href=\"" + autoUrlFix(urlSpan.getUrlModel().getUrl()) + "\" alt=\"" + urlSpan.getUrlModel().getAlt() + "\">";
     }
 
-    private String autoUrlFix(String url) {
+    protected String autoUrlFix(String url) {
         return !autoUrlFix || url.contains("://") || url.contains("mailto:") ? url : "http://" + url;
     }
 

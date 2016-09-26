@@ -320,6 +320,20 @@ public class RichEditText extends BaseRichEditText {
         return getModule(LinkSpanController.class).getCurrentValue(this, StyleSelectionInfo.getStyleSelectionInfo(this));
     }
 
+    public void changeCurrentLinkText(String text) {
+        changeLinkText(getSelectionStart(), text);
+    }
+
+    public void changeLinkText(int pos, String text) {
+        LinkSpanController.RichURLSpan[] spans = getText().getSpans(pos, pos, LinkSpanController.RichURLSpan.class);
+        if (spans.length == 0) {
+            throw new IllegalStateException("No link span at this position.");
+        } else if (spans.length > 1) {
+            throw new IllegalStateException("More than one link span at this position.");
+        }
+        changeTextOnSpan(text, spans[0]);
+    }
+
     public void setAutoUrlFix(boolean autoUrlFix) {
         getModule(LinkSpanController.class).setAutoUrlFix(autoUrlFix);
     }

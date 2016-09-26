@@ -11,11 +11,13 @@ import java.util.List;
 
 public abstract class InseparableModule {
 
+    private static boolean enabled = true;
+
     private static InputFilter inseparableFilter = new InputFilter() {
         @Override
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
             int spans = dest.getSpans(dstart + 1, dend, Inseparable.class).length;
-            return spans > 0 ? "" : null;
+            return enabled && spans > 0 ? "" : null;
         }
     };
 
@@ -52,6 +54,14 @@ public abstract class InseparableModule {
 
     public static void setInseparable(Editable editable, int start, int end) {
         editable.setSpan(new InseparableSpan(), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    public static boolean isEnabled() {
+        return enabled;
+    }
+
+    public static void setEnabled(boolean enabled) {
+        InseparableModule.enabled = enabled;
     }
 
     public static class InseparableSpan extends CharacterStyle implements Inseparable {

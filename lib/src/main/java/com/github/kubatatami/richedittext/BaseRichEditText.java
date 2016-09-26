@@ -77,7 +77,9 @@ public class BaseRichEditText extends EditText {
             historyModule.saveHistory();
             checkBeforeChange(after > 0);
             removed = SpanUtil.removeUnusedSpans(BaseRichEditText.this, spanControllerMap.values(), start, count, after);
-            InseparableModule.check(getEditableText(), start, count);
+            if (InseparableModule.isEnabled()) {
+                InseparableModule.check(getEditableText(), start, count);
+            }
         }
 
         @Override
@@ -86,7 +88,9 @@ public class BaseRichEditText extends EditText {
             if (removed) {
                 SpanUtil.inclusiveSpans(BaseRichEditText.this, spanControllerMap.values());
             }
-            InseparableModule.remove(s);
+            if (InseparableModule.isEnabled()) {
+                InseparableModule.remove(s);
+            }
         }
     };
 
@@ -233,7 +237,7 @@ public class BaseRichEditText extends EditText {
     }
 
     @SuppressWarnings("unchecked")
-    <T extends SpanController<?>> T getModule(Class<T> clazz) {
+    public <T extends SpanController<?>> T getModule(Class<T> clazz) {
         return (T) spanControllerMap.get(clazz);
     }
 
@@ -389,12 +393,38 @@ public class BaseRichEditText extends EditText {
     public void addInseparable(String text) {
         if (getSelectionStart() != -1) {
             addInseparable(text, getSelectionStart(), getSelectionEnd());
-        } else{
+        } else {
             addInseparable(text, length(), length());
         }
     }
 
     public void addInseparable(String text, int start, int end) {
         InseparableModule.addInseparable(getEditableText(), text, start, end);
+    }
+
+    public String getSelectedText() {
+        if (getSelectionStart() == -1) {
+            return "";
+        } else {
+            return getText().subSequence(getSelectionStart(), getSelectionEnd()).toString();
+        }
+    }
+
+    public void setInseparableEnabled(boolean inseparableEnabled) {
+        InseparableModule.setEnabled(inseparableEnabled);
+    }
+
+    public boolean isInseparableEnabled() {
+        return InseparableModule.isEnabled();
+    }
+
+    public void changeTextOnSpan(String text, Object span) {
+        boolean inseparableEnabled = isInseparableEnabled();
+        Editable editable = getEditableText();
+        setInseparableEnabled(false);
+        int start = editable.getSpanStart(span);
+        int end = editable.getSpanEnd(span);
+        editable.replace(start, end, text);
+        setInseparableEnabled(inseparableEnabled);
     }
 }

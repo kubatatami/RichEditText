@@ -334,6 +334,14 @@ public class RichEditText extends BaseRichEditText {
         changeTextOnSpan(text, spans[0]);
     }
 
+    public String getCurrentLinkText() {
+        LinkSpanController.Link link = getCurrentLink();
+        if (link == null) {
+            throw new IllegalStateException("No current link.");
+        }
+        return getSpanText(link.getSpan());
+    }
+
     public void setAutoUrlFix(boolean autoUrlFix) {
         getModule(LinkSpanController.class).setAutoUrlFix(autoUrlFix);
     }

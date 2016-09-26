@@ -36,6 +36,7 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
     @Override
     public RichURLSpan add(Link value, Editable editable, int selectionStart, int selectionEnd, int flags) {
         RichURLSpan result = new RichURLSpan(value, inseparable);
+        value.setSpan(result);
         editable.setSpan(result, selectionStart, selectionEnd, flags);
         onValueChange(result.link);
         return result;
@@ -66,7 +67,9 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
         String href = attributes.getValue("href");
         String alt = attributes.getValue("alt");
         Link link = new Link(href == null ? "" : href, alt == null ? "" : alt);
-        return new RichURLSpan(link, inseparable);
+        RichURLSpan span = new RichURLSpan(link, inseparable);
+        link.setSpan(span);
+        return span;
     }
 
     @Override
@@ -121,6 +124,8 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
 
         private String alt;
 
+        private RichURLSpan span;
+
         public Link(String url, String alt) {
             this.url = url;
             this.alt = alt;
@@ -140,6 +145,14 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
 
         public void setAlt(String alt) {
             this.alt = alt;
+        }
+
+        public RichURLSpan getSpan() {
+            return span;
+        }
+
+        void setSpan(RichURLSpan span) {
+            this.span = span;
         }
     }
 }

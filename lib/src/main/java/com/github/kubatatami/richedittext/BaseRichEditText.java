@@ -427,4 +427,12 @@ public class BaseRichEditText extends EditText {
         editable.replace(start, end, text);
         setInseparableEnabled(inseparableEnabled);
     }
+
+    public String getSpanText(Object span) {
+        Editable editable = getEditableText();
+        int start = editable.getSpanStart(span);
+        int end = editable.getSpanEnd(span);
+        return editable.subSequence(start, end).toString();
+    }
+
 }

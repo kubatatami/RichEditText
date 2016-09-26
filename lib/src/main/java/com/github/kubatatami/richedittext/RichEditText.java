@@ -120,7 +120,7 @@ public class RichEditText extends BaseRichEditText {
         multiClick(font, TypefaceSpanController.class);
     }
 
-    public void addLink(String alt, String url) {
+    public LinkSpanController.Link addLink(String alt, String url) {
         int start = getSelectionStart();
         int stop = getSelectionEnd();
         LinkSpanController.Link link = new LinkSpanController.Link(url, alt);
@@ -130,6 +130,7 @@ public class RichEditText extends BaseRichEditText {
             stop = getSelectionStart();
         }
         getModule(LinkSpanController.class).add(link, getText(), start, stop);
+        return link;
     }
 
     public void addOnAlignmentChangeListener(OnValueChangeListener<Layout.Alignment> onAlignmentChangeListener) {

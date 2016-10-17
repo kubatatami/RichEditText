@@ -3,13 +3,13 @@ package com.github.kubatatami.richedittext;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Handler;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.modules.HistoryModule;
 import com.github.kubatatami.richedittext.modules.HtmlExportModule;
@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BaseRichEditText extends EditText {
+public class BaseRichEditText extends AppCompatEditText {
 
     private static final boolean DEBUG = false;
 

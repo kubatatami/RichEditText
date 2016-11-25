@@ -61,6 +61,8 @@ public class BaseRichEditText extends AppCompatEditText {
 
     private long onTextChangeDelayMs = DEFAULT_TEXT_CHANGE_MS;
 
+    private OnFocusChangeListener onFocusChangeListener;
+
     private Runnable textChangeRunnable = new Runnable() {
         @Override
         public void run() {
@@ -168,8 +170,13 @@ public class BaseRichEditText extends AppCompatEditText {
     }
 
     @Override
-    public void setOnFocusChangeListener(OnFocusChangeListener l) {
-        throw new UnsupportedOperationException("Use addOnFocusChangeListener!");
+    public void setOnFocusChangeListener(OnFocusChangeListener listener) {
+        if (listener == null) {
+            onFocusChangeListeners.remove(onFocusChangeListener);
+        } else {
+            onFocusChangeListener = listener;
+            onFocusChangeListeners.add(onFocusChangeListener);
+        }
     }
 
     @Override

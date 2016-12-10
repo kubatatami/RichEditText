@@ -9,7 +9,6 @@ import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 
 import com.github.kubatatami.richedittext.modules.HistoryModule;
 import com.github.kubatatami.richedittext.modules.HtmlExportModule;
@@ -130,7 +129,6 @@ public class BaseRichEditText extends AppCompatEditText {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        setInputType(getInputType() | EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         addTextChangedListener(mainTextChangedListener);
         inflateFinished = true;
     }

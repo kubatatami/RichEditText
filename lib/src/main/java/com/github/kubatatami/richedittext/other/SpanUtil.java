@@ -1,7 +1,9 @@
 package com.github.kubatatami.richedittext.other;
 
 import android.text.Editable;
+import android.text.Spannable;
 import android.text.Spanned;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.util.Pair;
 
@@ -9,6 +11,7 @@ import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
+import com.github.kubatatami.richedittext.styles.binary.UnderlineSpanController;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -95,4 +98,11 @@ public class SpanUtil {
         return null;
     }
 
+    public static void removeSuggestionUnderlineSpans(Spannable text) {
+        for (UnderlineSpan span : text.getSpans(0, text.length(), UnderlineSpan.class)) {
+            if (!(span instanceof UnderlineSpanController.RichUnderlineSpan)) {
+                text.removeSpan(span);
+            }
+        }
+    }
 }

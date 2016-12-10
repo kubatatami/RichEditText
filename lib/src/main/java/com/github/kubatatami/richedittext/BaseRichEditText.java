@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.Spannable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
@@ -141,6 +142,12 @@ public class BaseRichEditText extends AppCompatEditText {
         }
         handler.removeCallbacks(textChangeRunnable);
         handler.postDelayed(textChangeRunnable, onTextChangeDelayMs);
+        SpanUtil.removeSuggestionUnderlineSpans((Spannable) text);
+    }
+
+    @Override
+    public boolean isSuggestionsEnabled() {
+        return false;
     }
 
     @Override

@@ -19,6 +19,7 @@ public class ToggleImageButton extends ImageButton implements Checkable {
             android.R.attr.state_checked
     };
 
+    private boolean isToggleOnClick = true;
 
     private boolean isChecked;
 
@@ -57,13 +58,23 @@ public class ToggleImageButton extends ImageButton implements Checkable {
 
     @Override
     public boolean performClick() {
-        toggle();
+        if (isToggleOnClick) {
+            toggle();
+        }
         return super.performClick();
     }
 
     @Override
     public boolean isChecked() {
         return isChecked;
+    }
+
+    public boolean isToggleOnClick() {
+        return isToggleOnClick;
+    }
+
+    public void setToggleOnClick(boolean toggleOnClick) {
+        isToggleOnClick = toggleOnClick;
     }
 
     @Override

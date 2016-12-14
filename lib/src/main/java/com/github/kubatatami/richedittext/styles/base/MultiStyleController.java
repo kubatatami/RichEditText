@@ -8,17 +8,14 @@ import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 
 import org.xml.sax.Attributes;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class MultiStyleController<T, Z> extends SpanController<T> {
+public abstract class MultiStyleController<T, Z> extends SpanController<T, Z> {
 
     private Z value;
 
     SpanInfo<Z> spanInfo;
-
-    private final List<BaseRichEditText.OnValueChangeListener<Z>> onValueChangeListeners = new ArrayList<>();
 
     protected MultiStyleController(Class<T> clazz, String tagName) {
         super(clazz, tagName);
@@ -38,19 +35,6 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
 
     protected void add(Z value, Editable editable, int selectionStart, int selectionEnd) {
         add(value, editable, selectionStart, selectionEnd, defaultFlags);
-    }
-
-    public void addOnValueChangeListener(BaseRichEditText.OnValueChangeListener<Z> onValueChangeListener) {
-        this.onValueChangeListeners.add(onValueChangeListener);
-    }
-
-    public void removeOnValueChangeListener(BaseRichEditText.OnValueChangeListener<Z> onValueChangeListener) {
-        this.onValueChangeListeners.remove(onValueChangeListener);
-    }
-
-    @Override
-    public void clearOnValueChangeListeners() {
-        this.onValueChangeListeners.clear();
     }
 
     public boolean perform(Z value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
@@ -129,9 +113,7 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T> {
     protected void onValueChange(Z newValue) {
         if ((newValue == null && value != null) || (newValue != null && value == null) || (value != null && !newValue.equals(value))) {
             value = newValue;
-            for (BaseRichEditText.OnValueChangeListener<Z> onValueChangeListener : onValueChangeListeners) {
-                onValueChangeListener.onValueChange(value);
-            }
+            invokeListeners(value);
         }
     }
 

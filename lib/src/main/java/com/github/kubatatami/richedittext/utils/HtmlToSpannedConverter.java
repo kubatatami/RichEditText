@@ -40,7 +40,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
 
     private final SpannableStringBuilder mSpannableSb;
 
-    private final Collection<SpanController<?>> mSpanControllers;
+    private final Collection<SpanController<?, ?>> mSpanControllers;
 
     private final List<StartStyleProperty> properties;
 
@@ -57,7 +57,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
     public HtmlToSpannedConverter(
             BaseRichEditText baseRichEditText, String source,
             Parser parser,
-            Collection<SpanController<?>> spanControllers,
+            Collection<SpanController<?, ?>> spanControllers,
             List<StartStyleProperty> properties,
             String style,
             boolean strict) {
@@ -74,7 +74,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
             for (StartStyleProperty property : properties) {
                 property.setPropertyFromTag(baseRichEditText, styleMap);
             }
-            for (SpanController<?> spanController : mSpanControllers) {
+            for (SpanController<?, ?> spanController : mSpanControllers) {
                 if (spanController instanceof StartStyleProperty) {
                     ((StartStyleProperty) spanController).setPropertyFromTag(baseRichEditText, styleMap);
                 }
@@ -91,7 +91,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
             mReader.parse(new InputSource(new StringReader(mSource)));
             applySpans();
             if (styleMap != null) {
-                for (SpanController<?> spanController : mSpanControllers) {
+                for (SpanController<?, ?> spanController : mSpanControllers) {
                     if (spanController instanceof EndStyleProperty) {
                         ((EndStyleProperty) spanController).setPropertyFromTag(mSpannableSb, styleMap);
                     }
@@ -106,7 +106,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
     @SuppressWarnings("unchecked")
     private void applySpans() {
         for (SpanInfo spanInfo : spanInfoList) {
-            for (SpanController<?> spanController : mSpanControllers) {
+            for (SpanController<?, ?> spanController : mSpanControllers) {
                 if (spanController.acceptSpan(spanInfo.span)) {
                     StyleSelectionInfo selectionInfo = new StyleSelectionInfo(spanInfo.start, spanInfo.end, spanInfo.start, spanInfo.end, true);
                     if (spanController instanceof ListController) {
@@ -132,7 +132,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
             for (StartStyleProperty property : properties) {
                 property.setPropertyFromTag(baseRichEditText, styleMap);
             }
-            for (SpanController<?> spanController : mSpanControllers) {
+            for (SpanController<?, ?> spanController : mSpanControllers) {
                 if (spanController instanceof StartStyleProperty) {
                     ((StartStyleProperty) spanController).setPropertyFromTag(baseRichEditText, styleMap);
                 }
@@ -140,7 +140,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
             return;
         }
         boolean supported = false;
-        for (SpanController<?> spanController : mSpanControllers) {
+        for (SpanController<?, ?> spanController : mSpanControllers) {
             Object object = spanController.createSpanFromTag(tag, styleMap, attributes);
             if (object != null) {
                 if (spanController instanceof LineStyleController && mSpannableSb.length() > 0) {
@@ -192,20 +192,20 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
     }
 
     private void handleEndTag(String tag) throws SAXException {
-        for (SpanController<?> spanController : mSpanControllers) {
+        for (SpanController<?, ?> spanController : mSpanControllers) {
             Class<?> spanClass = spanController.spanFromEndTag(tag);
             if (spanClass != null) {
                 end(mSpannableSb, spanClass, spanController);
             }
         }
-        for (SpanController<?> spanController : mSpanControllers) {
+        for (SpanController<?, ?> spanController : mSpanControllers) {
             if (spanController instanceof LineChangingController) {
                 ((LineChangingController) spanController).changeLineEnd(mSpannableSb, tag);
             }
         }
     }
 
-    private static Object getLast(Spanned text, Class kind, SpanController<?> spanController) {
+    private static Object getLast(Spanned text, Class kind, SpanController<?, ?> spanController) {
         Object[] objs = text.getSpans(0, text.length(), kind);
         if (objs.length == 0) {
             return null;
@@ -234,7 +234,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         text.setSpan(mark, len, len, Spannable.SPAN_MARK_MARK);
     }
 
-    private boolean end(SpannableStringBuilder text, Class kind, SpanController<?> spanController) {
+    private boolean end(SpannableStringBuilder text, Class kind, SpanController<?, ?> spanController) {
         int len = text.length();
         Object obj = getLast(text, kind, spanController);
 

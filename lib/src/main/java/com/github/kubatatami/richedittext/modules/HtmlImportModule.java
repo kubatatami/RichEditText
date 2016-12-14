@@ -20,7 +20,7 @@ public abstract class HtmlImportModule {
     private static final HTMLSchema schema = new HTMLSchema();
 
     public static Spanned fromHtml(BaseRichEditText baseRichEditText, String source,
-                                   Collection<SpanController<?>> spanControllers,
+                                   Collection<SpanController<?, ?>> spanControllers,
                                    List<StartStyleProperty> properties,
                                    String style, boolean strict) throws IOException {
         if (source == null || source.length() == 0) {

@@ -22,26 +22,26 @@ import java.util.List;
 
 public class SpanUtil {
 
-    public static boolean removeUnusedSpans(BaseRichEditText richEditText, Collection<SpanController<?>> controllers, int start, int count, int after) {
+    public static boolean removeUnusedSpans(BaseRichEditText richEditText, Collection<SpanController<?, ?>> controllers, int start, int count, int after) {
         boolean result = false;
         Editable editable = richEditText.getText();
         if (after == 0) {
             Log.i("removeUnusedSpansStart", start + "");
-            List<Pair<SpanController<?>, Object>> spansToRemove = new ArrayList<>();
+            List<Pair<SpanController<?, ?>, Object>> spansToRemove = new ArrayList<>();
             Object[] spans = editable.getSpans(start, start + count, Object.class);
             for (Object span : spans) {
-                SpanController<?> controller = acceptController(controllers, span);
+                SpanController<?, ?> controller = acceptController(controllers, span);
                 if (controller != null) {
                     int spanStart = editable.getSpanStart(span);
                     int spanEnd = editable.getSpanEnd(span);
                     if (spanStart == spanEnd) {
                         Log.i("removeUnusedSpans", spanStart + " " + spanEnd);
-                        spansToRemove.add(new Pair<SpanController<?>, Object>(controller, span));
+                        spansToRemove.add(new Pair<SpanController<?, ?>, Object>(controller, span));
                     }
                 }
 
             }
-            for (Pair<SpanController<?>, Object> spanToRemove : spansToRemove) {
+            for (Pair<SpanController<?, ?>, Object> spanToRemove : spansToRemove) {
                 result = true;
                 spanToRemove.first.clearStyle(editable, spanToRemove.second, new StyleSelectionInfo(start, start + count, start, start + count, count > 0));
             }
@@ -50,12 +50,12 @@ public class SpanUtil {
         return result;
     }
 
-    public static void inclusiveSpans(BaseRichEditText richEditText, Collection<SpanController<?>> controllers) {
+    public static void inclusiveSpans(BaseRichEditText richEditText, Collection<SpanController<?, ?>> controllers) {
         Editable editable = richEditText.getText();
         int start = richEditText.getSelectionStart();
         Object[] spans = editable.getSpans(start, start, Object.class);
         for (Object span : spans) {
-            SpanController<?> controller = acceptController(controllers, span);
+            SpanController<?, ?> controller = acceptController(controllers, span);
             if (controller != null) {
                 int spanStart = editable.getSpanStart(span);
                 int spanEnd = editable.getSpanEnd(span);
@@ -70,7 +70,7 @@ public class SpanUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static void logSpans(final Editable editable, Collection<SpanController<?>> controllers) {
+    public static void logSpans(final Editable editable, Collection<SpanController<?, ?>> controllers) {
         List<Object> spans = Arrays.asList(editable.getSpans(0, editable.length(), Object.class));
         Collections.sort(spans, new Comparator<Object>() {
             @Override
@@ -79,7 +79,7 @@ public class SpanUtil {
             }
         });
         for (Object span : spans) {
-            SpanController<?> controller = acceptController(controllers, span);
+            SpanController<?, ?> controller = acceptController(controllers, span);
             if (controller != null) {
                 int spanStart = editable.getSpanStart(span);
                 int spanEnd = editable.getSpanEnd(span);
@@ -89,8 +89,8 @@ public class SpanUtil {
         }
     }
 
-    public static SpanController<?> acceptController(Collection<SpanController<?>> controllers, Object span) {
-        for (SpanController<?> controller : controllers) {
+    public static SpanController<?, ?> acceptController(Collection<SpanController<?, ?>> controllers, Object span) {
+        for (SpanController<?, ?> controller : controllers) {
             if (controller.acceptSpan(span)) {
                 return controller;
             }

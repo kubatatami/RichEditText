@@ -45,7 +45,7 @@ public class BaseRichEditText extends AppCompatEditText {
 
     private final HistoryModule historyModule = new HistoryModule(this);
 
-    private final Map<Class<?>, SpanController<?>> spanControllerMap = new HashMap<>();
+    private final Map<Class<?>, SpanController<?, ?>> spanControllerMap = new HashMap<>();
 
     private final List<StartStyleProperty> properties = new ArrayList<>();
 
@@ -240,7 +240,10 @@ public class BaseRichEditText extends AppCompatEditText {
         }
     }
 
-    public <T extends SpanController<?>> void registerController(Class<T> clazz, T controller) {
+    public <T extends SpanController<?, ?>> void registerController(Class<T> clazz, T controller) {
+        if (spanControllerMap.containsKey(clazz)) {
+            controller.addListenersFromController(spanControllerMap.get(clazz));
+        }
         spanControllerMap.put(clazz, controller);
     }
 
@@ -249,14 +252,14 @@ public class BaseRichEditText extends AppCompatEditText {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends SpanController<?>> T getModule(Class<T> clazz) {
+    public <T extends SpanController<?, ?>> T getModule(Class<T> clazz) {
         return (T) spanControllerMap.get(clazz);
     }
 
     private void checkBeforeChange(boolean added) {
         if (inflateFinished) {
             StyleSelectionInfo styleSelectionInfo = StyleSelectionInfo.getStyleSelectionInfo(this);
-            for (SpanController<?> controller : spanControllerMap.values()) {
+            for (SpanController<?, ?> controller : spanControllerMap.values()) {
                 controller.checkBeforeChange(getText(), styleSelectionInfo, added);
             }
         }
@@ -269,7 +272,7 @@ public class BaseRichEditText extends AppCompatEditText {
     public void checkAfterChange(boolean passive) {
         if (inflateFinished) {
             StyleSelectionInfo styleSelectionInfo = StyleSelectionInfo.getStyleSelectionInfo(this);
-            for (SpanController<?> controller : spanControllerMap.values()) {
+            for (SpanController<?, ?> controller : spanControllerMap.values()) {
                 controller.checkAfterChange(this, styleSelectionInfo, passive);
             }
             if (DEBUG) {
@@ -305,7 +308,7 @@ public class BaseRichEditText extends AppCompatEditText {
     public boolean isStyled() {
         Object[] spans = getText().getSpans(0, getText().length(), Object.class);
         for (Object span : spans) {
-            for (SpanController<?> controller : spanControllerMap.values()) {
+            for (SpanController<?, ?> controller : spanControllerMap.values()) {
                 if (controller.acceptSpan(span)) {
                     return true;
                 }

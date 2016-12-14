@@ -6,10 +6,7 @@ import android.text.Spanned;
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public abstract class BinaryStyleController<T> extends SpanController<T> {
+public abstract class BinaryStyleController<T> extends SpanController<T, Boolean> {
 
     private SpanInfo<Boolean> spanInfo;
 
@@ -17,24 +14,8 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
 
     protected boolean value;
 
-    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onValueChangeListeners = new ArrayList<>();
-
     protected BinaryStyleController(Class<T> clazz, String tagName) {
         super(clazz, tagName);
-    }
-
-    public void addOnValueChangeListener(BaseRichEditText.OnValueChangeListener<Boolean> onValueChangeListener) {
-        this.onValueChangeListeners.add(onValueChangeListener);
-    }
-
-    public void removeOnValueChangeListener(BaseRichEditText.OnValueChangeListener<Boolean> onValueChangeListener) {
-        this.onValueChangeListeners.remove(onValueChangeListener);
-    }
-
-    protected void invokeListeners(boolean value) {
-        for (BaseRichEditText.OnValueChangeListener<Boolean> onValueChangeListener : onValueChangeListeners) {
-            onValueChangeListener.onValueChange(value);
-        }
     }
 
     protected void add(Editable editable, int selectionStart, int selectionEnd) {
@@ -80,11 +61,6 @@ public abstract class BinaryStyleController<T> extends SpanController<T> {
             add(editable, spanInfo.start, spanInfo.end, spanInfo.flags);
             clearSpanInfo();
         }
-    }
-
-    @Override
-    public void clearOnValueChangeListeners() {
-        this.onValueChangeListeners.clear();
     }
 
     protected boolean shouldAdd(StyleSelectionInfo styleSelectionInfo) {

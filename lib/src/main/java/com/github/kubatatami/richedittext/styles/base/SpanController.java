@@ -13,11 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class SpanController<T> {
+public abstract class SpanController<T, Z> {
 
     protected final Class<T> clazz;
 
     protected final String tagName;
+
+    private final List<BaseRichEditText.OnValueChangeListener<Z>> onValueChangeListeners = new ArrayList<>();
 
     final static int defaultFlags = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
 
@@ -47,6 +49,25 @@ public abstract class SpanController<T> {
         return false;
     }
 
+    public void addOnValueChangeListener(BaseRichEditText.OnValueChangeListener<Z> onValueChangeListener) {
+        this.onValueChangeListeners.add(onValueChangeListener);
+    }
+
+    public void removeOnValueChangeListener(BaseRichEditText.OnValueChangeListener<Z> onValueChangeListener) {
+        this.onValueChangeListeners.remove(onValueChangeListener);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void addListenersFromController(SpanController<?, ?> spanController) {
+        ((List) this.onValueChangeListeners).addAll(spanController.onValueChangeListeners);
+    }
+
+    protected void invokeListeners(Z value) {
+        for (BaseRichEditText.OnValueChangeListener<Z> onValueChangeListener : onValueChangeListeners) {
+            onValueChangeListener.onValueChange(value);
+        }
+    }
+
     public boolean acceptSpan(Object span) {
         return span.getClass().equals(clazz);
     }
@@ -67,7 +88,10 @@ public abstract class SpanController<T> {
 
     public abstract T createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes);
 
-    public abstract void clearOnValueChangeListeners();
+    public void clearOnValueChangeListeners() {
+        this.onValueChangeListeners.clear();
+
+    }
 
     public Class<?> spanFromEndTag(String tag) {
         if (tag.equals(tagName)) {
@@ -79,4 +103,5 @@ public abstract class SpanController<T> {
     public String endTag(Object span, boolean end, Object[] spans) {
         return "</" + tagName + ">";
     }
+
 }

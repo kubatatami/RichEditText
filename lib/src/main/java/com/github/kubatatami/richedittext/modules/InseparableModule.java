@@ -15,15 +15,38 @@ public abstract class InseparableModule {
 
     public static boolean isDuringRemove = false;
 
+    private static List<Inseparable> toRemove = new ArrayList<>();
+
     private static InputFilter inseparableFilter = new InputFilter() {
         @Override
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-            int spans = dest.getSpans(dstart + 1, dend, Inseparable.class).length;
-            return enabled && spans > 0 ? "" : null;
+            return enabled && checkSpans(dest, dstart, dend) ? "" : null;
         }
     };
 
-    private static List<Inseparable> toRemove = new ArrayList<>();
+    private static boolean checkSpans(Spanned dest, int dstart, int dend) {
+        Inseparable[] spans = dest.getSpans(dstart, dend, Inseparable.class);
+        for (Inseparable span : spans) {
+            int start = dest.getSpanStart(span);
+            int end = dest.getSpanEnd(span);
+            if (!isSelection(dstart, dend) && !isOnStart(dstart, start) && !isOnEnd(dend, end)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isSelection(int dstart, int dend) {
+        return dstart != dend;
+    }
+
+    private static boolean isOnEnd(int dend, int end) {
+        return dend == end;
+    }
+
+    public static boolean isOnStart(int dstart, int start) {
+        return  dstart == start;
+    }
 
     public static void addInseparable(Editable editable, String inseparableText, int start, int end) {
         editable.replace(start, end, inseparableText);

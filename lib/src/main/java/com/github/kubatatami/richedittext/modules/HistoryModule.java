@@ -1,5 +1,6 @@
 package com.github.kubatatami.richedittext.modules;
 
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.widget.TextView;
@@ -20,21 +21,42 @@ public class HistoryModule {
 
     private boolean ignoreHistory = false;
 
+    private boolean enabled = true;
+
     private final List<OnHistoryChangeListener> onHistoryChangeListeners = new ArrayList<>();
+
+    public static boolean isDuringRestore = false;
 
     public HistoryModule(BaseRichEditText richEditText) {
         this.richEditText = richEditText;
     }
 
     public void saveHistory() {
-        if (!ignoreHistory) {
-            redoList.clear();
-            undoList.addFirst(new EditHistory(new SpannableStringBuilder(richEditText.getText()),
-                    richEditText.getSelectionStart(), richEditText.getSelectionEnd()));
-            checkHistory();
-        } else {
-            ignoreHistory = false;
+        if (enabled) {
+            if (!ignoreHistory) {
+                if (!InseparableModule.isDuringRemove) {
+                    redoList.clear();
+                    undoList.addFirst(createHistoryPoint());
+                    checkHistory();
+                }
+            } else {
+                ignoreHistory = false;
+            }
         }
+    }
+
+    @NonNull
+    private EditHistory createHistoryPoint() {
+        return new EditHistory(new SpannableStringBuilder(richEditText.getText()),
+                richEditText.getSelectionStart(), richEditText.getSelectionEnd());
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public void setLimit(int limit) {
@@ -45,8 +67,7 @@ public class HistoryModule {
     public void undo() {
         EditHistory editHistory = undoList.pollFirst();
         if (editHistory != null) {
-            redoList.addFirst(new EditHistory(new SpannableStringBuilder(richEditText.getText()),
-                    richEditText.getSelectionStart(), richEditText.getSelectionEnd()));
+            redoList.addFirst(createHistoryPoint());
             restoreState(editHistory);
         }
     }
@@ -54,18 +75,27 @@ public class HistoryModule {
     public void redo() {
         EditHistory editHistory = redoList.pollFirst();
         if (editHistory != null) {
-            undoList.addFirst(new EditHistory(new SpannableStringBuilder(richEditText.getText()),
-                    richEditText.getSelectionStart(), richEditText.getSelectionEnd()));
+            undoList.addFirst(createHistoryPoint());
             restoreState(editHistory);
         }
     }
 
     private void restoreState(EditHistory editHistory) {
+        isDuringRestore = true;
         ignoreHistory = true;
         richEditText.setText(editHistory.editable, TextView.BufferType.EDITABLE);
-        richEditText.setSelection(editHistory.selectionStart, editHistory.selectionEnd);
+        setSelection(editHistory.selectionStart, editHistory.selectionEnd);
         checkHistory();
         richEditText.checkAfterChange(true);
+        isDuringRestore = false;
+    }
+
+    private void setSelection(int selStart, int selEnd) {
+        richEditText.setSelection(normalizeSel(selStart), normalizeSel(selEnd));
+    }
+
+    private int normalizeSel(int selectionIndex) {
+        return Math.max(Math.min(selectionIndex, richEditText.length()), 0);
     }
 
     private void checkHistory() {
@@ -87,7 +117,7 @@ public class HistoryModule {
         onHistoryChangeListeners.clear();
     }
 
-    static class EditHistory {
+    private static class EditHistory {
 
         final Editable editable;
 

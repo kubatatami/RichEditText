@@ -301,8 +301,16 @@ public class BaseRichEditText extends AppCompatEditText {
         historyModule.redo();
     }
 
+    public void setHistoryEnabled(boolean enabled) {
+        historyModule.setEnabled(enabled);
+    }
+
     public void setHistoryLimit(int limit) {
         historyModule.setLimit(limit);
+    }
+
+    public boolean isHistoryEnabled() {
+        return historyModule.isEnabled();
     }
 
     public boolean isStyled() {

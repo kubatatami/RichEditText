@@ -13,6 +13,8 @@ public abstract class InseparableModule {
 
     private static boolean enabled = true;
 
+    public static boolean isDuringRemove = false;
+
     private static InputFilter inseparableFilter = new InputFilter() {
         @Override
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -37,15 +39,19 @@ public abstract class InseparableModule {
     }
 
     public static void remove(Editable editable) {
-        for (Inseparable inseparable : toRemove) {
-            int start = editable.getSpanStart(inseparable);
-            int end = editable.getSpanEnd(inseparable);
-            if (start > -1 && end > -1) {
-                editable.replace(start, end, "");
+        if (!isDuringRemove) {
+            isDuringRemove = true;
+            for (Inseparable inseparable : toRemove) {
+                int start = editable.getSpanStart(inseparable);
+                int end = editable.getSpanEnd(inseparable);
+                if (start > -1 && end > -1) {
+                    editable.replace(start, end, "");
+                }
+                editable.removeSpan(inseparable);
             }
-            editable.removeSpan(inseparable);
+            toRemove.clear();
+            isDuringRemove = false;
         }
-        toRemove.clear();
     }
 
     public static InputFilter getFilter() {
@@ -57,7 +63,7 @@ public abstract class InseparableModule {
     }
 
     public static boolean isEnabled() {
-        return enabled;
+        return enabled && !HistoryModule.isDuringRestore;
     }
 
     public static void setEnabled(boolean enabled) {

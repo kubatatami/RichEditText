@@ -61,6 +61,7 @@ public class TestActivity extends AppCompatActivity {
         Button sendButton = (Button) findViewById(R.id.send_button);
         webView.setWebChromeClient(new WebChromeClient());
         webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+        richEditTextPreview.setHistoryEnabled(false);
         if (!LIVE_PREVIEW) {
             webView.setVisibility(View.GONE);
             richEditTextPreview.setVisibility(View.GONE);

@@ -10,7 +10,6 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatImageButton;
 import android.util.AttributeSet;
 import android.widget.Checkable;
-import android.widget.ImageButton;
 
 import com.github.kubatatami.richedittext.R;
 
@@ -43,13 +42,9 @@ public class ToggleImageButton extends AppCompatImageButton implements Checkable
     }
 
     private void initAttr(Context context, AttributeSet attrs) {
-        TypedArray a =
-                context.obtainStyledAttributes(
-                        attrs, R.styleable.ToggleImageButton);
-        boolean checked = a
-                .getBoolean(R.styleable.ToggleImageButton_checked, false);
-        int tint = a
-                .getColor(R.styleable.ToggleImageButton_checkedTint, 0);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ToggleImageButton);
+        boolean checked = a.getBoolean(R.styleable.ToggleImageButton_checked, false);
+        int tint = a.getColor(R.styleable.ToggleImageButton_checkedTint, 0);
         if (tint != 0) {
             setImageDrawable(getDrawable(), tint);
         }

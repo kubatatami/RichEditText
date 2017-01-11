@@ -101,12 +101,16 @@ public class ToggleImageButton extends ImageButton implements Checkable {
     }
 
     public void setImageDrawable(Drawable drawable, int tint) {
-        StateListDrawable stateListDrawable = new StateListDrawable();
-        Drawable checkedDrawable = drawable.getConstantState().newDrawable().mutate();
-        DrawableCompat.setTint(checkedDrawable, tint);
-        stateListDrawable.addState(new int[]{android.R.attr.state_checked}, checkedDrawable);
-        stateListDrawable.addState(new int[]{}, drawable.mutate());
-        super.setImageDrawable(stateListDrawable);
+        if (drawable != null) {
+            StateListDrawable stateListDrawable = new StateListDrawable();
+            Drawable checkedDrawable = drawable.getConstantState().newDrawable().mutate();
+            DrawableCompat.setTint(checkedDrawable, tint);
+            stateListDrawable.addState(new int[]{android.R.attr.state_checked}, checkedDrawable);
+            stateListDrawable.addState(new int[]{}, drawable.mutate());
+            super.setImageDrawable(stateListDrawable);
+        } else {
+            super.setImageDrawable(drawable);
+        }
     }
 
     @Override

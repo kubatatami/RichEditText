@@ -7,13 +7,14 @@ import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.AppCompatImageButton;
 import android.util.AttributeSet;
 import android.widget.Checkable;
 import android.widget.ImageButton;
 
 import com.github.kubatatami.richedittext.R;
 
-public class ToggleImageButton extends ImageButton implements Checkable {
+public class ToggleImageButton extends AppCompatImageButton implements Checkable {
 
     private static final int[] CHECKED_STATE_SET = {
             android.R.attr.state_checked

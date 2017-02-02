@@ -34,7 +34,7 @@ public class HistoryModule {
     public void saveHistory() {
         if (enabled) {
             if (!ignoreHistory) {
-                if (!InseparableModule.isDuringRemove) {
+                if (!InseparableModule.isDuringRemove()) {
                     redoList.clear();
                     undoList.addFirst(createHistoryPoint());
                     checkHistory();

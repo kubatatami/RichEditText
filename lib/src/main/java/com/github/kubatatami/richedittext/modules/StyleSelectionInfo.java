@@ -24,6 +24,7 @@ public class StyleSelectionInfo {
         this.realSelectionStart = realSelectionStart;
         this.realSelectionEnd = realSelectionEnd;
         this.selection = selection;
+        normalize();
     }
 
     public static StyleSelectionInfo getStyleSelectionInfo(CharSequence text) {
@@ -60,7 +61,13 @@ public class StyleSelectionInfo {
         result.selectionEnd = selectionEnd;
         result.realSelectionStart = richEditText.getSelectionStart();
         result.realSelectionEnd = richEditText.getSelectionEnd();
+        result.normalize();
         return result;
+    }
+
+    private void normalize() {
+        selectionStart = Math.min(selectionStart, selectionEnd);
+        realSelectionStart = Math.min(realSelectionStart, realSelectionEnd);
     }
 
 }

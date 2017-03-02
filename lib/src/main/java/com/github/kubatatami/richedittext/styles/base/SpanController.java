@@ -90,7 +90,6 @@ public abstract class SpanController<T, Z> {
 
     public void clearOnValueChangeListeners() {
         this.onValueChangeListeners.clear();
-
     }
 
     public Class<?> spanFromEndTag(String tag) {

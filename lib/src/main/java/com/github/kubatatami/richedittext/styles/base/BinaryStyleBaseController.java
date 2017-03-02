@@ -11,7 +11,6 @@ import java.util.Map;
 
 public abstract class BinaryStyleBaseController<T> extends BinaryStyleController<T> {
 
-
     protected BinaryStyleBaseController(Class<T> clazz, String tagName) {
         super(clazz, tagName);
     }
@@ -80,7 +79,6 @@ public abstract class BinaryStyleBaseController<T> extends BinaryStyleController
             add(editable, styleSelectionInfo.selectionEnd, spanEnd);
         }
     }
-
 
     @Override
     public boolean clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo) {

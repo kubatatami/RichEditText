@@ -90,7 +90,7 @@ public abstract class InseparableModule {
             ToRemove toRemove = new ToRemove(inseparable);
             int start = editable.getSpanStart(inseparable);
             int end = editable.getSpanEnd(inseparable);
-            if (start > -1 && end > -1) {
+            if (start > -1 && end > -1 && end >= start) {
                 toRemove.setStartAndEnd(start, end);
             }
             toRemoveList.add(toRemove);

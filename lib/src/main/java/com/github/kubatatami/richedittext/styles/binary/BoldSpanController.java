@@ -12,7 +12,6 @@ public class BoldSpanController extends FontStyleSpanController {
         super(Typeface.BOLD, "b", "font-weight", "bold");
     }
 
-
     @Override
     public RichStyleSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
         if (tag.equals("b") || tag.equals("strong") ||
@@ -21,7 +20,6 @@ public class BoldSpanController extends FontStyleSpanController {
         }
         return null;
     }
-
 
     public Class<?> spanFromEndTag(String tag) {
         if (tag.equals("b") || tag.equals("strong") || tag.equals("span")) {

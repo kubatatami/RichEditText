@@ -26,7 +26,7 @@ public class StrikeThroughSpanController extends BinaryStyleBaseController<Strik
     }
 
     private boolean containsStrikeTroughStyle(Map<String, String> styleMap) {
-        return containsStyle(styleMap, "line-through", "underline");
+        return containsStyle(styleMap, "text-decoration", "line-through");
     }
 
     @Override

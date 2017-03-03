@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.Spannable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
@@ -23,6 +22,7 @@ import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
+import com.github.kubatatami.richedittext.utils.ComposingSpanFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -121,6 +121,7 @@ public class BaseRichEditText extends AppCompatEditText {
                 }
             }
         });
+        setEditableFactory(new ComposingSpanFactory());
     }
 
     public static Context getAppContext() {
@@ -142,7 +143,6 @@ public class BaseRichEditText extends AppCompatEditText {
         }
         handler.removeCallbacks(textChangeRunnable);
         handler.postDelayed(textChangeRunnable, onTextChangeDelayMs);
-        SpanUtil.removeSuggestionUnderlineSpans((Spannable) text);
     }
 
     @Override

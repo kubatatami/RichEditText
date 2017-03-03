@@ -27,7 +27,7 @@ public abstract class BinaryStyleController<T> extends SpanController<T, Boolean
         if (!passive && spanInfo != null && !spanInfo.span) {
             if (spanInfo.end == styleSelectionInfo.realSelectionEnd - 1) {
                 add(editText.getText(), spanInfo.start, spanInfo.end, spanInfo.flags);
-            } else {
+            } else if (styleSelectionInfo.realSelectionEnd < spanInfo.end) {
                 add(editText.getText(), spanInfo.start, styleSelectionInfo.realSelectionEnd - 1, spanInfo.flags);
                 add(editText.getText(), styleSelectionInfo.realSelectionEnd, spanInfo.end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
             }

@@ -4,12 +4,15 @@ import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.style.UnderlineSpan;
 
+import com.github.kubatatami.richedittext.BaseRichEditText.OnValueChangeListener;
+import com.github.kubatatami.richedittext.styles.base.RichSpan;
 import com.github.kubatatami.richedittext.styles.binary.UnderlineSpanController;
 
 public class ComposingSpanFactory extends Editable.Factory {
 
     private static final String COMPOSING_CLASS_NAME = "android.view.inputmethod.ComposingText";
 
+    private OnValueChangeListener<Editable> onSpanChangeListeners;
 
     @Override
     public Editable newEditable(CharSequence source) {
@@ -50,8 +53,15 @@ public class ComposingSpanFactory extends Editable.Factory {
                 if (!(what instanceof UnderlineSpan && !(what instanceof UnderlineSpanController.RichUnderlineSpan))) {
                     super.setSpan(what, start, end, flags);
                 }
+                if (what instanceof RichSpan) {
+                    onSpanChangeListeners.onValueChange(this);
+                }
             }
 
         };
+    }
+
+    public void setOnSpanChangeListeners(OnValueChangeListener<Editable> onSpanChangeListeners) {
+        this.onSpanChangeListeners = onSpanChangeListeners;
     }
 }

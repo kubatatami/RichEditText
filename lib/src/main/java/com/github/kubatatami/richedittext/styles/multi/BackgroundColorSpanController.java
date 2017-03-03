@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.text.style.BackgroundColorSpan;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
+import com.github.kubatatami.richedittext.styles.base.RichSpan;
 import com.github.kubatatami.richedittext.utils.HtmlUtils;
 
 public class BackgroundColorSpanController extends StyleController<BackgroundColorSpanController.RichBackgroundColorSpan, Integer> {
@@ -65,7 +66,7 @@ public class BackgroundColorSpanController extends StyleController<BackgroundCol
     }
 
 
-    public static class RichBackgroundColorSpan extends BackgroundColorSpan {
+    public static class RichBackgroundColorSpan extends BackgroundColorSpan implements RichSpan {
 
         public RichBackgroundColorSpan(int color) {
             super(color);

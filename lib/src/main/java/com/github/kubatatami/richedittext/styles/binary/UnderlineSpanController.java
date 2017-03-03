@@ -6,6 +6,7 @@ import android.text.style.UnderlineSpan;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.BinaryStyleBaseController;
 import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
+import com.github.kubatatami.richedittext.styles.base.RichSpan;
 
 import org.xml.sax.Attributes;
 
@@ -22,10 +23,14 @@ public class UnderlineSpanController extends BinaryStyleBaseController<Underline
     public RichUnderlineSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
         if (tag.equals("u")) {
             return new RichUnderlineSpan();
-        } else if (tag.equals("span") && "underline".equals(styleMap.get("text-decoration"))) {
+        } else if (tag.equals("span") && containsUnderlineStyle(styleMap)) {
             return new RichUnderlineSpan();
         }
         return null;
+    }
+
+    private boolean containsUnderlineStyle(Map<String, String> styleMap) {
+        return containsStyle(styleMap, "text-decoration", "underline");
     }
 
 
@@ -38,14 +43,14 @@ public class UnderlineSpanController extends BinaryStyleBaseController<Underline
 
     @Override
     public boolean setPropertyFromTag(SpannableStringBuilder editable, Map<String, String> styleMap) {
-        if ("underline".equals(styleMap.get("text-decoration"))) {
+        if (containsUnderlineStyle(styleMap)) {
             perform(editable, StyleSelectionInfo.getStyleSelectionInfo(editable));
             return true;
         }
         return false;
     }
 
-    public static class RichUnderlineSpan extends UnderlineSpan {
+    public static class RichUnderlineSpan extends UnderlineSpan implements RichSpan {
 
     }
 

@@ -6,6 +6,7 @@ import android.util.TypedValue;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.other.DimenUtil;
+import com.github.kubatatami.richedittext.styles.base.RichSpan;
 
 public class SizeSpanController extends StyleController<SizeSpanController.RichAbsoluteSizeSpan, Float> {
 
@@ -105,7 +106,7 @@ public class SizeSpanController extends StyleController<SizeSpanController.RichA
         }
     }
 
-    public static class RichAbsoluteSizeSpan extends AbsoluteSizeSpan {
+    public static class RichAbsoluteSizeSpan extends AbsoluteSizeSpan implements RichSpan {
 
         public RichAbsoluteSizeSpan(int size) {
             super(size);

@@ -103,4 +103,8 @@ public abstract class SpanController<T, Z> {
         return "</" + tagName + ">";
     }
 
+    protected boolean containsStyle(Map<String, String> styleMap, String key, String style) {
+        String value = styleMap.get(key);
+        return value != null && value.toLowerCase().contains(style.toLowerCase());
+    }
 }

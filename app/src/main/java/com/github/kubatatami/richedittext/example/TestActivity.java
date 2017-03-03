@@ -114,7 +114,7 @@ public class TestActivity extends AppCompatActivity {
                 "fonts/", "LiberationMono");
         TypefaceSpanController.registerFonts(arialFont, timesFont, courierFont);
         panelView.toggle(false);
-        richEditText.addOnTextChangeListener(new BaseRichEditText.OnValueChangeListener<Editable>() {
+        richEditText.addOnTextChangeDelayedListener(new BaseRichEditText.OnValueChangeListener<Editable>() {
             @Override
             public void onValueChange(Editable value) {
                 Toast.makeText(TestActivity.this, "TextChanged", Toast.LENGTH_SHORT).show();

@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.text.style.ForegroundColorSpan;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
+import com.github.kubatatami.richedittext.styles.base.RichSpan;
 import com.github.kubatatami.richedittext.utils.HtmlUtils;
 
 public class ColorSpanController extends StyleController<ColorSpanController.RichForegroundColorSpan, Integer> {
@@ -56,7 +57,7 @@ public class ColorSpanController extends StyleController<ColorSpanController.Ric
         return "rgb(" + Color.red(spanValue) + "," + Color.green(spanValue) + "," + Color.blue(spanValue) + ")";
     }
 
-    public static class RichForegroundColorSpan extends ForegroundColorSpan {
+    public static class RichForegroundColorSpan extends ForegroundColorSpan implements RichSpan {
 
         public RichForegroundColorSpan(int color) {
             super(color);

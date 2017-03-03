@@ -8,6 +8,7 @@ import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.InseparableModule;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
+import com.github.kubatatami.richedittext.styles.base.RichSpan;
 
 import org.xml.sax.Attributes;
 
@@ -96,7 +97,7 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
         this.autoUrlFix = autoUrlFix;
     }
 
-    public static class RichURLSpan extends URLSpan implements InseparableModule.Inseparable {
+    public static class RichURLSpan extends URLSpan implements InseparableModule.Inseparable, RichSpan {
 
         private Link link;
 

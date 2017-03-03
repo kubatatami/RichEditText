@@ -9,6 +9,7 @@ import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
 import com.github.kubatatami.richedittext.styles.base.LineStyleController;
+import com.github.kubatatami.richedittext.styles.base.RichSpan;
 import com.github.kubatatami.richedittext.styles.list.ListSpan;
 
 import org.xml.sax.Attributes;
@@ -112,7 +113,7 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpanCo
         return false;
     }
 
-    public static class RichAlignmentSpanStandard extends AlignmentSpan.Standard {
+    public static class RichAlignmentSpanStandard extends AlignmentSpan.Standard implements RichSpan {
 
         public RichAlignmentSpanStandard(Layout.Alignment align) {
             super(align);

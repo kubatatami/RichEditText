@@ -53,6 +53,8 @@ public class BaseRichEditText extends AppCompatEditText {
 
     private final List<OnValueChangeListener<Editable>> onTextChangeListeners = new ArrayList<>();
 
+    private final List<OnValueChangeListener<Editable>> onTextChangeDelayedListeners = new ArrayList<>();
+
     private static Context appContext;
 
     private boolean passiveStatus;
@@ -66,9 +68,11 @@ public class BaseRichEditText extends AppCompatEditText {
     private Runnable textChangeRunnable = new Runnable() {
         @Override
         public void run() {
-            invokeTextChangeListeners();
+            invokeTextChangeDelayedListeners();
         }
     };
+
+    private ComposingSpanFactory composingSpanFactory = new ComposingSpanFactory();
 
     private TextWatcher mainTextChangedListener = new TextWatcherAdapter() {
 
@@ -121,7 +125,13 @@ public class BaseRichEditText extends AppCompatEditText {
                 }
             }
         });
-        setEditableFactory(new ComposingSpanFactory());
+        composingSpanFactory.setOnSpanChangeListeners(new OnValueChangeListener<Editable>() {
+            @Override
+            public void onValueChange(Editable value) {
+                invokeTextListeners();
+            }
+        });
+        setEditableFactory(composingSpanFactory);
     }
 
     public static Context getAppContext() {
@@ -141,8 +151,13 @@ public class BaseRichEditText extends AppCompatEditText {
         if (handler == null) {
             handler = new Handler();
         }
-        handler.removeCallbacks(textChangeRunnable);
+        invokeTextListeners();
         handler.postDelayed(textChangeRunnable, onTextChangeDelayMs);
+    }
+
+    private void invokeTextListeners() {
+        invokeTextChangeListeners();
+        handler.removeCallbacks(textChangeRunnable);
     }
 
     @Override
@@ -350,9 +365,17 @@ public class BaseRichEditText extends AppCompatEditText {
         }
     }
 
-    protected void invokeTextChangeListeners() {
-        for (OnValueChangeListener<Editable> listener : onTextChangeListeners) {
+    protected void invokeTextChangeDelayedListeners() {
+        for (OnValueChangeListener<Editable> listener : onTextChangeDelayedListeners) {
             listener.onValueChange(getText());
+        }
+    }
+
+    protected void invokeTextChangeListeners() {
+        if (onTextChangeListeners != null) {
+            for (OnValueChangeListener<Editable> listener : onTextChangeListeners) {
+                listener.onValueChange(getText());
+            }
         }
     }
 
@@ -362,6 +385,14 @@ public class BaseRichEditText extends AppCompatEditText {
 
     public void removeOnTextChangeListener(OnValueChangeListener<Editable> onValueChangeListener) {
         onTextChangeListeners.remove(onValueChangeListener);
+    }
+
+    public void addOnTextChangeDelayedListener(OnValueChangeListener<Editable> onValueChangeListener) {
+        onTextChangeDelayedListeners.add(onValueChangeListener);
+    }
+
+    public void removeOnTextChangeDelayedListener(OnValueChangeListener<Editable> onValueChangeListener) {
+        onTextChangeDelayedListeners.remove(onValueChangeListener);
     }
 
     public long getOnTextChangeDelay() {

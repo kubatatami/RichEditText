@@ -10,6 +10,7 @@ import android.text.style.StyleSpan;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.BinaryStyleBaseController;
 import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
+import com.github.kubatatami.richedittext.styles.base.RichSpan;
 import com.github.kubatatami.richedittext.styles.multi.TypefaceSpanController;
 
 import org.xml.sax.Attributes;
@@ -59,7 +60,7 @@ public abstract class FontStyleSpanController extends BinaryStyleBaseController<
         return false;
     }
 
-    public static class RichStyleSpan extends StyleSpan {
+    public static class RichStyleSpan extends StyleSpan implements RichSpan {
 
         private final int style;
 

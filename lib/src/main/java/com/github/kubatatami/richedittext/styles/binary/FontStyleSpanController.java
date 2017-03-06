@@ -1,5 +1,6 @@
 package com.github.kubatatami.richedittext.styles.binary;
 
+import android.annotation.SuppressLint;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.text.Editable;
@@ -60,6 +61,7 @@ public abstract class FontStyleSpanController extends BinaryStyleBaseController<
         return false;
     }
 
+    @SuppressLint("ParcelCreator")
     public static class RichStyleSpan extends StyleSpan implements RichSpan {
 
         private final int style;

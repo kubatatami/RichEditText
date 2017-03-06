@@ -1,5 +1,6 @@
 package com.github.kubatatami.richedittext.styles.multi;
 
+import android.annotation.SuppressLint;
 import android.text.Editable;
 import android.text.style.AbsoluteSizeSpan;
 import android.util.TypedValue;
@@ -106,6 +107,7 @@ public class SizeSpanController extends StyleController<SizeSpanController.RichA
         }
     }
 
+    @SuppressLint("ParcelCreator")
     public static class RichAbsoluteSizeSpan extends AbsoluteSizeSpan implements RichSpan {
 
         public RichAbsoluteSizeSpan(int size) {

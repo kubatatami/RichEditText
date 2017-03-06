@@ -1,5 +1,6 @@
 package com.github.kubatatami.richedittext.styles.multi;
 
+import android.annotation.SuppressLint;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.style.URLSpan;
@@ -97,6 +98,7 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
         this.autoUrlFix = autoUrlFix;
     }
 
+    @SuppressLint("ParcelCreator")
     public static class RichURLSpan extends URLSpan implements InseparableModule.Inseparable, RichSpan {
 
         private Link link;

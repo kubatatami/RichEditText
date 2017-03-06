@@ -6,7 +6,9 @@ import android.text.style.LineHeightSpan;
 import android.text.style.UpdateAppearance;
 import android.text.style.UpdateLayout;
 
-public class BottomMarginSpan implements LineHeightSpan.WithDensity, UpdateLayout, UpdateAppearance {
+import com.github.kubatatami.richedittext.styles.base.RichSpan;
+
+public class BottomMarginSpan implements LineHeightSpan.WithDensity, UpdateLayout, UpdateAppearance, RichSpan {
 
     private static final int VERTICAL_SPACING = 10;
 

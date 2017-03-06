@@ -13,7 +13,7 @@
 
     <item android:id="@+id/menu_change_link"
         android:icon="@android:drawable/stat_sys_upload_done"
-        app:showAsAction="ifRoom"
+        app:showAsAction="never"
         android:title="@string/change_link"/>
 
     <item android:id="@+id/menu_show_panel"
@@ -22,14 +22,14 @@
         android:title="@string/show_panel"/>
 
     <item android:id="@+id/menu_arial"
-        app:showAsAction="always"
+        app:showAsAction="never"
         android:title="Arial"/>
 
     <item android:id="@+id/menu_times"
-        app:showAsAction="always"
+        app:showAsAction="never"
         android:title="Times"/>
 
     <item android:id="@+id/menu_courier"
-        app:showAsAction="always"
+        app:showAsAction="never"
         android:title="Courier"/>
 </menu>

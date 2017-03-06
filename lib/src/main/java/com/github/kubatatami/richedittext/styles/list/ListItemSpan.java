@@ -9,8 +9,9 @@ import android.text.style.UpdateAppearance;
 import android.text.style.UpdateLayout;
 
 import com.github.kubatatami.richedittext.other.DimenUtil;
+import com.github.kubatatami.richedittext.styles.base.RichSpan;
 
-public abstract class ListItemSpan implements LeadingMarginSpan, UpdateLayout, UpdateAppearance {
+public abstract class ListItemSpan implements LeadingMarginSpan, UpdateLayout, UpdateAppearance, RichSpan {
 
     private final int gapWidth;
 

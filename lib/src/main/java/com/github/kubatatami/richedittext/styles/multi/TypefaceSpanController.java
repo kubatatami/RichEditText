@@ -1,5 +1,6 @@
 package com.github.kubatatami.richedittext.styles.multi;
 
+import android.annotation.SuppressLint;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Parcel;
@@ -242,6 +243,7 @@ public class TypefaceSpanController extends MultiStyleController<TypefaceSpanCon
         }
     }
 
+    @SuppressLint("ParcelCreator")
     public static class FontSpan extends TypefaceSpan {
 
         private final Font font;

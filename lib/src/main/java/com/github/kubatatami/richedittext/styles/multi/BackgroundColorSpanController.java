@@ -1,5 +1,6 @@
 package com.github.kubatatami.richedittext.styles.multi;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.style.BackgroundColorSpan;
@@ -65,7 +66,7 @@ public class BackgroundColorSpanController extends StyleController<BackgroundCol
         return "rgb(" + Color.red(spanValue) + "," + Color.green(spanValue) + "," + Color.blue(spanValue) + ")";
     }
 
-
+    @SuppressLint("ParcelCreator")
     public static class RichBackgroundColorSpan extends BackgroundColorSpan implements RichSpan {
 
         public RichBackgroundColorSpan(int color) {

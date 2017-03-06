@@ -173,7 +173,7 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T, Z> {
         }
     }
 
-    public final T createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
+    public T createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
         if (tag.equals(tagName)) {
             return createSpan(styleMap, attributes);
         }

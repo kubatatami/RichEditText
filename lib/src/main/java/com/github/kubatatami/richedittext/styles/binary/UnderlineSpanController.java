@@ -1,5 +1,6 @@
 package com.github.kubatatami.richedittext.styles.binary;
 
+import android.annotation.SuppressLint;
 import android.text.SpannableStringBuilder;
 import android.text.style.UnderlineSpan;
 
@@ -50,6 +51,7 @@ public class UnderlineSpanController extends BinaryStyleBaseController<Underline
         return false;
     }
 
+    @SuppressLint("ParcelCreator")
     public static class RichUnderlineSpan extends UnderlineSpan implements RichSpan {
 
     }

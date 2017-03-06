@@ -1,5 +1,6 @@
 package com.github.kubatatami.richedittext.styles.line;
 
+import android.annotation.SuppressLint;
 import android.text.Editable;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
@@ -44,6 +45,24 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpanCo
 
     @Override
     protected Layout.Alignment getMultiValue() {
+        return null;
+    }
+
+
+    @Override
+    public RichAlignmentSpanStandard createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
+        if ((tag.equals("div") && styleMap.containsKey(TEXT_ALIGN))
+                || (tag.equals("span") && styleMap.containsKey(TEXT_ALIGN) && "block".equals(styleMap.get("display")))) {
+            return createSpan(styleMap, attributes);
+        }
+        return null;
+    }
+
+    @Override
+    public Class<?> spanFromEndTag(String tag) {
+        if (tag.equals("div") || tag.equals("span")) {
+            return clazz;
+        }
         return null;
     }
 
@@ -113,6 +132,7 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpanCo
         return false;
     }
 
+    @SuppressLint("ParcelCreator")
     public static class RichAlignmentSpanStandard extends AlignmentSpan.Standard implements RichSpan {
 
         public RichAlignmentSpanStandard(Layout.Alignment align) {

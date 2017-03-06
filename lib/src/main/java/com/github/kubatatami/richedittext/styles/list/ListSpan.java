@@ -8,8 +8,9 @@ import android.text.style.UpdateAppearance;
 import android.text.style.UpdateLayout;
 
 import com.github.kubatatami.richedittext.other.DimenUtil;
+import com.github.kubatatami.richedittext.styles.base.RichSpan;
 
-public class ListSpan implements LeadingMarginSpan, UpdateLayout, UpdateAppearance {
+public class ListSpan implements LeadingMarginSpan, UpdateLayout, UpdateAppearance, RichSpan {
 
     private static final int INDENT = 28;
 

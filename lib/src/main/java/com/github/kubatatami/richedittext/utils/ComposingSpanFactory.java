@@ -27,6 +27,11 @@ public class ComposingSpanFactory extends Editable.Factory {
                 } else {
                     super.replace(start, end, tb, tbstart, tbend);
                 }
+                for (UnderlineSpan span : getSpans(0, length(), UnderlineSpan.class)) {
+                    if (!(span instanceof UnderlineSpanController.RichUnderlineSpan)) {
+                        removeSpan(span);
+                    }
+                }
                 return this;
             }
 

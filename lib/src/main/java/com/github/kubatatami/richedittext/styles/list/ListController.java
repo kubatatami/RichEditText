@@ -6,9 +6,9 @@ import android.text.Spanned;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
-import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
+import com.github.kubatatami.richedittext.styles.base.BinarySpanController;
 import com.github.kubatatami.richedittext.styles.base.LineChangingController;
-import com.github.kubatatami.richedittext.styles.base.LineStyleController;
+import com.github.kubatatami.richedittext.styles.base.LineSpanController;
 import com.github.kubatatami.richedittext.styles.line.AlignmentSpanController;
 import com.github.kubatatami.richedittext.styles.line.AlignmentSpanController.RichAlignmentSpanStandard;
 
@@ -17,7 +17,7 @@ import org.xml.sax.Attributes;
 import java.util.List;
 import java.util.Map;
 
-public class ListController<T extends ListItemSpan> extends BinaryStyleController<ListSpan> implements LineChangingController {
+public class ListController<T extends ListItemSpan> extends BinarySpanController<ListSpan> implements LineChangingController {
 
     public static final int GAP_WIDTH_DP = 11;
 
@@ -95,28 +95,22 @@ public class ListController<T extends ListItemSpan> extends BinaryStyleControlle
     }
 
     @Override
-    public boolean perform(Editable editable, StyleSelectionInfo styleSelectionInfo) {
-        if (shouldPerform()) {
-            LineStyleController.LineInfo lineInfo = getLineInfo(editable, styleSelectionInfo);
-            return perform(editable, lineInfo);
-        }
-        return false;
+    public void perform(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+        LineSpanController.LineInfo lineInfo = getLineInfo(editable, styleSelectionInfo);
+        perform(editable, lineInfo);
     }
 
-    public boolean perform(Editable editable, LineStyleController.LineInfo lineInfo) {
-        boolean result = performInternal(editable, new StyleSelectionInfo(lineInfo.start, lineInfo.end, lineInfo.start, lineInfo.end, true));
+    public void perform(Editable editable, LineSpanController.LineInfo lineInfo) {
+        performInternal(editable, new StyleSelectionInfo(lineInfo.start, lineInfo.end, lineInfo.start, lineInfo.end, true));
         checkInternalSpans(editable);
-        return result;
     }
 
     @Override
-    public boolean clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo) {
-        LineStyleController.LineInfo lineInfo = getLineInfo(editable, styleSelectionInfo);
+    public void clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+        LineSpanController.LineInfo lineInfo = getLineInfo(editable, styleSelectionInfo);
         for (ListSpan span : editable.getSpans(lineInfo.start, lineInfo.end, ListSpan.class)) {
             clearStyle(editable, span, styleSelectionInfo);
         }
-        composeStyleSpan = null;
-        return true;
     }
 
     @Override
@@ -136,7 +130,7 @@ public class ListController<T extends ListItemSpan> extends BinaryStyleControlle
     @SuppressWarnings("unchecked")
     @Override
     public void clearStyle(Editable editable, Object span, StyleSelectionInfo styleSelectionInfo) {
-        LineStyleController.LineInfo lineInfo = getLineInfo(editable, styleSelectionInfo);
+        LineSpanController.LineInfo lineInfo = getLineInfo(editable, styleSelectionInfo);
         int spanStart = editable.getSpanStart(span);
         int spanEnd = editable.getSpanEnd(span);
         int spanFlags = editable.getSpanFlags(span);
@@ -172,7 +166,7 @@ public class ListController<T extends ListItemSpan> extends BinaryStyleControlle
                     } else if (start == end) {
                         removeSpan(span, text);
                     } else {
-                        LineStyleController.LineInfo lineInfo = getLineInfo(text, new StyleSelectionInfo(start, end, start, end, true));
+                        LineSpanController.LineInfo lineInfo = getLineInfo(text, new StyleSelectionInfo(start, end, start, end, true));
                         if (lineInfo.start != start || lineInfo.end != end) {
                             text.removeSpan(span);
                             text.setSpan(span, lineInfo.start, lineInfo.end, flags);
@@ -185,22 +179,10 @@ public class ListController<T extends ListItemSpan> extends BinaryStyleControlle
         super.checkAfterChange(editText, styleSelectionInfo, passive);
     }
 
-    private boolean performInternal(Editable editable, StyleSelectionInfo styleSelectionInfo) {
-        value = isAdd(editable, styleSelectionInfo);
-        if (value) {
-            clearStyles(editable, styleSelectionInfo);
-            if (shouldAdd(styleSelectionInfo)) {
-                add(editable, styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd);
-                return true;
-            } else {
-                if (oppositeController != null) {
-                    oppositeController.clearSpanInfo();
-                    oppositeController.invokeListeners(false);
-                }
-                return false;
-            }
-        } else {
-            return clearStyles(editable, styleSelectionInfo);
+    private void performInternal(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+        clearStyles(editable, styleSelectionInfo);
+        if (!getCurrentValue(editable, styleSelectionInfo)) {
+            add(editable, styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd);
         }
     }
 
@@ -276,7 +258,7 @@ public class ListController<T extends ListItemSpan> extends BinaryStyleControlle
         return null;
     }
 
-    private LineStyleController.LineInfo getLineInfo(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+    private LineSpanController.LineInfo getLineInfo(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         int startSel = Math.max(0, Math.min(styleSelectionInfo.realSelectionStart, editable.length()));
         int endSel = Math.max(0, Math.min(styleSelectionInfo.realSelectionEnd, editable.length()));
         String text = editable.toString();
@@ -290,7 +272,7 @@ public class ListController<T extends ListItemSpan> extends BinaryStyleControlle
         if (end == -1) {
             end = editable.length();
         }
-        return new LineStyleController.LineInfo(start, end);
+        return new LineSpanController.LineInfo(start, end);
     }
 
     private T createInternalSpan() {

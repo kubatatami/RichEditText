@@ -15,7 +15,7 @@ import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.other.FontCache;
 import com.github.kubatatami.richedittext.other.StringUtils;
 import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
-import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
+import com.github.kubatatami.richedittext.styles.base.MultiSpanController;
 
 import org.xml.sax.Attributes;
 
@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TypefaceSpanController extends MultiStyleController<TypefaceSpanController.FontSpan, String> implements EndStyleProperty {
+public class TypefaceSpanController extends MultiSpanController<TypefaceSpanController.FontSpan, String> implements EndStyleProperty {
 
     private static final String STYLE_NAME = "font-family";
 

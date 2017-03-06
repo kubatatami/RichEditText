@@ -11,13 +11,13 @@ import org.xml.sax.Attributes;
 import java.util.List;
 import java.util.Map;
 
-public abstract class MultiStyleController<T, Z> extends SpanController<T, Z> {
+public abstract class MultiSpanController<T, Z> extends SpanController<T, Z> {
 
     private Z value;
 
     SpanInfo<Z> spanInfo;
 
-    protected MultiStyleController(Class<T> clazz, String tagName) {
+    protected MultiSpanController(Class<T> clazz, String tagName) {
         super(clazz, tagName);
     }
 
@@ -27,8 +27,8 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T, Z> {
         return getValueFromSpan(span).toString();
     }
 
-    public boolean performSpan(T span, Editable editable, StyleSelectionInfo styleSelectionInfo) {
-        return perform(getValueFromSpan(span), editable, styleSelectionInfo);
+    public void performSpan(T span, Editable editable, StyleSelectionInfo styleSelectionInfo) {
+        perform(getValueFromSpan(span), editable, styleSelectionInfo);
     }
 
     protected abstract T add(Z value, Editable editable, int selectionStart, int selectionEnd, int flags);
@@ -37,11 +37,10 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T, Z> {
         add(value, editable, selectionStart, selectionEnd, defaultFlags);
     }
 
-    public boolean perform(Z value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
-        boolean result = clearStyles(editable, styleSelectionInfo);
-        result = selectStyle(value, editable, styleSelectionInfo) || result;
+    public void perform(Z value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
+        clearStyles(editable, styleSelectionInfo);
+        selectStyle(value, editable, styleSelectionInfo);
         this.value = value;
-        return result;
     }
 
     boolean selectStyle(Z value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
@@ -88,14 +87,12 @@ public abstract class MultiStyleController<T, Z> extends SpanController<T, Z> {
     }
 
     @Override
-    public boolean clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+    public void clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         if (styleSelectionInfo.selectionStart != styleSelectionInfo.selectionEnd) {
             for (T span : filter(editable.getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, getClazz()))) {
                 clearStyle(editable, span, styleSelectionInfo);
             }
-            return true;
         }
-        return false;
     }
 
 

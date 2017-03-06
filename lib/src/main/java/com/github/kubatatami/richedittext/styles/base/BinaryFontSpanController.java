@@ -1,17 +1,19 @@
 package com.github.kubatatami.richedittext.styles.base;
 
 import android.text.Editable;
+import android.text.Spanned;
 
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
+import com.github.kubatatami.richedittext.other.SpanUtil;
 
 import org.xml.sax.Attributes;
 
 import java.util.List;
 import java.util.Map;
 
-public abstract class BinaryStyleBaseController<T> extends BinaryStyleController<T> {
+public abstract class BinaryFontSpanController<T> extends BinarySpanController<T> {
 
-    protected BinaryStyleBaseController(Class<T> clazz, String tagName) {
+    protected BinaryFontSpanController(Class<T> clazz, String tagName) {
         super(clazz, tagName);
     }
 
@@ -26,39 +28,29 @@ public abstract class BinaryStyleBaseController<T> extends BinaryStyleController
         }
     }
 
-    public boolean perform(Editable editable, StyleSelectionInfo styleSelectionInfo) {
-        if (shouldPerform()) {
-            value = isAdd(editable, styleSelectionInfo);
-            boolean result;
-            if (value) {
-                result = selectStyle(editable, styleSelectionInfo);
-            } else {
-                result = clearStyles(editable, styleSelectionInfo);
-            }
-            return result;
+    public void perform(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+        if (getCurrentValue(editable, styleSelectionInfo)) {
+            clearStyles(editable, styleSelectionInfo);
+        } else {
+            selectStyle(editable, styleSelectionInfo);
         }
-        return false;
     }
 
-    public boolean selectStyle(Editable editable, StyleSelectionInfo styleSelectionInfo) {
-        if (shouldAdd(styleSelectionInfo)) {
-            int finalSpanStart = styleSelectionInfo.selectionStart;
-            int finalSpanEnd = styleSelectionInfo.selectionEnd;
-            for (Object span : filter(editable.getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, getClazz()))) {
-                int spanStart = editable.getSpanStart(span);
-                int spanEnd = editable.getSpanEnd(span);
-                if (spanStart < finalSpanStart) {
-                    finalSpanStart = spanStart;
-                }
-                if (spanEnd > finalSpanEnd) {
-                    finalSpanEnd = spanEnd;
-                }
-                editable.removeSpan(span);
+    public void selectStyle(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+        int finalSpanStart = styleSelectionInfo.selectionStart;
+        int finalSpanEnd = styleSelectionInfo.selectionEnd;
+        for (Object span : filter(editable.getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, getClazz()))) {
+            int spanStart = editable.getSpanStart(span);
+            int spanEnd = editable.getSpanEnd(span);
+            if (spanStart < finalSpanStart) {
+                finalSpanStart = spanStart;
             }
-            add(editable, finalSpanStart, finalSpanEnd);
-            return true;
+            if (spanEnd > finalSpanEnd) {
+                finalSpanEnd = spanEnd;
+            }
+            editable.removeSpan(span);
         }
-        return false;
+        add(editable, finalSpanStart, finalSpanEnd);
     }
 
     @Override
@@ -81,17 +73,21 @@ public abstract class BinaryStyleBaseController<T> extends BinaryStyleController
     }
 
     @Override
-    public boolean clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+    public void clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         List<T> spans = filter(editable.getSpans(styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd, getClazz()));
         if (styleSelectionInfo.selectionStart != styleSelectionInfo.selectionEnd) {
             for (T span : spans) {
                 clearStyle(editable, span, styleSelectionInfo);
             }
-            return true;
         } else if (spans.size() > 0) {
-            composeStyleSpan = spans.get(0);
+            for(T span : spans) {
+                endNow(editable, span);
+            }
         }
-        return false;
+    }
+
+    private void endNow(Editable editable, T span) {
+        SpanUtil.changeFlags(span, editable, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
     }
 
     @Override

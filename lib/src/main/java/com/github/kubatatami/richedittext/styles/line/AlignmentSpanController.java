@@ -9,7 +9,7 @@ import android.text.style.AlignmentSpan;
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
-import com.github.kubatatami.richedittext.styles.base.LineStyleController;
+import com.github.kubatatami.richedittext.styles.base.LineSpanController;
 import com.github.kubatatami.richedittext.styles.base.RichSpan;
 import com.github.kubatatami.richedittext.styles.list.ListSpan;
 
@@ -17,7 +17,7 @@ import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public class AlignmentSpanController extends LineStyleController<AlignmentSpanController.RichAlignmentSpanStandard, Layout.Alignment> implements EndStyleProperty {
+public class AlignmentSpanController extends LineSpanController<AlignmentSpanController.RichAlignmentSpanStandard, Layout.Alignment> implements EndStyleProperty {
 
     private static final String TEXT_ALIGN = "text-align";
 

@@ -7,7 +7,7 @@ import android.util.Pair;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
-import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
+import com.github.kubatatami.richedittext.styles.base.MultiSpanController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 
 import java.util.ArrayList;
@@ -66,6 +66,17 @@ public class SpanUtil {
         }
     }
 
+    public static boolean containsFlag(int flags, int flag) {
+        return (flags & flag) == flag;
+    }
+
+    public static void changeFlags(Object span, Editable editable, int newFlags) {
+        int spanStart = editable.getSpanStart(span);
+        int spanEnd = editable.getSpanEnd(span);
+        editable.removeSpan(span);
+        editable.setSpan(span, spanStart, spanEnd, newFlags);
+    }
+
     @SuppressWarnings("unchecked")
     public static void logSpans(final Editable editable, Collection<SpanController<?, ?>> controllers) {
         List<Object> spans = Arrays.asList(editable.getSpans(0, editable.length(), Object.class));
@@ -80,7 +91,7 @@ public class SpanUtil {
             if (controller != null) {
                 int spanStart = editable.getSpanStart(span);
                 int spanEnd = editable.getSpanEnd(span);
-                Object value = controller instanceof MultiStyleController ? ((MultiStyleController) controller).getDebugValueFromSpan(span) : true;
+                Object value = controller instanceof MultiSpanController ? ((MultiSpanController) controller).getDebugValueFromSpan(span) : true;
                 Log.i("SpanLog", controller.getClazz().getSimpleName() + " " + spanStart + ":" + spanEnd + " value: " + value.toString());
             }
         }

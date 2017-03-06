@@ -5,7 +5,7 @@ import android.text.SpannableStringBuilder;
 import android.text.style.StrikethroughSpan;
 
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
-import com.github.kubatatami.richedittext.styles.base.BinaryStyleBaseController;
+import com.github.kubatatami.richedittext.styles.base.BinaryFontSpanController;
 import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
 import com.github.kubatatami.richedittext.styles.base.RichSpan;
 
@@ -13,7 +13,7 @@ import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public class StrikeThroughSpanController extends BinaryStyleBaseController<StrikeThroughSpanController.RichStrikethroughSpan> implements EndStyleProperty {
+public class StrikeThroughSpanController extends BinaryFontSpanController<StrikeThroughSpanController.RichStrikethroughSpan> implements EndStyleProperty {
 
     public StrikeThroughSpanController() {
         super(RichStrikethroughSpan.class, "strike");

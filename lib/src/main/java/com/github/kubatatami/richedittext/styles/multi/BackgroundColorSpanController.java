@@ -9,7 +9,7 @@ import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.styles.base.RichSpan;
 import com.github.kubatatami.richedittext.utils.HtmlUtils;
 
-public class BackgroundColorSpanController extends StyleController<BackgroundColorSpanController.RichBackgroundColorSpan, Integer> {
+public class BackgroundColorSpanController extends FontStyleSpanController<BackgroundColorSpanController.RichBackgroundColorSpan, Integer> {
 
     public BackgroundColorSpanController() {
         super(RichBackgroundColorSpan.class, "span", "background-color");

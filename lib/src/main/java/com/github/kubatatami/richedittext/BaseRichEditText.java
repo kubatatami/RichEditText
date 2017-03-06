@@ -17,8 +17,8 @@ import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.other.CompatUtils;
 import com.github.kubatatami.richedittext.other.SpanUtil;
 import com.github.kubatatami.richedittext.other.TextWatcherAdapter;
-import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
-import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
+import com.github.kubatatami.richedittext.styles.base.BinarySpanController;
+import com.github.kubatatami.richedittext.styles.base.MultiSpanController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
 import com.github.kubatatami.richedittext.utils.ComposingSpanFactory;
@@ -329,17 +329,15 @@ public class BaseRichEditText extends AppCompatEditText {
         return isStyled() ? getHtml() : getText().toString();
     }
 
-    void binaryClick(Class<? extends BinaryStyleController<?>> clazz) {
-        if (getModule(clazz).perform(getText(), getCurrentSelection())) {
-            historyModule.saveHistory();
-            checkAfterChange(true);
-        }
+    void binaryClick(Class<? extends BinarySpanController<?>> clazz) {
+        getModule(clazz).perform(getText(), getCurrentSelection());
+        historyModule.saveHistory();
+        checkAfterChange(true);
     }
 
-    <T> void multiClick(T value, Class<? extends MultiStyleController<?, T>> clazz) {
-        if (getModule(clazz).perform(value, getText(), getCurrentSelection())) {
-            historyModule.saveHistory();
-        }
+    <T> void multiClick(T value, Class<? extends MultiSpanController<?, T>> clazz) {
+        getModule(clazz).perform(value, getText(), getCurrentSelection());
+        historyModule.saveHistory();
     }
 
     protected StyleSelectionInfo getCurrentSelection() {

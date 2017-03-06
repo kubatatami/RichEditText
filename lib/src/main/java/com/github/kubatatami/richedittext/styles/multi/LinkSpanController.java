@@ -8,14 +8,14 @@ import android.text.style.URLSpan;
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.InseparableModule;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
-import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
+import com.github.kubatatami.richedittext.styles.base.MultiSpanController;
 import com.github.kubatatami.richedittext.styles.base.RichSpan;
 
 import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public class LinkSpanController extends MultiStyleController<LinkSpanController.RichURLSpan, LinkSpanController.Link> {
+public class LinkSpanController extends MultiSpanController<LinkSpanController.RichURLSpan, LinkSpanController.Link> {
 
     private boolean autoUrlFix = true;
 
@@ -75,9 +75,8 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
     }
 
     @Override
-    public boolean perform(Link value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
+    public void perform(Link value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
         add(value, editable, styleSelectionInfo.realSelectionStart, styleSelectionInfo.realSelectionEnd);
-        return true;
     }
 
     @Override
@@ -86,8 +85,8 @@ public class LinkSpanController extends MultiStyleController<LinkSpanController.
     }
 
     @Override
-    public boolean clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo) {
-        return false;
+    public void clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+
     }
 
     public void setInseparable(boolean inseparable) {

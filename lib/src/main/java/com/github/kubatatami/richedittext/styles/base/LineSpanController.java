@@ -5,11 +5,11 @@ import android.text.Spanned;
 
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 
-public abstract class LineStyleController<T, Z> extends MultiStyleController<T, Z> {
+public abstract class LineSpanController<T, Z> extends MultiSpanController<T, Z> {
 
     private static int defaultLineFlags = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
 
-    protected LineStyleController(Class<T> clazz, String tagName) {
+    protected LineSpanController(Class<T> clazz, String tagName) {
         super(clazz, tagName);
     }
 
@@ -51,12 +51,11 @@ public abstract class LineStyleController<T, Z> extends MultiStyleController<T, 
     }
 
     @Override
-    public boolean clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+    public void clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         LineInfo lineInfo = getLineInfo(editable, styleSelectionInfo);
         for (T span : editable.getSpans(lineInfo.start, lineInfo.end, clazz)) {
             clearStyle(editable, span, styleSelectionInfo);
         }
-        return true;
     }
 
     private LineInfo getLineInfo(Editable editable, StyleSelectionInfo styleSelectionInfo) {

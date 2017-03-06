@@ -9,7 +9,7 @@ import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.other.DimenUtil;
 import com.github.kubatatami.richedittext.styles.base.RichSpan;
 
-public class SizeSpanController extends StyleController<SizeSpanController.RichAbsoluteSizeSpan, Float> {
+public class SizeSpanController extends FontStyleSpanController<SizeSpanController.RichAbsoluteSizeSpan, Float> {
 
     public SizeSpanController() {
         super(RichAbsoluteSizeSpan.class, "span", "font-size");

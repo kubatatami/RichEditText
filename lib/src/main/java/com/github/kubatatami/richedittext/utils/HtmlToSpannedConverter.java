@@ -7,11 +7,11 @@ import android.text.Spanned;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
-import com.github.kubatatami.richedittext.styles.base.BinaryStyleController;
+import com.github.kubatatami.richedittext.styles.base.BinarySpanController;
 import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
 import com.github.kubatatami.richedittext.styles.base.LineChangingController;
-import com.github.kubatatami.richedittext.styles.base.LineStyleController;
-import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
+import com.github.kubatatami.richedittext.styles.base.LineSpanController;
+import com.github.kubatatami.richedittext.styles.base.MultiSpanController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
 import com.github.kubatatami.richedittext.styles.list.ListController;
@@ -110,12 +110,12 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
                 if (spanController.acceptSpan(spanInfo.span)) {
                     StyleSelectionInfo selectionInfo = new StyleSelectionInfo(spanInfo.start, spanInfo.end, spanInfo.start, spanInfo.end, true);
                     if (spanController instanceof ListController) {
-                        LineStyleController.LineInfo lineInfo = new LineStyleController.LineInfo(spanInfo.start, spanInfo.end - 1);
+                        LineSpanController.LineInfo lineInfo = new LineSpanController.LineInfo(spanInfo.start, spanInfo.end - 1);
                         ((ListController) spanController).perform(mSpannableSb, lineInfo);
-                    } else if (spanController instanceof BinaryStyleController) {
-                        ((BinaryStyleController) spanController).perform(mSpannableSb, selectionInfo);
-                    } else if (spanController instanceof MultiStyleController) {
-                        ((MultiStyleController) spanController).performSpan(spanInfo.span, mSpannableSb, selectionInfo);
+                    } else if (spanController instanceof BinarySpanController) {
+                        ((BinarySpanController) spanController).perform(mSpannableSb, selectionInfo);
+                    } else if (spanController instanceof MultiSpanController) {
+                        ((MultiSpanController) spanController).performSpan(spanInfo.span, mSpannableSb, selectionInfo);
                     }
                 }
             }
@@ -135,7 +135,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         for (SpanController<?, ?> spanController : mSpanControllers) {
             Object object = spanController.createSpanFromTag(tag, styleMap, attributes);
             if (object != null) {
-                if (spanController instanceof LineStyleController && mSpannableSb.length() > 0) {
+                if (spanController instanceof LineSpanController && mSpannableSb.length() > 0) {
                     if (mSpannableSb.charAt(mSpannableSb.length() - 1) != '\n') {
                         mSpannableSb.append('\n');
                     }
@@ -230,7 +230,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         if (objs.length == 0) {
             return null;
         } else {
-            if (spanController instanceof MultiStyleController) {
+            if (spanController instanceof MultiSpanController) {
                 for (Object obj : objs) {
                     int flag = text.getSpanFlags(obj);
                     if (flag == Spannable.SPAN_MARK_MARK) {

@@ -28,7 +28,7 @@ import static com.github.kubatatami.richedittext.styles.multi.TypefaceSpanContro
 
 public class TestActivity extends AppCompatActivity {
 
-    private static final boolean LIVE_PREVIEW = true;
+    private static final boolean LIVE_PREVIEW = false;
 
     private RichEditText richEditText;
 

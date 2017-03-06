@@ -3,18 +3,18 @@ package com.github.kubatatami.richedittext.styles.multi;
 import android.support.annotation.NonNull;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
-import com.github.kubatatami.richedittext.styles.base.MultiStyleController;
+import com.github.kubatatami.richedittext.styles.base.MultiSpanController;
 import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
 
 import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public abstract class StyleController<T, Z> extends MultiStyleController<T, Z> implements StartStyleProperty {
+public abstract class FontStyleSpanController<T, Z> extends MultiSpanController<T, Z> implements StartStyleProperty {
 
     private final String styleName;
 
-    protected StyleController(Class<T> clazz, String tagName, String styleName) {
+    protected FontStyleSpanController(Class<T> clazz, String tagName, String styleName) {
         super(clazz, tagName);
         this.styleName = styleName;
     }

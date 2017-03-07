@@ -22,8 +22,8 @@ public class ComposingSpanFactory extends Editable.Factory {
             @Override
             public SpannableStringBuilder replace(int start, int end, CharSequence tb, int tbstart, int tbend) {
                 int offset = getStartEqualsLetters(start, end, tb, tbstart, tbend);
-                if (offset > 0 && tb instanceof Spannable) {
-                    Object span = findComposing((Spannable) tb);
+                if (offset > 0) {
+                    Object span = findComposing(tb);
                     if (span != null) {
                         int flags = ((Spannable) tb).getSpanFlags(span);
                         removeSpan(span);
@@ -47,10 +47,12 @@ public class ComposingSpanFactory extends Editable.Factory {
                 }
             }
 
-            private Object findComposing(Spannable text) {
-                for (Object span : text.getSpans(0, text.length(), Object.class)) {
-                    if (span.getClass().getName().equals(COMPOSING_CLASS_NAME)) {
-                        return span;
+            private Object findComposing(CharSequence text) {
+                if (text instanceof Spannable) {
+                    for (Object span : ((Spannable) text).getSpans(0, text.length(), Object.class)) {
+                        if (span.getClass().getName().equals(COMPOSING_CLASS_NAME)) {
+                            return span;
+                        }
                     }
                 }
                 return null;

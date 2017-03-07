@@ -47,7 +47,7 @@ public abstract class FontStyleSpanController extends BinaryStyleBaseController<
 
     @Override
     public RichStyleSpan add(Editable editable, int selectionStart, int selectionEnd, int flags) {
-        RichStyleSpan result = new RichStyleSpan(typeface);
+        RichStyleSpan result = createSpan();
         editable.setSpan(result, selectionStart, selectionEnd, flags);
         return result;
     }
@@ -60,6 +60,8 @@ public abstract class FontStyleSpanController extends BinaryStyleBaseController<
         }
         return false;
     }
+
+    abstract RichStyleSpan createSpan();
 
     @SuppressLint("ParcelCreator")
     public static class RichStyleSpan extends StyleSpan implements RichSpan {

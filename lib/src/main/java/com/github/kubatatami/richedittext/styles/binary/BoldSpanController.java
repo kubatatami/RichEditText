@@ -1,5 +1,6 @@
 package com.github.kubatatami.richedittext.styles.binary;
 
+import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 
 import org.xml.sax.Attributes;
@@ -21,11 +22,24 @@ public class BoldSpanController extends FontStyleSpanController {
         return null;
     }
 
+    @Override
+    RichStyleSpan createSpan() {
+        return new RichBoldSpan();
+    }
+
     public Class<?> spanFromEndTag(String tag) {
         if (tag.equals("b") || tag.equals("strong") || tag.equals("span")) {
             return clazz;
         }
         return null;
+    }
+
+    @SuppressLint("ParcelCreator")
+    public static class RichBoldSpan extends RichStyleSpan {
+
+        public RichBoldSpan() {
+            super(Typeface.BOLD);
+        }
     }
 
 }

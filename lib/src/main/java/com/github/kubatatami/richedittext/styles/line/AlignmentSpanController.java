@@ -101,7 +101,7 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpanCo
                 alignValue = "left";
                 break;
         }
-        return TEXT_ALIGN + ": " + alignValue + ";";
+        return TEXT_ALIGN + ": " + alignValue;
     }
 
     @Override

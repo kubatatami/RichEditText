@@ -129,6 +129,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         }
         Map<String, String> styleMap = getStyleStringMap(attributes.getValue("style"));
         if (standalone && tag.equals("div") && firstTag) {
+            firstTag = false;
             for (StartStyleProperty property : properties) {
                 property.setPropertyFromTag(baseRichEditText, styleMap);
             }

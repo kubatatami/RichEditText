@@ -22,7 +22,7 @@ public class ComposingSpanFactory extends Editable.Factory {
             @Override
             public SpannableStringBuilder replace(int start, int end, CharSequence tb, int tbstart, int tbend) {
                 int offset = getStartEqualsLetters(start, end, tb, tbstart, tbend);
-                if (offset > 0) {
+                if (offset > 0 && tb instanceof Spannable) {
                     Object span = findComposing((Spannable) tb);
                     if (span != null) {
                         int flags = ((Spannable) tb).getSpanFlags(span);

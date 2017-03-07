@@ -19,7 +19,6 @@ import java.util.Map;
 
 public class AlignmentSpanController extends LineStyleController<AlignmentSpanController.RichAlignmentSpanStandard, Layout.Alignment> implements EndStyleProperty {
 
-
     private static final String TEXT_ALIGN = "text-align";
 
     public AlignmentSpanController() {
@@ -47,7 +46,6 @@ public class AlignmentSpanController extends LineStyleController<AlignmentSpanCo
     protected Layout.Alignment getMultiValue() {
         return null;
     }
-
 
     @Override
     public RichAlignmentSpanStandard createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {

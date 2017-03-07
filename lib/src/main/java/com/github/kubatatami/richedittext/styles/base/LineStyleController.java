@@ -7,13 +7,15 @@ import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 
 public abstract class LineStyleController<T, Z> extends MultiStyleController<T, Z> {
 
+    static int defaultLineFlags = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
+
     protected LineStyleController(Class<T> clazz, String tagName) {
         super(clazz, tagName);
     }
 
     @Override
     public void add(Z value, Editable editable, int selectionStart, int selectionEnd) {
-        add(value, editable, selectionStart, selectionEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        add(value, editable, selectionStart, selectionEnd, defaultLineFlags);
     }
 
     @Override
@@ -25,7 +27,7 @@ public abstract class LineStyleController<T, Z> extends MultiStyleController<T, 
     public boolean selectStyle(Z value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
         LineInfo lineInfo = getLineInfo(editable, styleSelectionInfo);
         if (lineInfo.start == lineInfo.end) {
-            spanInfo = new SpanInfo<>(lineInfo.start, lineInfo.end, Spanned.SPAN_INCLUSIVE_INCLUSIVE, value);
+            spanInfo = new SpanInfo<>(lineInfo.start, lineInfo.end, defaultLineFlags, value);
         } else {
             add(value, editable, lineInfo.start, lineInfo.end);
         }

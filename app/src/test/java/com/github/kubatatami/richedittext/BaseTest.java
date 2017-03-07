@@ -23,7 +23,7 @@ import static org.junit.Assert.assertEquals;
 @Config(constants = BuildConfig.class, sdk = 22, packageName = "com.github.kubatatami.richedittext.example")
 public class BaseTest {
 
-    protected RichEditText editText;
+    RichEditText editText;
 
     @ParameterizedRobolectricTestRunner.Parameters(name = "Writer = {0}")
     public static Collection<Object[]> data() {
@@ -32,9 +32,9 @@ public class BaseTest {
         });
     }
 
-    protected Writer writer;
+    Writer writer;
 
-    public BaseTest(Writer writer) {
+    BaseTest(Writer writer) {
         this.writer = writer;
     }
 
@@ -46,7 +46,7 @@ public class BaseTest {
         editText.setText("");
     }
 
-    protected void checkHtml(String validHtml) {
+    void checkHtml(String validHtml) {
         assertEquals(validHtml, editText.getHtml(false));
     }
 

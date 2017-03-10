@@ -44,6 +44,7 @@ public class BaseTest {
         TestActivity activity = Robolectric.setupActivity(TestActivity.class);
         editText = (RichEditText) activity.findViewById(com.github.kubatatami.richedittext.example.R.id.rich_edit_text);
         editText.setText("");
+        editText.setSelection(0);
     }
 
     void checkHtml(String validHtml) {

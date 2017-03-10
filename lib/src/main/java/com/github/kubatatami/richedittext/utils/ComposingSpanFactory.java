@@ -6,6 +6,7 @@ import android.text.SpannableStringBuilder;
 import android.text.style.UnderlineSpan;
 
 import com.github.kubatatami.richedittext.BaseRichEditText.OnValueChangeListener;
+import com.github.kubatatami.richedittext.modules.InseparableModule;
 import com.github.kubatatami.richedittext.styles.base.RichSpan;
 import com.github.kubatatami.richedittext.styles.binary.UnderlineSpanController;
 
@@ -27,16 +28,27 @@ public class ComposingSpanFactory extends Editable.Factory {
                     if (span != null) {
                         int flags = ((Spannable) tb).getSpanFlags(span);
                         removeSpan(span);
-                        super.replace(start + offset, end, tb, tbstart + offset, tbend);
+                        replaceInternal(start + offset, end, tb, tbstart + offset, tbend);
                         setSpan(span, start, start + tbend, flags);
                     } else {
-                        super.replace(start + offset, end, tb, tbstart + offset, tbend);
+                        replaceInternal(start + offset, end, tb, tbstart + offset, tbend);
                     }
                 } else {
-                    super.replace(start, end, tb, tbstart, tbend);
+                    replaceInternal(start, end, tb, tbstart, tbend);
                 }
                 removeInvalidSpans();
                 return this;
+            }
+
+            private void replaceInternal(int start, int end, CharSequence tb, int tbstart, int tbend) {
+                InseparableModule.RemoveInfo info = InseparableModule.getRemoveInfo(this, start, end);
+                super.replace(info.start, info.end, tb, tbstart, tbend);
+            }
+
+            @Override
+            public SpannableStringBuilder delete(int start, int end) {
+                InseparableModule.RemoveInfo info = InseparableModule.getRemoveInfo(this, start, end);
+                return super.delete(info.start, info.end);
             }
 
             protected void removeInvalidSpans() {

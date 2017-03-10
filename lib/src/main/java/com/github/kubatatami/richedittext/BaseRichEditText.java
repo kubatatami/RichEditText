@@ -5,7 +5,6 @@ import android.content.res.ColorStateList;
 import android.os.Handler;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
@@ -26,7 +25,6 @@ import com.github.kubatatami.richedittext.utils.ComposingSpanFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,9 +81,6 @@ public class BaseRichEditText extends AppCompatEditText {
             historyModule.saveHistory();
             checkBeforeChange(after > 0);
             removed = SpanUtil.removeUnusedSpans(BaseRichEditText.this, spanControllerMap.values(), start, count, after);
-            if (InseparableModule.isEnabled()) {
-                InseparableModule.check(getEditableText(), start, count);
-            }
         }
 
         @Override
@@ -93,9 +88,6 @@ public class BaseRichEditText extends AppCompatEditText {
             super.afterTextChanged(s);
             if (removed) {
                 SpanUtil.inclusiveSpans(BaseRichEditText.this, spanControllerMap.values());
-            }
-            if (InseparableModule.isEnabled()) {
-                InseparableModule.remove(s);
             }
         }
     };
@@ -206,13 +198,6 @@ public class BaseRichEditText extends AppCompatEditText {
         }
     }
 
-    @Override
-    public void setFilters(InputFilter[] filters) {
-        InputFilter[] result = Arrays.copyOf(filters, filters.length + 1);
-        result[filters.length] = InseparableModule.getFilter();
-        super.setFilters(result);
-    }
-
     public void addOnFocusChangeListener(OnFocusChangeListener listener) {
         onFocusChangeListeners.add(listener);
     }
@@ -241,7 +226,7 @@ public class BaseRichEditText extends AppCompatEditText {
     }
 
     public void setHtml(String html) {
-        setHtml(html, "");
+        setHtml(html, null);
     }
 
     public void setHtml(String html, String style) {

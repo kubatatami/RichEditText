@@ -93,7 +93,7 @@ public abstract class HtmlExportModule {
 
             for (int j = spans.length - 1; j >= 0; j--) {
                 SpanController<?, ?> controller = SpanUtil.acceptController(spanControllers, spans[j]);
-                if (controller != null) {
+                if (controller != null && text.getSpanStart(spans[j]) != text.getSpanEnd(spans[j])) {
                     out.append(controller.endTag(spans[j], text.getSpanEnd(spans[j]) == next, spans));
                 }
             }

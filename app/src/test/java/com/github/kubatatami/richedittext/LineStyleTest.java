@@ -20,7 +20,7 @@ public class LineStyleTest extends BaseTest {
         writer.write(editText, "Center.\n");
         editText.alignmentClick(Layout.Alignment.ALIGN_OPPOSITE);
         writer.write(editText, "Right.\n");
-        checkHtml("");
+        checkHtml("<div style=\"text-align: left;\">Left.</div><div style=\"text-align: center;\">Center.</div><div style=\"text-align: right;\">Right.<br/></div>");
     }
 
 }

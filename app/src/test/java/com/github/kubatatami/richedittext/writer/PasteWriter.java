@@ -6,7 +6,7 @@ public class PasteWriter implements Writer {
 
     @Override
     public void write(EditText editText, String text) {
-        editText.append(text);
+        editText.getText().insert(editText.getSelectionStart(), text);
     }
 
     @Override

@@ -6,13 +6,16 @@ public class SuggestionWriter implements Writer {
 
     @Override
     public void write(EditText editText, String text) {
-        String words[] = text.split(" ");
-        for (int i = 0; i < words.length; i++) {
-            if (words[i].length() > 0) {
-                writeWord(editText, words[i]);
-            }
-            if (i + 1 < words.length) {
-                editText.append(" ");
+        int start = 0;
+        while (text.length() > start) {
+            int end = text.indexOf(" ", start);
+            if (end == -1) {
+                writeWord(editText, text.substring(start));
+                break;
+            } else {
+                writeWord(editText, text.substring(start, end));
+                editText.getText().insert(editText.getSelectionStart(), " ");
+                start = end + 1;
             }
         }
     }
@@ -33,7 +36,8 @@ public class SuggestionWriter implements Writer {
         }
         for (int i = 0; i < word.length(); i++) {
             String subText = word.substring(0, i + 1);
-            editText.getEditableText().replace(start, start + subText.length() - 1, subText);
+            int end = start + subText.length() - 1;
+            editText.getEditableText().replace(start, end, subText);
         }
     }
 }

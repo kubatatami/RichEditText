@@ -5,6 +5,7 @@
 
         <attr name="checked" format="boolean"/>
         <attr name="checkedTint" format="color"/>
+        <attr name="defaultTint" format="color"/>
 
     </declare-styleable>
 

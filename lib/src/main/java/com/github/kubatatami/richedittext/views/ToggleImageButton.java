@@ -44,9 +44,10 @@ public class ToggleImageButton extends AppCompatImageButton implements Checkable
     private void initAttr(Context context, AttributeSet attrs) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ToggleImageButton);
         boolean checked = a.getBoolean(R.styleable.ToggleImageButton_checked, false);
-        int tint = a.getColor(R.styleable.ToggleImageButton_checkedTint, 0);
-        if (tint != 0) {
-            setImageDrawable(getDrawable(), tint);
+        int checkedTint = a.getColor(R.styleable.ToggleImageButton_checkedTint, 0);
+        int defaultTint = a.getColor(R.styleable.ToggleImageButton_defaultTint, 0);
+        if (checkedTint != 0 || defaultTint != 0) {
+            setImageDrawable(getDrawable(), checkedTint, defaultTint);
         }
         setChecked(checked);
         a.recycle();
@@ -96,13 +97,19 @@ public class ToggleImageButton extends AppCompatImageButton implements Checkable
         }
     }
 
-    public void setImageDrawable(Drawable drawable, int tint) {
+    public void setImageDrawable(Drawable drawable, int checkedTint, int defaultTint) {
         if (drawable != null) {
             StateListDrawable stateListDrawable = new StateListDrawable();
-            Drawable checkedDrawable = drawable.getConstantState().newDrawable().mutate();
-            DrawableCompat.setTint(checkedDrawable, tint);
-            stateListDrawable.addState(new int[]{android.R.attr.state_checked}, checkedDrawable);
-            stateListDrawable.addState(new int[]{}, drawable.mutate());
+            Drawable defaultDrawable = drawable.mutate();
+            if (checkedTint != 0) {
+                Drawable checkedDrawable = drawable.getConstantState().newDrawable().mutate();
+                DrawableCompat.setTint(checkedDrawable, checkedTint);
+                stateListDrawable.addState(new int[]{android.R.attr.state_checked}, checkedDrawable);
+            }
+            if (defaultTint != 0) {
+                DrawableCompat.setTint(defaultDrawable, defaultTint);
+            }
+            stateListDrawable.addState(new int[]{}, defaultDrawable);
             super.setImageDrawable(stateListDrawable);
         } else {
             super.setImageDrawable(drawable);

@@ -29,7 +29,8 @@ public class ComposingSpanFactory extends Editable.Factory {
                         int flags = ((Spannable) tb).getSpanFlags(span);
                         removeSpan(span);
                         InseparableModule.RemoveInfo info = replaceInternal(start + offset, end, tb, tbstart + offset, tbend);
-                        setSpan(span, info.start, info.start + tbend, flags);
+                        int minStart = Math.min(start, info.start);
+                        setSpan(span, minStart, minStart + tbend, flags);
                     } else {
                         replaceInternal(start + offset, end, tb, tbstart + offset, tbend);
                     }

@@ -28,8 +28,8 @@ public class ComposingSpanFactory extends Editable.Factory {
                     if (span != null) {
                         int flags = ((Spannable) tb).getSpanFlags(span);
                         removeSpan(span);
-                        replaceInternal(start + offset, end, tb, tbstart + offset, tbend);
-                        setSpan(span, start, start + tbend, flags);
+                        InseparableModule.RemoveInfo info = replaceInternal(start + offset, end, tb, tbstart + offset, tbend);
+                        setSpan(span, info.start, info.start + tbend, flags);
                     } else {
                         replaceInternal(start + offset, end, tb, tbstart + offset, tbend);
                     }
@@ -40,9 +40,10 @@ public class ComposingSpanFactory extends Editable.Factory {
                 return this;
             }
 
-            private void replaceInternal(int start, int end, CharSequence tb, int tbstart, int tbend) {
+            private InseparableModule.RemoveInfo replaceInternal(int start, int end, CharSequence tb, int tbstart, int tbend) {
                 InseparableModule.RemoveInfo info = InseparableModule.getRemoveInfo(this, start, end);
                 super.replace(info.start, info.end, tb, tbstart, tbend);
+                return info;
             }
 
             @Override
@@ -51,7 +52,7 @@ public class ComposingSpanFactory extends Editable.Factory {
                 return super.delete(info.start, info.end);
             }
 
-            protected void removeInvalidSpans() {
+            void removeInvalidSpans() {
                 for (UnderlineSpan span : getSpans(0, length(), UnderlineSpan.class)) {
                     if (!(span instanceof UnderlineSpanController.RichUnderlineSpan)) {
                         removeSpan(span);

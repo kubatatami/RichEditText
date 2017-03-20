@@ -26,7 +26,6 @@ import java.io.IOException;
 
 import static com.github.kubatatami.richedittext.styles.multi.TypefaceSpanController.Font;
 
-
 public class TestActivity extends AppCompatActivity {
 
     private static final boolean LIVE_PREVIEW = true;
@@ -72,9 +71,9 @@ public class TestActivity extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        String html = richEditText.getHtml();
-                        Log.i("html", html);
                         if (LIVE_PREVIEW) {
+                            String html = richEditText.getHtml();
+                            Log.i("html", html);
                             htmlView.setText(html);
                             webView.getSettings().setDefaultTextEncodingName("utf-8");
                             webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);

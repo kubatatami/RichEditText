@@ -10,7 +10,9 @@ import com.github.kubatatami.richedittext.other.SpanUtil;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 public abstract class HtmlExportModule {
@@ -73,7 +75,12 @@ public abstract class HtmlExportModule {
         for (int i = start; i < end; i = next) {
             next = text.nextSpanTransition(i, end, clazz);
             Object[] spans = text.getSpans(i, next, clazz);
-
+            Arrays.sort(spans, new Comparator<Object>() {
+                @Override
+                public int compare(Object item1, Object item2) {
+                    return item1.getClass().getName().compareTo(item2.getClass().getName());
+                }
+            });
             for (Object span : spans) {
                 SpanController<?, ?> controller = SpanUtil.acceptController(spanControllers, span);
                 if (controller != null && text.getSpanStart(span) != text.getSpanEnd(span)) {
@@ -86,7 +93,7 @@ public abstract class HtmlExportModule {
 
             for (int j = spans.length - 1; j >= 0; j--) {
                 SpanController<?, ?> controller = SpanUtil.acceptController(spanControllers, spans[j]);
-                if (controller != null) {
+                if (controller != null && text.getSpanStart(spans[j]) != text.getSpanEnd(spans[j])) {
                     out.append(controller.endTag(spans[j], text.getSpanEnd(spans[j]) == next, spans));
                 }
             }

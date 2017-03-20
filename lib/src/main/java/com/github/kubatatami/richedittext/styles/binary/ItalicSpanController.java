@@ -1,5 +1,6 @@
 package com.github.kubatatami.richedittext.styles.binary;
 
+import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 
 import org.xml.sax.Attributes;
@@ -21,10 +22,24 @@ public class ItalicSpanController extends FontStyleSpanController {
     }
 
     @Override
+    RichStyleSpan createSpan() {
+        return new RichItalicSpan();
+    }
+
+    @Override
     public Class<?> spanFromEndTag(String tag) {
         if (tag.equals("i") || tag.equals("span")) {
             return clazz;
         }
         return null;
     }
+
+    @SuppressLint("ParcelCreator")
+    public static class RichItalicSpan extends RichStyleSpan {
+
+        public RichItalicSpan() {
+            super(Typeface.ITALIC);
+        }
+    }
+
 }

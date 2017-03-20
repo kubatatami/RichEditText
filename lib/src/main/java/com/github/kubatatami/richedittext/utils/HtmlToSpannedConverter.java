@@ -123,22 +123,14 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
     }
 
     private void handleStartTag(String tag, Attributes attributes) throws SAXException {
-        if (tag.equals("br")) {
-            mSpannableSb.append('\n');
-            return;
-        }
         Map<String, String> styleMap = getStyleStringMap(attributes.getValue("style"));
-        if (standalone && tag.equals("div") && firstTag) {
-            for (StartStyleProperty property : properties) {
-                property.setPropertyFromTag(baseRichEditText, styleMap);
-            }
-            for (SpanController<?, ?> spanController : mSpanControllers) {
-                if (spanController instanceof StartStyleProperty) {
-                    ((StartStyleProperty) spanController).setPropertyFromTag(baseRichEditText, styleMap);
-                }
-            }
-            return;
-        }
+        if (handleNewLine(tag)) return;
+        if (handleStartStyle(tag, styleMap)) return;
+        if (handleTag(tag, attributes, styleMap)) return;
+        throwExceptionIfTagNotSupporter(tag, attributes);
+    }
+
+    private boolean handleTag(String tag, Attributes attributes, Map<String, String> styleMap) {
         boolean supported = false;
         for (SpanController<?, ?> spanController : mSpanControllers) {
             Object object = spanController.createSpanFromTag(tag, styleMap, attributes);
@@ -156,7 +148,35 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
                 ((LineChangingController) spanController).changeLineStart(mSpannableSb, tag);
             }
         }
-        if (!supported && strict
+        return supported;
+    }
+
+    private boolean handleStartStyle(String tag, Map<String, String> styleMap) {
+        if (standalone && tag.equals("div") && firstTag) {
+            firstTag = false;
+            for (StartStyleProperty property : properties) {
+                property.setPropertyFromTag(baseRichEditText, styleMap);
+            }
+            for (SpanController<?, ?> spanController : mSpanControllers) {
+                if (spanController instanceof StartStyleProperty) {
+                    ((StartStyleProperty) spanController).setPropertyFromTag(baseRichEditText, styleMap);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handleNewLine(String tag) {
+        if (tag.equals("br")) {
+            mSpannableSb.append('\n');
+            return true;
+        }
+        return false;
+    }
+
+    private void throwExceptionIfTagNotSupporter(String tag, Attributes attributes) throws SAXException {
+        if (strict
                 && !tag.equals("html")
                 && !tag.equals("body")
                 && !(tag.equals("p") && attributes.getLength() == 0)) {

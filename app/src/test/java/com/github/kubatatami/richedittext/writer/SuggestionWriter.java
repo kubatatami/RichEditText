@@ -29,15 +29,17 @@ public class SuggestionWriter implements Writer {
     }
 
     private void writeWord(EditText editText, String word) {
-        int lastSpace = editText.getText().subSequence(0, editText.getSelectionStart()).toString().lastIndexOf(" ");
-        int start = lastSpace == -1 ? editText.getSelectionStart() : lastSpace + 1;
-        if (lastSpace >= 0) {
-            word =  editText.getText().subSequence(start, editText.length()) + word;
-        }
-        for (int i = 0; i < word.length(); i++) {
-            String subText = word.substring(0, i + 1);
-            int end = start + subText.length() - 1;
-            editText.getEditableText().replace(start, end, subText);
+        if (!word.isEmpty()) {
+            int lastSpace = editText.getText().subSequence(0, editText.getSelectionStart()).toString().lastIndexOf(" ");
+            int start = lastSpace == -1 ? editText.getSelectionStart() : lastSpace + 1;
+            if (lastSpace >= 0) {
+                word = editText.getText().subSequence(start, editText.getSelectionStart()) + word;
+            }
+            for (int i = 0; i < word.length(); i++) {
+                String subText = word.substring(0, i + 1);
+                int end = start + subText.length() - 1;
+                editText.getEditableText().replace(start, end, subText);
+            }
         }
     }
 }

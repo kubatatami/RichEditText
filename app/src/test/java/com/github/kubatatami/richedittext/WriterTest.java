@@ -40,4 +40,22 @@ public class WriterTest extends BaseTest {
         checkHtml("<br/>This text starts with new line");
     }
 
+    @Test
+    public void exportedHtmlShouldContainsValidTextVer6() {
+        writer.write(editText, "First text.");
+        writer.write(editText, " Second text.");
+        writer.write(editText, " Third red text.");
+        checkHtml("First text. Second text. Third red text.");
+    }
+
+    @Test
+    public void exportedHtmlShouldContainsValidTextVer7() {
+        writer.write(editText, "First text.");
+        editText.setSelection(0);
+        writer.write(editText, "Second text. ");
+        editText.setSelection(editText.length());
+        writer.write(editText, " Third text.");
+        checkHtml("Second text. First text. Third text.");
+    }
+
 }

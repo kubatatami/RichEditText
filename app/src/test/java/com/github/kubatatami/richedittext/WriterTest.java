@@ -25,7 +25,7 @@ public class WriterTest extends BaseTest {
     @Test
     public void exportedHtmlShouldContainsValidTextVer3() {
         writer.write(editText, " This text starts with space");
-        checkHtml(" This text starts with space");
+        checkHtml("&nbsp;This text starts with space");
     }
 
     @Test

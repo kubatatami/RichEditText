@@ -42,6 +42,7 @@ public class BaseTest {
     public void init() {
         ShadowLog.stream = System.out;
         TestActivity activity = Robolectric.setupActivity(TestActivity.class);
+        activity.setLivePreview(false);
         editText = (RichEditText) activity.findViewById(com.github.kubatatami.richedittext.example.R.id.rich_edit_text);
         editText.setText("");
         editText.setSelection(0);

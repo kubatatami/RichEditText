@@ -28,7 +28,7 @@ import static com.github.kubatatami.richedittext.styles.multi.TypefaceSpanContro
 
 public class TestActivity extends AppCompatActivity {
 
-    private static final boolean LIVE_PREVIEW = false;
+    private static final boolean DEFAULT_LIVE_PREVIEW = true;
 
     private RichEditText richEditText;
 
@@ -48,6 +48,8 @@ public class TestActivity extends AppCompatActivity {
 
     private Font courierFont;
 
+    private boolean livePreview;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,17 +63,14 @@ public class TestActivity extends AppCompatActivity {
         webView.setWebChromeClient(new WebChromeClient());
         webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
         richEditTextPreview.setHistoryEnabled(false);
-        if (!LIVE_PREVIEW) {
-            webView.setVisibility(View.GONE);
-            richEditTextPreview.setVisibility(View.GONE);
-        }
+        setLivePreview(DEFAULT_LIVE_PREVIEW);
         richEditText.addOnHistoryChangeListener(new HistoryModule.OnHistoryChangeListener() {
             @Override
             public void onHistoryChange(int undoSteps, int redoSteps) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (LIVE_PREVIEW) {
+                        if (DEFAULT_LIVE_PREVIEW) {
                             String html = richEditText.getHtml();
                             Log.i("html", html);
                             htmlView.setText(html);
@@ -164,5 +163,15 @@ public class TestActivity extends AppCompatActivity {
         }
     }
 
+    public boolean isLivePreview() {
+        return livePreview;
+    }
 
+    public void setLivePreview(boolean livePreview) {
+        this.livePreview = livePreview;
+        if (!livePreview) {
+            webView.setVisibility(View.GONE);
+            richEditTextPreview.setVisibility(View.GONE);
+        }
+    }
 }

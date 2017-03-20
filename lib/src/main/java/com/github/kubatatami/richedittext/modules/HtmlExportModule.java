@@ -127,15 +127,14 @@ public abstract class HtmlExportModule {
                         out.append("&#").append(codepoint).append(";");
                     }
                 }
-            } else if (c > 0x7E || c < ' ') {
-                out.append("&#").append((int) c).append(";");
-            } else if (c == ' ') {
+            } else if (c == ' ' || c == 160) {
                 while (i + 1 < end && text.charAt(i + 1) == ' ') {
                     out.append("&nbsp;");
                     i++;
                 }
-
-                out.append(' ');
+                out.append(out.length() == 0 ? "&nbsp;" : ' ');
+            } else if (c > 0x7E || c < ' ') {
+                out.append("&#").append((int) c).append(";");
             } else {
                 out.append(c);
             }

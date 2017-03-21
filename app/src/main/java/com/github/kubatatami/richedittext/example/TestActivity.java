@@ -70,7 +70,7 @@ public class TestActivity extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (DEFAULT_LIVE_PREVIEW) {
+                        if (livePreview) {
                             String html = richEditText.getHtml();
                             Log.i("html", html);
                             htmlView.setText(html);
@@ -169,9 +169,7 @@ public class TestActivity extends AppCompatActivity {
 
     public void setLivePreview(boolean livePreview) {
         this.livePreview = livePreview;
-        if (!livePreview) {
-            webView.setVisibility(View.GONE);
-            richEditTextPreview.setVisibility(View.GONE);
-        }
+        webView.setVisibility(livePreview ? View.VISIBLE : View.GONE);
+        richEditTextPreview.setVisibility(livePreview ? View.VISIBLE : View.GONE);
     }
 }

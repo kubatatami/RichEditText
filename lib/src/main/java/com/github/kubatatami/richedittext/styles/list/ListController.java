@@ -5,10 +5,10 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
+import com.github.kubatatami.richedittext.modules.LineInfo;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.BinarySpanController;
 import com.github.kubatatami.richedittext.styles.base.LineChangingController;
-import com.github.kubatatami.richedittext.styles.base.LineSpanController;
 import com.github.kubatatami.richedittext.styles.line.AlignmentSpanController;
 import com.github.kubatatami.richedittext.styles.line.AlignmentSpanController.RichAlignmentSpanStandard;
 
@@ -96,18 +96,18 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
 
     @Override
     public void perform(Editable editable, StyleSelectionInfo styleSelectionInfo) {
-        LineSpanController.LineInfo lineInfo = getLineInfo(editable, styleSelectionInfo);
+        LineInfo lineInfo = getLineInfo(editable, styleSelectionInfo);
         perform(editable, lineInfo);
     }
 
-    public void perform(Editable editable, LineSpanController.LineInfo lineInfo) {
+    public void perform(Editable editable, LineInfo lineInfo) {
         performInternal(editable, new StyleSelectionInfo(lineInfo.start, lineInfo.end, lineInfo.start, lineInfo.end, true));
         checkInternalSpans(editable);
     }
 
     @Override
     public void clearStyles(Editable editable, StyleSelectionInfo styleSelectionInfo) {
-        LineSpanController.LineInfo lineInfo = getLineInfo(editable, styleSelectionInfo);
+        LineInfo lineInfo = getLineInfo(editable, styleSelectionInfo);
         for (ListSpan span : editable.getSpans(lineInfo.start, lineInfo.end, ListSpan.class)) {
             clearStyle(editable, span, styleSelectionInfo);
         }
@@ -130,7 +130,7 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
     @SuppressWarnings("unchecked")
     @Override
     public void clearStyle(Editable editable, Object span, StyleSelectionInfo styleSelectionInfo) {
-        LineSpanController.LineInfo lineInfo = getLineInfo(editable, styleSelectionInfo);
+        LineInfo lineInfo = getLineInfo(editable, styleSelectionInfo);
         int spanStart = editable.getSpanStart(span);
         int spanEnd = editable.getSpanEnd(span);
         int spanFlags = editable.getSpanFlags(span);
@@ -166,7 +166,7 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
                     } else if (start == end) {
                         removeSpan(span, text);
                     } else {
-                        LineSpanController.LineInfo lineInfo = getLineInfo(text, new StyleSelectionInfo(start, end, start, end, true));
+                        LineInfo lineInfo = getLineInfo(text, new StyleSelectionInfo(start, end, start, end, true));
                         if (lineInfo.start != start || lineInfo.end != end) {
                             text.removeSpan(span);
                             text.setSpan(span, lineInfo.start, lineInfo.end, flags);
@@ -258,7 +258,7 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
         return null;
     }
 
-    private LineSpanController.LineInfo getLineInfo(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+    private LineInfo getLineInfo(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         int startSel = Math.max(0, Math.min(styleSelectionInfo.realSelectionStart, editable.length()));
         int endSel = Math.max(0, Math.min(styleSelectionInfo.realSelectionEnd, editable.length()));
         String text = editable.toString();
@@ -272,7 +272,7 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
         if (end == -1) {
             end = editable.length();
         }
-        return new LineSpanController.LineInfo(start, end);
+        return new LineInfo(start, end);
     }
 
     private T createInternalSpan() {

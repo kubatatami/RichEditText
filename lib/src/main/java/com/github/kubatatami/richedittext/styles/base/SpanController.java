@@ -68,6 +68,10 @@ public abstract class SpanController<T, Z> {
         }
     }
 
+    public boolean isCssBlockElement() {
+        return false;
+    }
+
     public boolean acceptSpan(Object span) {
         return span.getClass().equals(clazz);
     }

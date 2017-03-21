@@ -1,10 +1,12 @@
 package com.github.kubatatami.richedittext;
 
-import android.text.Layout;
-
 import com.github.kubatatami.richedittext.writer.Writer;
 
 import org.junit.Test;
+
+import static android.text.Layout.Alignment.ALIGN_CENTER;
+import static android.text.Layout.Alignment.ALIGN_NORMAL;
+import static android.text.Layout.Alignment.ALIGN_OPPOSITE;
 
 public class LineStyleTest extends BaseTest {
 
@@ -14,13 +16,32 @@ public class LineStyleTest extends BaseTest {
 
     @Test
     public void exportedHtmlShouldContainsLeftCenterAndRightAlignment() {
-        editText.alignmentClick(Layout.Alignment.ALIGN_NORMAL);
+        editText.alignmentClick(ALIGN_NORMAL);
         writer.write(editText, "Left.\n");
-        editText.alignmentClick(Layout.Alignment.ALIGN_CENTER);
+
+        editText.alignmentClick(ALIGN_CENTER);
         writer.write(editText, "Center.\n");
-        editText.alignmentClick(Layout.Alignment.ALIGN_OPPOSITE);
+
+        editText.alignmentClick(ALIGN_OPPOSITE);
         writer.write(editText, "Right.\n");
+
         checkHtml("<div style=\"text-align: left;\">Left.</div><div style=\"text-align: center;\">Center.</div><div style=\"text-align: right;\">Right.<br/></div>");
     }
 
+    @Test
+    public void exportedHtmlShouldContainsLeftCenterAndRightAlignmentVer2() {
+        writer.write(editText, "Left.");
+        editText.alignmentClick(ALIGN_NORMAL);
+        writer.write(editText, "\n");
+
+        writer.write(editText, "Center.");
+        editText.alignmentClick(ALIGN_CENTER);
+        writer.write(editText, "\n");
+
+        writer.write(editText, "Right.");
+        editText.alignmentClick(ALIGN_OPPOSITE);
+        writer.write(editText, "\n");
+
+        checkHtml("<div style=\"text-align: left;\">Left.</div><div style=\"text-align: center;\">Center.</div><div style=\"text-align: right;\">Right.<br/></div>");
+    }
 }

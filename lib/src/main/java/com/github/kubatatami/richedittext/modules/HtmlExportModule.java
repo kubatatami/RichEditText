@@ -1,8 +1,10 @@
 package com.github.kubatatami.richedittext.modules;
 
 import android.text.Editable;
+import android.text.style.AlignmentSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.ParagraphStyle;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
@@ -24,17 +26,16 @@ public abstract class HtmlExportModule {
             out.append(getCssStyle(editText, spanControllers, properties));
             out.append("\">");
         }
+        for (AlignmentSpan span : editText.getText().getSpans(0, editText.getText().length(), AlignmentSpan.class)) {
+            Log.i("AlignmentSpan", "start: " + editText.getText().getSpanStart(span) + " end: " + editText.getText().getSpanEnd(span) + " type: " + span.getAlignment().name());
+        }
         within(ParagraphStyle.class, out, editText, 0, editText.getText().length(), spanControllers, new WithinCallback() {
             @Override
             public void nextWithin(Class<?> clazz, StringBuilder out, EditText editText, int start, int end, Collection<SpanController<?, ?>> spanControllers) {
-                Editable text = editText.getText();
-                if (text.charAt(start) == '\n') {
-                    start++;
-                }
                 within(CharacterStyle.class, out, editText, start, end, spanControllers, new WithinCallback() {
                     @Override
                     public void nextWithin(Class<?> clazz, StringBuilder out, EditText editText, int start, int end, Collection<SpanController<?, ?>> spanControllers) {
-                        withinStyle(out, editText.getText(), start, end);
+                        withinStyle(out, editText.getText(), spanControllers, start, end);
                     }
                 });
             }
@@ -105,7 +106,7 @@ public abstract class HtmlExportModule {
         void nextWithin(Class<?> clazz, StringBuilder out, EditText editText, int start, int end, Collection<SpanController<?, ?>> spanControllers);
     }
 
-    private static void withinStyle(StringBuilder out, CharSequence text,
+    private static void withinStyle(StringBuilder out, Editable text, Collection<SpanController<?, ?>> spanControllers,
                                     int start, int end) {
         for (int i = start; i < end; i++) {
             char c = text.charAt(i);
@@ -117,7 +118,9 @@ public abstract class HtmlExportModule {
             } else if (c == '&') {
                 out.append("&amp;");
             } else if (c == '\n') {
-                out.append("<br/>");
+                if (!isCssBlockElementConnection(text, spanControllers, i)) {
+                    out.append("<br/>");
+                }
             } else if (c >= 0xD800 && c <= 0xDFFF) {
                 if (c < 0xDC00 && i + 1 < end) {
                     char d = text.charAt(i + 1);
@@ -139,6 +142,27 @@ public abstract class HtmlExportModule {
                 out.append(c);
             }
         }
+    }
+
+    private static boolean isCssBlockElementConnection(Editable text, Collection<SpanController<?, ?>> spanControllers, int start) {
+//        for (SpanController controller : spanControllers) {
+//            if (controller.isCssBlockElement()) {
+//                boolean spanStart = false, spanEnd = false;
+//                Object[] spans = text.getSpans(start - 1, start + 1, controller.getClazz());
+//                for (Object span : spans) {
+//                    if (text.getSpanStart(span) == start) {
+//                        spanStart = true;
+//                    }
+//                    if (text.getSpanEnd(span) == start) {
+//                        spanEnd = true;
+//                    }
+//                }
+//                if (spanStart && spanEnd) {
+//                    return true;
+//                }
+//            }
+//        }
+        return false;
     }
 
 }

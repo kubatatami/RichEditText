@@ -23,7 +23,6 @@ public class SpanUtil {
         boolean result = false;
         Editable editable = richEditText.getText();
         if (after == 0) {
-            Log.i("removeUnusedSpansStart", start + "");
             List<Pair<SpanController<?, ?>, Object>> spansToRemove = new ArrayList<>();
             Object[] spans = editable.getSpans(start, start + count, Object.class);
             for (Object span : spans) {
@@ -32,7 +31,6 @@ public class SpanUtil {
                     int spanStart = editable.getSpanStart(span);
                     int spanEnd = editable.getSpanEnd(span);
                     if (spanStart == spanEnd) {
-                        Log.i("removeUnusedSpans", spanStart + " " + spanEnd);
                         spansToRemove.add(new Pair<SpanController<?, ?>, Object>(controller, span));
                     }
                 }

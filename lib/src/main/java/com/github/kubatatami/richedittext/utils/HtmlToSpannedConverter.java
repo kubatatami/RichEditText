@@ -6,6 +6,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
+import com.github.kubatatami.richedittext.modules.LineInfo;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.BinarySpanController;
 import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
@@ -110,7 +111,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
                 if (spanController.acceptSpan(spanInfo.span)) {
                     StyleSelectionInfo selectionInfo = new StyleSelectionInfo(spanInfo.start, spanInfo.end, spanInfo.start, spanInfo.end, true);
                     if (spanController instanceof ListController) {
-                        LineSpanController.LineInfo lineInfo = new LineSpanController.LineInfo(spanInfo.start, spanInfo.end - 1);
+                        LineInfo lineInfo = new LineInfo(spanInfo.start, spanInfo.end - 1);
                         ((ListController) spanController).perform(mSpannableSb, lineInfo);
                     } else if (spanController instanceof BinarySpanController) {
                         ((BinarySpanController) spanController).perform(mSpannableSb, selectionInfo);

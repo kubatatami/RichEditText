@@ -17,7 +17,8 @@ import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public class AlignmentSpanController extends LineSpanController<AlignmentSpanController.RichAlignmentSpanStandard, Layout.Alignment> implements EndStyleProperty {
+public class AlignmentSpanController extends LineSpanController<AlignmentSpanController.RichAlignmentSpanStandard, Layout.Alignment>
+        implements EndStyleProperty {
 
     private static final String TEXT_ALIGN = "text-align";
 
@@ -128,6 +129,11 @@ public class AlignmentSpanController extends LineSpanController<AlignmentSpanCon
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean isCssBlockElement() {
+        return true;
     }
 
     @SuppressLint("ParcelCreator")

@@ -447,6 +447,12 @@ public class BaseRichEditText extends AppCompatEditText {
         }
     }
 
+    public void replaceTextInSelection(String textToInsert) {
+        int start = Math.max(getSelectionStart(), 0);
+        int end = Math.max(getSelectionEnd(), 0);
+        getText().replace(Math.min(start, end), Math.max(start, end), textToInsert);
+    }
+
     public void setInseparableEnabled(boolean inseparableEnabled) {
         InseparableModule.setEnabled(inseparableEnabled);
     }

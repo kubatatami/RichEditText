@@ -181,6 +181,54 @@ public class RichEditText extends BaseRichEditText {
         getModule(LinkSpanController.class).addOnValueChangeListener(onLinkChangeListener);
     }
 
+    public void removeOnAlignmentChangeListener(OnValueChangeListener<Layout.Alignment> onAlignmentChangeListener) {
+        getModule(AlignmentSpanController.class).removeOnValueChangeListener(onAlignmentChangeListener);
+    }
+
+    public void removeOnSizeChangeListener(OnValueChangeListener<Float> onSizeChangeListener) {
+        getModule(SizeSpanController.class).removeOnValueChangeListener(onSizeChangeListener);
+    }
+
+    public void removeOnColorChangeListener(OnValueChangeListener<Integer> onSizeChangeListener) {
+        getModule(ColorSpanController.class).removeOnValueChangeListener(onSizeChangeListener);
+    }
+
+    public void removeOnBackgroundColorChangeListener(OnValueChangeListener<Integer> onSizeChangeListener) {
+        getModule(BackgroundColorSpanController.class).removeOnValueChangeListener(onSizeChangeListener);
+    }
+
+    public void removeOnBoldChangeListener(OnValueChangeListener<Boolean> onBoldChangeListener) {
+        getModule(BoldSpanController.class).removeOnValueChangeListener(onBoldChangeListener);
+    }
+
+    public void removeOnNumberListChangeListener(OnValueChangeListener<Boolean> onNumberListChangeListener) {
+        getModule(NumberListController.class).removeOnValueChangeListener(onNumberListChangeListener);
+    }
+
+    public void removeOnBulletListChangeListener(OnValueChangeListener<Boolean> onBulletListChangeListener) {
+        getModule(BulletListController.class).removeOnValueChangeListener(onBulletListChangeListener);
+    }
+
+    public void removeOnItalicChangeListener(OnValueChangeListener<Boolean> onItalicChangeListener) {
+        getModule(ItalicSpanController.class).removeOnValueChangeListener(onItalicChangeListener);
+    }
+
+    public void removeOnStrikethroughChangeListener(OnValueChangeListener<Boolean> onStrikethroughChangeListener) {
+        getModule(StrikeThroughSpanController.class).removeOnValueChangeListener(onStrikethroughChangeListener);
+    }
+
+    public void removeOnUnderlineChangeListener(OnValueChangeListener<Boolean> onUnderlineChangeListener) {
+        getModule(UnderlineSpanController.class).removeOnValueChangeListener(onUnderlineChangeListener);
+    }
+
+    public void removeOnFontChangeListener(OnValueChangeListener<String> onFontChangeListener) {
+        getModule(TypefaceSpanController.class).removeOnValueChangeListener(onFontChangeListener);
+    }
+
+    public void removeOnLinkChangeListener(OnValueChangeListener<LinkSpanController.Link> onLinkChangeListener) {
+        getModule(LinkSpanController.class).removeOnValueChangeListener(onLinkChangeListener);
+    }
+
     public String getOverallFont() {
         return getModule(TypefaceSpanController.class).getCurrentValue(this, getAllSelectionInfo());
     }

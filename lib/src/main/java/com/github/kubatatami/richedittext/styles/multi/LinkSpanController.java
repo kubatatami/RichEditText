@@ -40,7 +40,7 @@ public class LinkSpanController extends MultiSpanController<LinkSpanController.R
         RichURLSpan result = new RichURLSpan(value, inseparable);
         value.setSpan(result);
         editable.setSpan(result, selectionStart, selectionEnd, flags);
-        onValueChange(result.link);
+        checkValueChange(result.link);
         return result;
     }
 

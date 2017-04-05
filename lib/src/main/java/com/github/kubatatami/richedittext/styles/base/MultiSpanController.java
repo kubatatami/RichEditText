@@ -40,7 +40,7 @@ public abstract class MultiSpanController<T, Z> extends SpanController<T, Z> {
     public void perform(Z value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
         clearStyles(editable, styleSelectionInfo);
         selectStyle(value, editable, styleSelectionInfo);
-        this.value = value;
+        checkValueChange(value);
     }
 
     boolean selectStyle(Z value, Editable editable, StyleSelectionInfo styleSelectionInfo) {
@@ -95,19 +95,17 @@ public abstract class MultiSpanController<T, Z> extends SpanController<T, Z> {
         }
     }
 
-
     @Override
     public void checkAfterChange(BaseRichEditText editText, StyleSelectionInfo styleSelectionInfo, boolean passive) {
         Z newValue = getCurrentValue(editText, styleSelectionInfo);
-        onValueChange(newValue);
-
+        checkValueChange(newValue);
         if (!passive && spanInfo != null) {
             add(spanInfo.span, editText.getText(), spanInfo.start, Math.min(spanInfo.end, editText.getText().length()), spanInfo.flags);
         }
         spanInfo = null;
     }
 
-    protected void onValueChange(Z newValue) {
+    protected void checkValueChange(Z newValue) {
         if ((newValue == null && value != null) || (newValue != null && value == null) || (value != null && !newValue.equals(value))) {
             value = newValue;
             invokeListeners(value);

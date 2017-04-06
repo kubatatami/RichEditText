@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TypefaceSpanController extends MultiSpanController<TypefaceSpanController.FontSpan, String> implements EndStyleProperty {
+public class TypefaceSpanController extends MultiSpanController<TypefaceSpanController.FontSpan, TypefaceSpanController.Font> implements EndStyleProperty {
 
     private static final String STYLE_NAME = "font-family";
 
@@ -35,25 +35,25 @@ public class TypefaceSpanController extends MultiSpanController<TypefaceSpanCont
     }
 
     @Override
-    public String getValueFromSpan(FontSpan span) {
-        return span.font.getFontName();
+    public Font getValueFromSpan(FontSpan span) {
+        return span.font;
     }
 
     @Override
-    public FontSpan add(String value, Editable editable, int selectionStart, int selectionEnd, int flags) {
-        FontSpan result = new FontSpan(fontMap.get(value));
+    public FontSpan add(Font value, Editable editable, int selectionStart, int selectionEnd, int flags) {
+        FontSpan result = new FontSpan(value);
         editable.setSpan(result, selectionStart, selectionEnd, flags);
         return result;
     }
 
     @Override
-    public String getDefaultValue(BaseRichEditText editText) {
-        return "";
+    public Font getDefaultValue(BaseRichEditText editText) {
+        return null;
     }
 
     @Override
-    protected String getMultiValue() {
-        return "";
+    protected Font getMultiValue() {
+        return null;
     }
 
 
@@ -118,7 +118,7 @@ public class TypefaceSpanController extends MultiSpanController<TypefaceSpanCont
 
     @Override
     public String getDebugValueFromSpan(FontSpan span) {
-        return getValueFromSpan(span);
+        return getValueFromSpan(span).getFontName();
     }
 
     public static void registerFonts(Font... fonts) {

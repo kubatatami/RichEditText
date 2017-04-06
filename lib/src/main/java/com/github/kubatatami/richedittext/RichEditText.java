@@ -113,10 +113,6 @@ public class RichEditText extends BaseRichEditText {
     }
 
     public void typefaceClick(TypefaceSpanController.Font font) {
-        multiClick(font.getFontName(), TypefaceSpanController.class);
-    }
-
-    public void typefaceClick(String font) {
         multiClick(font, TypefaceSpanController.class);
     }
 
@@ -173,7 +169,7 @@ public class RichEditText extends BaseRichEditText {
         getModule(UnderlineSpanController.class).addOnValueChangeListener(onUnderlineChangeListener);
     }
 
-    public void addOnFontChangeListener(OnValueChangeListener<String> onFontChangeListener) {
+    public void addOnTypefaceChangeListener(OnValueChangeListener<TypefaceSpanController.Font> onFontChangeListener) {
         getModule(TypefaceSpanController.class).addOnValueChangeListener(onFontChangeListener);
     }
 
@@ -221,7 +217,7 @@ public class RichEditText extends BaseRichEditText {
         getModule(UnderlineSpanController.class).removeOnValueChangeListener(onUnderlineChangeListener);
     }
 
-    public void removeOnFontChangeListener(OnValueChangeListener<String> onFontChangeListener) {
+    public void removeOnTypefaceChangeListener(OnValueChangeListener<TypefaceSpanController.Font> onFontChangeListener) {
         getModule(TypefaceSpanController.class).removeOnValueChangeListener(onFontChangeListener);
     }
 
@@ -229,11 +225,11 @@ public class RichEditText extends BaseRichEditText {
         getModule(LinkSpanController.class).removeOnValueChangeListener(onLinkChangeListener);
     }
 
-    public String getOverallFont() {
+    public TypefaceSpanController.Font getOverallTypeface() {
         return getModule(TypefaceSpanController.class).getCurrentValue(this, getAllSelectionInfo());
     }
 
-    public String getCurrentFont() {
+    public TypefaceSpanController.Font getCurrentTypeface() {
         return getModule(TypefaceSpanController.class).getCurrentValue(this, StyleSelectionInfo.getStyleSelectionInfo(this));
     }
 

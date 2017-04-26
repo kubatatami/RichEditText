@@ -478,4 +478,12 @@ public class BaseRichEditText extends AppCompatEditText {
         return editable.subSequence(start, end).toString();
     }
 
+    public HistoryModule.HistoryPoint createHistoryPoint() {
+        return historyModule.createHistoryPoint();
+    }
+
+    public void restoreHistoryPoint(HistoryModule.HistoryPoint historyPoint) {
+        historyModule.restoreHistoryPoint(historyPoint);
+    }
+
 }

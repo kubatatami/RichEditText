@@ -15,9 +15,9 @@ public class HistoryModule {
 
     private final BaseRichEditText richEditText;
 
-    private final LimitedQueue<EditHistory> undoList = new LimitedQueue<>(Integer.MAX_VALUE);
+    private final LimitedQueue<HistoryPoint> undoList = new LimitedQueue<>(Integer.MAX_VALUE);
 
-    private final LimitedQueue<EditHistory> redoList = new LimitedQueue<>(Integer.MAX_VALUE);
+    private final LimitedQueue<HistoryPoint> redoList = new LimitedQueue<>(Integer.MAX_VALUE);
 
     private boolean ignoreHistory = false;
 
@@ -44,8 +44,8 @@ public class HistoryModule {
     }
 
     @NonNull
-    private EditHistory createHistoryPoint() {
-        return new EditHistory(new SpannableStringBuilder(richEditText.getText()),
+    public HistoryPoint createHistoryPoint() {
+        return new HistoryPoint(new SpannableStringBuilder(richEditText.getText()),
                 richEditText.getSelectionStart(), richEditText.getSelectionEnd());
     }
 
@@ -63,26 +63,26 @@ public class HistoryModule {
     }
 
     public void undo() {
-        EditHistory editHistory = undoList.pollFirst();
-        if (editHistory != null) {
+        HistoryPoint historyPoint = undoList.pollFirst();
+        if (historyPoint != null) {
             redoList.addFirst(createHistoryPoint());
-            restoreState(editHistory);
+            restoreHistoryPoint(historyPoint);
         }
     }
 
     public void redo() {
-        EditHistory editHistory = redoList.pollFirst();
-        if (editHistory != null) {
+        HistoryPoint historyPoint = redoList.pollFirst();
+        if (historyPoint != null) {
             undoList.addFirst(createHistoryPoint());
-            restoreState(editHistory);
+            restoreHistoryPoint(historyPoint);
         }
     }
 
-    private void restoreState(EditHistory editHistory) {
+    public void restoreHistoryPoint(HistoryPoint historyPoint) {
         isDuringRestore = true;
         ignoreHistory = true;
-        richEditText.setText(editHistory.editable, TextView.BufferType.EDITABLE);
-        setSelection(editHistory.selectionStart, editHistory.selectionEnd);
+        richEditText.setText(historyPoint.editable, TextView.BufferType.EDITABLE);
+        setSelection(historyPoint.selectionStart, historyPoint.selectionEnd);
         checkHistory();
         richEditText.checkAfterChange(true);
         isDuringRestore = false;
@@ -115,7 +115,7 @@ public class HistoryModule {
         onHistoryChangeListeners.clear();
     }
 
-    private static class EditHistory {
+    public static class HistoryPoint {
 
         final Editable editable;
 
@@ -123,18 +123,18 @@ public class HistoryModule {
 
         final int selectionEnd;
 
-        public EditHistory(Editable editable, int selectionStart, int selectionEnd) {
+        HistoryPoint(Editable editable, int selectionStart, int selectionEnd) {
             this.editable = editable;
             this.selectionStart = selectionStart;
             this.selectionEnd = selectionEnd;
         }
     }
 
-    public static class LimitedQueue<E> extends LinkedList<E> {
+    private static class LimitedQueue<E> extends LinkedList<E> {
 
         private int limit;
 
-        public LimitedQueue(int limit) {
+        LimitedQueue(int limit) {
             this.limit = limit;
         }
 
@@ -146,7 +146,7 @@ public class HistoryModule {
             }
         }
 
-        public void setLimit(int limit) {
+        void setLimit(int limit) {
             this.limit = limit;
         }
     }

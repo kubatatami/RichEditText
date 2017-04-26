@@ -128,6 +128,22 @@ public class HistoryModule {
             this.selectionStart = selectionStart;
             this.selectionEnd = selectionEnd;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            HistoryPoint that = (HistoryPoint) o;
+            return selectionStart == that.selectionStart && selectionEnd == that.selectionEnd && editable.equals(that.editable);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = editable.hashCode();
+            result = 31 * result + selectionStart;
+            result = 31 * result + selectionEnd;
+            return result;
+        }
     }
 
     private static class LimitedQueue<E> extends LinkedList<E> {

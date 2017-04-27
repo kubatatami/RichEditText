@@ -21,15 +21,15 @@ public abstract class InseparableModule {
     }
 
     public static boolean isEnabled() {
-        return enabled && !HistoryModule.isDuringRestore;
+        return enabled;
     }
 
     public static void setEnabled(boolean enabled) {
         InseparableModule.enabled = enabled;
     }
 
-    public static RemoveInfo getRemoveInfo(Spannable text, int start, int end) {
-        if (enabled) {
+    public static RemoveInfo getRemoveInfo(HistoryModule historyModule, Spannable text, int start, int end) {
+        if (enabled && !historyModule.isDuringRestoreHistoryPoint()) {
             for (Inseparable span : text.getSpans(start, end, Inseparable.class)) {
                 int spanStart = text.getSpanStart(span);
                 int spanEnd = text.getSpanEnd(span);

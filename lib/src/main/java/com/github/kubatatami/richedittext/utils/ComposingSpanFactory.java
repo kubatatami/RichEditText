@@ -6,11 +6,18 @@ import android.text.SpannableStringBuilder;
 import android.text.style.UnderlineSpan;
 
 import com.github.kubatatami.richedittext.BaseRichEditText.OnValueChangeListener;
+import com.github.kubatatami.richedittext.modules.HistoryModule;
 import com.github.kubatatami.richedittext.modules.InseparableModule;
 import com.github.kubatatami.richedittext.styles.base.RichSpan;
 import com.github.kubatatami.richedittext.styles.binary.UnderlineSpanController;
 
 public class ComposingSpanFactory extends Editable.Factory {
+
+    private final HistoryModule historyModule;
+
+    public ComposingSpanFactory(HistoryModule historyModule) {
+        this.historyModule = historyModule;
+    }
 
     private static final String COMPOSING_CLASS_NAME = "android.view.inputmethod.ComposingText";
 
@@ -43,14 +50,14 @@ public class ComposingSpanFactory extends Editable.Factory {
             }
 
             private boolean replaceInternal(int start, int end, CharSequence tb, int tbstart, int tbend) {
-                InseparableModule.RemoveInfo info = InseparableModule.getRemoveInfo(this, start, end);
+                InseparableModule.RemoveInfo info = InseparableModule.getRemoveInfo(historyModule, this, start, end);
                 super.replace(info.start, info.end, tb, tbstart, tbend);
                 return start != info.start || end != info.end;
             }
 
             @Override
             public SpannableStringBuilder delete(int start, int end) {
-                InseparableModule.RemoveInfo info = InseparableModule.getRemoveInfo(this, start, end);
+                InseparableModule.RemoveInfo info = InseparableModule.getRemoveInfo(historyModule, this, start, end);
                 return super.delete(info.start, info.end);
             }
 

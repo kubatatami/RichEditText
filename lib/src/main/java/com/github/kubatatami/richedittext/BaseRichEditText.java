@@ -70,7 +70,7 @@ public class BaseRichEditText extends AppCompatEditText {
         }
     };
 
-    private ComposingSpanFactory composingSpanFactory = new ComposingSpanFactory();
+    private ComposingSpanFactory composingSpanFactory = new ComposingSpanFactory(historyModule);
 
     private TextWatcher mainTextChangedListener = new TextWatcherAdapter() {
 
@@ -144,7 +144,9 @@ public class BaseRichEditText extends AppCompatEditText {
             handler = new Handler();
         }
         invokeTextListeners();
-        handler.postDelayed(textChangeRunnable, onTextChangeDelayMs);
+        if (onTextChangeDelayMs >= 0) {
+            handler.postDelayed(textChangeRunnable, onTextChangeDelayMs);
+        }
     }
 
     private void invokeTextListeners() {
@@ -279,6 +281,10 @@ public class BaseRichEditText extends AppCompatEditText {
                 SpanUtil.logSpans(getText(), spanControllerMap.values());
             }
         }
+    }
+
+    public boolean isDuringRestoreHistoryPoint() {
+        return historyModule.isDuringRestoreHistoryPoint();
     }
 
     public String getHtml() {

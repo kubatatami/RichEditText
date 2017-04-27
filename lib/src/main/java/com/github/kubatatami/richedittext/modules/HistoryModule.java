@@ -25,7 +25,7 @@ public class HistoryModule {
 
     private final List<OnHistoryChangeListener> onHistoryChangeListeners = new ArrayList<>();
 
-    public static boolean isDuringRestore = false;
+    private boolean isDuringRestore = false;
 
     public HistoryModule(BaseRichEditText richEditText) {
         this.richEditText = richEditText;
@@ -113,6 +113,10 @@ public class HistoryModule {
 
     public void clearOnHistoryChangeListeners() {
         onHistoryChangeListeners.clear();
+    }
+
+    public boolean isDuringRestoreHistoryPoint() {
+        return isDuringRestore;
     }
 
     public static class HistoryPoint {

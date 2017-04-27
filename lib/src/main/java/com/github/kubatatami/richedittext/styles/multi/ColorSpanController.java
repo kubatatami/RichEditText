@@ -29,7 +29,7 @@ public class ColorSpanController extends FontStyleSpanController<ColorSpanContro
 
     @Override
     public Integer getDefaultValue(BaseRichEditText editText) {
-        return editText.getCurrentTextColor();
+        return editText.getTextColors().getDefaultColor();
     }
 
     @Override

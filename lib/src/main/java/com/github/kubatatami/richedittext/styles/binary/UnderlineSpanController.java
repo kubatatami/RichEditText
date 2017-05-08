@@ -1,19 +1,16 @@
 package com.github.kubatatami.richedittext.styles.binary;
 
 import android.annotation.SuppressLint;
-import android.text.SpannableStringBuilder;
 import android.text.style.UnderlineSpan;
 
-import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.BinaryFontSpanController;
-import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
 import com.github.kubatatami.richedittext.styles.base.RichSpan;
 
 import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public class UnderlineSpanController extends BinaryFontSpanController<UnderlineSpanController.RichUnderlineSpan> implements EndStyleProperty {
+public class UnderlineSpanController extends BinaryFontSpanController<UnderlineSpanController.RichUnderlineSpan> {
 
     public UnderlineSpanController() {
         super(RichUnderlineSpan.class, "u");
@@ -40,15 +37,6 @@ public class UnderlineSpanController extends BinaryFontSpanController<UnderlineS
             return clazz;
         }
         return null;
-    }
-
-    @Override
-    public boolean setPropertyFromTag(SpannableStringBuilder editable, Map<String, String> styleMap) {
-        if (containsUnderlineStyle(styleMap)) {
-            perform(editable, StyleSelectionInfo.getStyleSelectionInfo(editable));
-            return true;
-        }
-        return false;
     }
 
     @SuppressLint("ParcelCreator")

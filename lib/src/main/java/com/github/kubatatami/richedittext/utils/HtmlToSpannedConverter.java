@@ -9,7 +9,6 @@ import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.LineInfo;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.BinarySpanController;
-import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
 import com.github.kubatatami.richedittext.styles.base.LineChangingController;
 import com.github.kubatatami.richedittext.styles.base.LineSpanController;
 import com.github.kubatatami.richedittext.styles.base.MultiSpanController;
@@ -53,8 +52,6 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
 
     private boolean firstTag = true;
 
-    private Map<String, String> styleMap;
-
     public HtmlToSpannedConverter(
             BaseRichEditText baseRichEditText, String source,
             Parser parser,
@@ -71,7 +68,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         spanInfoList = new ArrayList<>();
         mReader = parser;
         if (style != null) {
-            styleMap = getStyleStringMap(style);
+            Map<String, String> styleMap = getStyleStringMap(style);
             for (StartStyleProperty property : properties) {
                 property.setPropertyFromTag(baseRichEditText, styleMap);
             }
@@ -91,13 +88,6 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         try {
             mReader.parse(new InputSource(new StringReader(mSource)));
             applySpans();
-            if (styleMap != null) {
-                for (SpanController<?, ?> spanController : mSpanControllers) {
-                    if (spanController instanceof EndStyleProperty) {
-                        ((EndStyleProperty) spanController).setPropertyFromTag(mSpannableSb, styleMap);
-                    }
-                }
-            }
         } catch (SAXException e) {
             throw new IOException(e.getMessage());
         }

@@ -1,19 +1,16 @@
 package com.github.kubatatami.richedittext.styles.binary;
 
 import android.annotation.SuppressLint;
-import android.text.SpannableStringBuilder;
 import android.text.style.StrikethroughSpan;
 
-import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.BinaryFontSpanController;
-import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
 import com.github.kubatatami.richedittext.styles.base.RichSpan;
 
 import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public class StrikeThroughSpanController extends BinaryFontSpanController<StrikeThroughSpanController.RichStrikethroughSpan> implements EndStyleProperty {
+public class StrikeThroughSpanController extends BinaryFontSpanController<StrikeThroughSpanController.RichStrikethroughSpan> {
 
     public StrikeThroughSpanController() {
         super(RichStrikethroughSpan.class, "strike");
@@ -37,15 +34,6 @@ public class StrikeThroughSpanController extends BinaryFontSpanController<Strike
             return clazz;
         }
         return null;
-    }
-
-    @Override
-    public boolean setPropertyFromTag(SpannableStringBuilder editable, Map<String, String> styleMap) {
-        if (containsStrikeTroughStyle(styleMap)) {
-            perform(editable, StyleSelectionInfo.getStyleSelectionInfo(editable));
-            return true;
-        }
-        return false;
     }
 
     @SuppressLint("ParcelCreator")

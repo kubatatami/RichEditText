@@ -6,15 +6,12 @@ import android.graphics.Typeface;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.text.Editable;
-import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.style.TypefaceSpan;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
-import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.other.FontCache;
 import com.github.kubatatami.richedittext.other.StringUtils;
-import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
 import com.github.kubatatami.richedittext.styles.base.MultiSpanController;
 
 import org.xml.sax.Attributes;
@@ -24,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TypefaceSpanController extends MultiSpanController<TypefaceSpanController.FontSpan, TypefaceSpanController.Font> implements EndStyleProperty {
+public class TypefaceSpanController extends MultiSpanController<TypefaceSpanController.FontSpan, TypefaceSpanController.Font> {
 
     private static final String STYLE_NAME = "font-family";
 
@@ -129,18 +126,6 @@ public class TypefaceSpanController extends MultiSpanController<TypefaceSpanCont
 
     public static void registerFont(Font font) {
         fontMap.put(font.fontName, font);
-    }
-
-    @Override
-    public boolean setPropertyFromTag(SpannableStringBuilder editable, Map<String, String> styleMap) {
-        if (styleMap.containsKey(STYLE_NAME)) {
-            FontSpan span = createSpan(styleMap, null);
-            if (span != null) {
-                performSpan(span, editable, StyleSelectionInfo.getStyleSelectionInfo(editable));
-                return true;
-            }
-        }
-        return false;
     }
 
     public static class Font {

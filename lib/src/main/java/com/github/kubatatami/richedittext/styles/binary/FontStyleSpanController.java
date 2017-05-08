@@ -4,13 +4,10 @@ import android.annotation.SuppressLint;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.text.Editable;
-import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.style.StyleSpan;
 
-import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.BinaryFontSpanController;
-import com.github.kubatatami.richedittext.styles.base.EndStyleProperty;
 import com.github.kubatatami.richedittext.styles.base.RichSpan;
 import com.github.kubatatami.richedittext.styles.multi.TypefaceSpanController;
 
@@ -18,7 +15,7 @@ import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public abstract class FontStyleSpanController extends BinaryFontSpanController<FontStyleSpanController.RichStyleSpan> implements EndStyleProperty {
+public abstract class FontStyleSpanController extends BinaryFontSpanController<FontStyleSpanController.RichStyleSpan> {
 
     final int typeface;
 
@@ -50,15 +47,6 @@ public abstract class FontStyleSpanController extends BinaryFontSpanController<F
         RichStyleSpan result = createSpan();
         editable.setSpan(result, selectionStart, selectionEnd, flags);
         return result;
-    }
-
-    @Override
-    public boolean setPropertyFromTag(SpannableStringBuilder editable, Map<String, String> styleMap) {
-        if (styleValue.equals(styleMap.get(styleName))) {
-            perform(editable, StyleSelectionInfo.getStyleSelectionInfo(editable));
-            return true;
-        }
-        return false;
     }
 
     abstract RichStyleSpan createSpan();

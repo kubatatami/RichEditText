@@ -11,6 +11,6 @@ public class PasteWriter implements Writer {
 
     @Override
     public void delete(EditText editText) {
-        editText.getEditableText().delete(editText.length() - 1, editText.length());
+        editText.getEditableText().delete(editText.getSelectionStart() - 1, editText.getSelectionStart());
     }
 }

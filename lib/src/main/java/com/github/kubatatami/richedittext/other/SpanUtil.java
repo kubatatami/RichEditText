@@ -84,6 +84,7 @@ public class SpanUtil {
                 return Integer.valueOf(editable.getSpanStart(lhs)).compareTo(editable.getSpanStart(rhs));
             }
         });
+        Log.i("SpanLog", "Span list:");
         for (Object span : spans) {
             SpanController<?, ?> controller = acceptController(controllers, span);
             if (controller != null) {

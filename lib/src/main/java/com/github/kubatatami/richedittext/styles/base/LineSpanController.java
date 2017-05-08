@@ -3,6 +3,7 @@ package com.github.kubatatami.richedittext.styles.base;
 import android.text.Editable;
 import android.text.Spanned;
 
+import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.LineInfo;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 
@@ -28,6 +29,28 @@ public abstract class LineSpanController<T, Z> extends MultiSpanController<T, Z>
             add(value, editable, lineInfo.start, lineInfo.end);
         }
         return true;
+    }
+
+    @Override
+    public void checkAfterChange(BaseRichEditText editText, StyleSelectionInfo styleSelectionInfo, boolean passive) {
+        super.checkAfterChange(editText, styleSelectionInfo, passive);
+        LineInfo lineInfo;
+        final Editable editable = editText.getEditableText();
+        int start = 0;
+        do {
+            lineInfo = LineInfo.getLineInfo(editable, start, start);
+            for (Object span : editable.getSpans(lineInfo.start, lineInfo.end, clazz)) {
+                int spanStart = editable.getSpanStart(span);
+                int spanEnd = editable.getSpanEnd(span);
+                if (spanStart != lineInfo.start && spanEnd == lineInfo.end) {
+                    editable.removeSpan(span);
+                } else if (spanEnd != lineInfo.end) {
+                    editable.removeSpan(span);
+                    editable.setSpan(span, lineInfo.start, lineInfo.end, defaultLineFlags);
+                }
+            }
+            start = lineInfo.end + 1;
+        } while (lineInfo.end < editText.length());
     }
 
     @SuppressWarnings("unchecked")

@@ -16,7 +16,11 @@ public class LineInfo {
     public static LineInfo getLineInfo(Editable editable, StyleSelectionInfo styleSelectionInfo) {
         int start = styleSelectionInfo.realSelectionStart;
         int end = styleSelectionInfo.realSelectionEnd;
-        while (start - 1 >= 0 && editable.charAt(start - 1) != '\n') {
+        return getLineInfo(editable, start, end);
+    }
+
+    public static LineInfo getLineInfo(Editable editable, int start, int end) {
+        while (editable.length() > start - 1 && start - 1 >= 0 && editable.charAt(start - 1) != '\n') {
             start--;
         }
         do {

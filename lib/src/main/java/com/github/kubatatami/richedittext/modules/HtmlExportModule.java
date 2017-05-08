@@ -120,6 +120,8 @@ public abstract class HtmlExportModule {
             } else if (c == '\n') {
                 if (!isCssBlockElementConnection(text, spanControllers, i)) {
                     out.append("<br/>");
+                } else {
+                    i++;
                 }
             } else if (c >= 0xD800 && c <= 0xDFFF) {
                 if (c < 0xDC00 && i + 1 < end) {
@@ -144,24 +146,24 @@ public abstract class HtmlExportModule {
         }
     }
 
-    private static boolean isCssBlockElementConnection(Editable text, Collection<SpanController<?, ?>> spanControllers, int start) {
-//        for (SpanController controller : spanControllers) {
-//            if (controller.isCssBlockElement()) {
-//                boolean spanStart = false, spanEnd = false;
-//                Object[] spans = text.getSpans(start - 1, start + 1, controller.getClazz());
-//                for (Object span : spans) {
-//                    if (text.getSpanStart(span) == start) {
-//                        spanStart = true;
-//                    }
-//                    if (text.getSpanEnd(span) == start) {
-//                        spanEnd = true;
-//                    }
-//                }
-//                if (spanStart && spanEnd) {
-//                    return true;
-//                }
-//            }
-//        }
+    private static boolean isCssBlockElementConnection(Editable text, Collection<SpanController<?, ?>> spanControllers, int textStart) {
+        for (SpanController controller : spanControllers) {
+            if (controller.isCssBlockElement()) {
+                boolean spanStart = false, spanEnd = false;
+                Object[] spans = text.getSpans(textStart - 1, textStart + 1, controller.getClazz());
+                for (Object span : spans) {
+                    if (text.getSpanStart(span) == textStart) {
+                        spanStart = true;
+                    }
+                    if (text.getSpanEnd(span) == textStart + 1) {
+                        spanEnd = true;
+                    }
+                }
+                if (spanEnd && textStart + 1 != text.length()) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 

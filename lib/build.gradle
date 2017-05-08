@@ -21,8 +21,8 @@ android {
 
 dependencies {
     compile 'org.ccil.cowan.tagsoup:tagsoup:1.2.1'
-    compile 'com.android.support:support-v4:25.0.1'
-    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
 }
 
 

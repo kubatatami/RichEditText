@@ -14,20 +14,21 @@ public class LineInfo {
     }
 
     public static LineInfo getLineInfo(Editable editable, StyleSelectionInfo styleSelectionInfo) {
-        int start = Math.max(0, Math.min(styleSelectionInfo.realSelectionStart, editable.length() - 1));
-        int end = Math.max(0, Math.min(styleSelectionInfo.realSelectionEnd, editable.length() - 1));
-        if (editable.length() > 0) {
-            if (start != end || editable.charAt(start) != '\n') {
-                while (start - 1 >= 0 && editable.charAt(start - 1) != '\n') {
-                    start--;
-                }
-                while (end + 1 < editable.length() && editable.charAt(end + 1) != '\n') {
-                    end++;
-                }
-            }
-            return new LineInfo(start, end + 1);
-        } else {
-            return new LineInfo(0, 0);
+        int start = styleSelectionInfo.realSelectionStart;
+        int end = styleSelectionInfo.realSelectionEnd;
+        while (start - 1 >= 0 && editable.charAt(start - 1) != '\n') {
+            start--;
         }
+        do {
+            if (end == editable.length()) {
+                break;
+            } else if (editable.charAt(end) == '\n') {
+                end++;
+                break;
+            }
+            end++;
+        } while (true);
+        return new LineInfo(start, end);
     }
+
 }

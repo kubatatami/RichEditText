@@ -335,7 +335,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         mSpannableSb.append(sb);
     }
 
-    static class SpanInfo {
+    private static class SpanInfo {
 
         int start;
 
@@ -343,7 +343,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
 
         Object span;
 
-        public SpanInfo(int start, int end, Object span) {
+        SpanInfo(int start, int end, Object span) {
             this.start = start;
             this.end = end;
             this.span = span;

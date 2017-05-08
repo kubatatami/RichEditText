@@ -1,10 +1,8 @@
 package com.github.kubatatami.richedittext.modules;
 
 import android.text.Editable;
-import android.text.style.AlignmentSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.ParagraphStyle;
-import android.util.Log;
 import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
@@ -25,9 +23,6 @@ public abstract class HtmlExportModule {
             out.append("<div style=\"");
             out.append(getCssStyle(editText, spanControllers, properties));
             out.append("\">");
-        }
-        for (AlignmentSpan span : editText.getText().getSpans(0, editText.getText().length(), AlignmentSpan.class)) {
-            Log.i("AlignmentSpan", "start: " + editText.getText().getSpanStart(span) + " end: " + editText.getText().getSpanEnd(span) + " type: " + span.getAlignment().name());
         }
         within(ParagraphStyle.class, out, editText, 0, editText.getText().length(), spanControllers, new WithinCallback() {
             @Override
@@ -148,19 +143,12 @@ public abstract class HtmlExportModule {
 
     private static boolean isCssBlockElementConnection(Editable text, Collection<SpanController<?, ?>> spanControllers, int textStart) {
         for (SpanController controller : spanControllers) {
-            if (controller.isCssBlockElement()) {
-                boolean spanStart = false, spanEnd = false;
+            if (controller.isCssBlockElement() && textStart + 1 != text.length()) {
                 Object[] spans = text.getSpans(textStart - 1, textStart + 1, controller.getClazz());
                 for (Object span : spans) {
-                    if (text.getSpanStart(span) == textStart) {
-                        spanStart = true;
-                    }
                     if (text.getSpanEnd(span) == textStart + 1) {
-                        spanEnd = true;
+                        return true;
                     }
-                }
-                if (spanEnd && textStart + 1 != text.length()) {
-                    return true;
                 }
             }
         }

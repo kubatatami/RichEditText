@@ -77,9 +77,9 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
                     ((StartStyleProperty) spanController).setPropertyFromTag(baseRichEditText, styleMap);
                 }
             }
-            standalone = true;
-        } else {
             standalone = false;
+        } else {
+            standalone = true;
         }
     }
 

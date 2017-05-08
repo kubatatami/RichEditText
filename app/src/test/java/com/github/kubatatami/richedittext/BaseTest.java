@@ -55,7 +55,8 @@ public class BaseTest {
     @After
     public void testExportImport() {
         String html = editText.getHtml(false);
-        editText.setHtml(html);
+        String cssStyle = editText.getCssStyle();
+        editText.setHtml(html, cssStyle);
         assertEquals(html, editText.getHtml(false));
     }
 

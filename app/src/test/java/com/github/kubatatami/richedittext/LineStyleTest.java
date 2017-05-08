@@ -45,6 +45,20 @@ public class LineStyleTest extends BaseTest {
         checkHtml("<div style=\"text-align: left;\">Left.</div><div style=\"text-align: center;\">Center.</div><div style=\"text-align: right;\">Right.<br/></div>");
     }
 
+    @Test
+    public void exportedHtmlShouldContainsLeftCenterAndRightAlignmentVer3() {
+        writer.write(editText, "Left.\n");
+
+        writer.write(editText, "Center.");
+        editText.alignmentClick(ALIGN_CENTER);
+        writer.write(editText, "\n");
+
+        writer.write(editText, "Right.");
+        editText.alignmentClick(ALIGN_OPPOSITE);
+        writer.write(editText, "\n");
+
+        checkHtml("Left.<br/><div style=\"text-align: center;\">Center.</div><div style=\"text-align: right;\">Right.<br/></div>");
+    }
 
     @Test
     public void exportedHtmlShouldContainsLeftAndCenterAlignment() {

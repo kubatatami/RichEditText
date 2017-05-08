@@ -17,7 +17,6 @@ public class InseparableTest extends BaseTest {
         checkHtml("");
     }
 
-
     @Test
     public void exportedHtmlShouldContainsValidTextVer2() {
         writer.write(editText, "This is normal text. ");

@@ -43,6 +43,8 @@ public class BaseRichEditText extends AppCompatEditText {
 
     private final HistoryModule historyModule = new HistoryModule(this);
 
+    private final HtmlExportModule htmlExportModule = new HtmlExportModule();
+
     private final Map<Class<?>, SpanController<?, ?>> spanControllerMap = new HashMap<>();
 
     private final List<StartStyleProperty> properties = new ArrayList<>();
@@ -292,11 +294,11 @@ public class BaseRichEditText extends AppCompatEditText {
     }
 
     public String getHtml(boolean standalone) {
-        return HtmlExportModule.getHtml(this, spanControllerMap.values(), properties, standalone);
+        return htmlExportModule.getHtml(this, spanControllerMap.values(), properties, standalone);
     }
 
     public String getCssStyle() {
-        return HtmlExportModule.getCssStyle(this, spanControllerMap.values(), properties);
+        return htmlExportModule.getCssStyle(this, spanControllerMap.values(), properties);
     }
 
     public void undo() {

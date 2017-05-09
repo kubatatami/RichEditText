@@ -58,4 +58,12 @@ public class WriterTest extends BaseTest {
         checkHtml("Second text. First text. Third text.");
     }
 
+    @Test
+    public void exportedHtmlShouldContainsValidTextVer8() {
+        writer.write(editText, " Left.\n");
+        writer.write(editText, " Center.\n");
+        writer.write(editText, "Right. \n");
+
+        checkHtml("&nbsp;Left.<br/>&nbsp;Center.<br/>Right. <br/>");
+    }
 }

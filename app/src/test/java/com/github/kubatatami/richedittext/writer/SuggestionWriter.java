@@ -29,8 +29,10 @@ public class SuggestionWriter implements Writer {
     }
 
     private void writeWord(EditText editText, String word) {
-        if (!word.isEmpty()) {
-            int lastSpace = editText.getText().subSequence(0, editText.getSelectionStart()).toString().lastIndexOf(" ");
+        if (word.equals("\n")) {
+            editText.getEditableText().replace(editText.getSelectionStart(), editText.getSelectionStart(), word);
+        } else if (!word.isEmpty()) {
+            int lastSpace = findLastWhiteCharacter(editText);
             int start = lastSpace == -1 ? editText.getSelectionStart() : lastSpace + 1;
             if (lastSpace >= 0) {
                 word = editText.getText().subSequence(start, editText.getSelectionStart()) + word;
@@ -41,5 +43,10 @@ public class SuggestionWriter implements Writer {
                 editText.getEditableText().replace(start, end, subText);
             }
         }
+    }
+
+    private int findLastWhiteCharacter(EditText editText) {
+        String subString = editText.getText().subSequence(0, editText.getSelectionStart()).toString();
+        return Math.max(subString.lastIndexOf(" "), subString.lastIndexOf("\n"));
     }
 }

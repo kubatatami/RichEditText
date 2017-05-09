@@ -15,14 +15,19 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class HtmlExportModule {
+public class HtmlExportModule {
 
-    public static String getHtml(BaseRichEditText editText, Collection<SpanController<?, ?>> spanControllers, List<StartStyleProperty> properties, boolean standalone) {
+    private boolean insideCssBlockElement;
+
+    private boolean lastEnter;
+
+    public String getHtml(BaseRichEditText editText, Collection<SpanController<?, ?>> spanControllers, List<StartStyleProperty> properties, boolean standalone) {
         StringBuilder out = new StringBuilder();
         if (standalone) {
             out.append("<div style=\"");
             out.append(getCssStyle(editText, spanControllers, properties));
             out.append("\">");
+            insideCssBlockElement = true;
         }
         within(ParagraphStyle.class, out, editText, 0, editText.getText().length(), spanControllers, new WithinCallback() {
             @Override
@@ -41,11 +46,11 @@ public abstract class HtmlExportModule {
         return out.toString();
     }
 
-    public static String getCssStyle(BaseRichEditText editText, Collection<SpanController<?, ?>> spanControllers, List<StartStyleProperty> properties) {
+    public String getCssStyle(BaseRichEditText editText, Collection<SpanController<?, ?>> spanControllers, List<StartStyleProperty> properties) {
         return getProperties(editText, properties) + getDefaultStyles(editText, spanControllers);
     }
 
-    private static String getProperties(BaseRichEditText editText, List<StartStyleProperty> properties) {
+    private String getProperties(BaseRichEditText editText, List<StartStyleProperty> properties) {
         StringBuilder result = new StringBuilder();
         for (StartStyleProperty property : properties) {
             result.append(property.createStyle(editText));
@@ -53,7 +58,7 @@ public abstract class HtmlExportModule {
         return result.toString();
     }
 
-    private static String getDefaultStyles(BaseRichEditText editText, Collection<SpanController<?, ?>> spanControllers) {
+    private String getDefaultStyles(BaseRichEditText editText, Collection<SpanController<?, ?>> spanControllers) {
         StringBuilder result = new StringBuilder();
         for (SpanController<?, ?> spanController : spanControllers) {
             if (spanController instanceof StartStyleProperty) {
@@ -63,8 +68,8 @@ public abstract class HtmlExportModule {
         return result.toString();
     }
 
-    private static void within(Class<?> clazz, StringBuilder out, EditText editText, int start, int end,
-                               Collection<SpanController<?, ?>> spanControllers, WithinCallback withinCallback) {
+    private void within(Class<?> clazz, StringBuilder out, EditText editText, int start, int end,
+                        Collection<SpanController<?, ?>> spanControllers, WithinCallback withinCallback) {
         Editable text = editText.getText();
 
         int next;
@@ -81,11 +86,13 @@ public abstract class HtmlExportModule {
                 SpanController<?, ?> controller = SpanUtil.acceptController(spanControllers, span);
                 if (controller != null && text.getSpanStart(span) != text.getSpanEnd(span)) {
                     out.append(controller.beginTag(span, text.getSpanStart(span) != i, spans));
+                    insideCssBlockElement = controller.isCssBlockElement();
                 }
             }
             if (withinCallback != null) {
                 withinCallback.nextWithin(clazz, out, editText, i, next, spanControllers);
             }
+            insideCssBlockElement = false;
 
             for (int j = spans.length - 1; j >= 0; j--) {
                 SpanController<?, ?> controller = SpanUtil.acceptController(spanControllers, spans[j]);
@@ -101,8 +108,8 @@ public abstract class HtmlExportModule {
         void nextWithin(Class<?> clazz, StringBuilder out, EditText editText, int start, int end, Collection<SpanController<?, ?>> spanControllers);
     }
 
-    private static void withinStyle(StringBuilder out, Editable text, Collection<SpanController<?, ?>> spanControllers,
-                                    int start, int end) {
+    private void withinStyle(StringBuilder out, Editable text, Collection<SpanController<?, ?>> spanControllers,
+                             int start, int end) {
         for (int i = start; i < end; i++) {
             char c = text.charAt(i);
 
@@ -128,20 +135,22 @@ public abstract class HtmlExportModule {
                     }
                 }
             } else if (c == ' ' || c == 160) {
+                out.append(out.length() == 0 || (start == i && insideCssBlockElement) || lastEnter
+                        ? "&nbsp;" : ' ');
                 while (i + 1 < end && text.charAt(i + 1) == ' ') {
                     out.append("&nbsp;");
                     i++;
                 }
-                out.append(out.length() == 0 ? "&nbsp;" : ' ');
             } else if (c > 0x7E || c < ' ') {
                 out.append("&#").append((int) c).append(";");
             } else {
                 out.append(c);
             }
+            lastEnter = c == '\n';
         }
     }
 
-    private static boolean isCssBlockElementConnection(Editable text, Collection<SpanController<?, ?>> spanControllers, int textStart) {
+    private boolean isCssBlockElementConnection(Editable text, Collection<SpanController<?, ?>> spanControllers, int textStart) {
         for (SpanController controller : spanControllers) {
             if (controller.isCssBlockElement() && textStart + 1 != text.length()) {
                 Object[] spans = text.getSpans(textStart - 1, textStart + 1, controller.getClazz());

@@ -33,8 +33,8 @@ public class MultiStyleTest extends BaseTest {
         writer.write(editText, " Large red text.");
         editText.colorClick(Color.BLACK);
         writer.write(editText, " Large black text.");
-        checkHtml("Normal text.<span style=\"color:#ff0000;\"> Red text.</span><span style=\"color:#ff0000;\">" +
-                "<span style=\"font-size:18.0px;\"> Large red text.</span></span><span style=\"color:#000000;\">" +
+        checkHtml("Normal text.<span style=\"color:rgb(255, 0, 0);\"> Red text.</span><span style=\"color:rgb(255, 0, 0);\">" +
+                "<span style=\"font-size:18.0px;\"> Large red text.</span></span><span style=\"color:rgb(0, 0, 0);\">" +
                 "<span style=\"font-size:18.0px;\"> Large black text.</span></span>");
     }
 
@@ -48,8 +48,8 @@ public class MultiStyleTest extends BaseTest {
         editText.colorClick(Color.BLACK);
         writer.write(editText, "LargeBlack1");
         writer.delete(editText);
-        checkHtml("Normal<span style=\"color:#ff0000;\">Red</span><span style=\"color:#ff0000;\">" +
-                "<span style=\"font-size:18.0px;\">LargeRed</span></span><span style=\"color:#000000;\">" +
+        checkHtml("Normal<span style=\"color:rgb(255, 0, 0);\">Red</span><span style=\"color:rgb(255, 0, 0);\">" +
+                "<span style=\"font-size:18.0px;\">LargeRed</span></span><span style=\"color:rgb(0, 0, 0);\">" +
                 "<span style=\"font-size:18.0px;\">LargeBlack</span></span>");
     }
 

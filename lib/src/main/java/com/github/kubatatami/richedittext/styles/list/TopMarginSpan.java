@@ -14,7 +14,11 @@ public class TopMarginSpan implements LineHeightSpan.WithDensity, UpdateLayout, 
 
     @Override
     public void chooseHeight(CharSequence text, int start, int end, int spanstartv, int v, Paint.FontMetricsInt fm, TextPaint paint) {
-        fm.ascent -= VERTICAL_SPACING * paint.density;
+        if (v == 0) {
+            fm.ascent = (int) (paint.ascent() - ((float)VERTICAL_SPACING * paint.density));
+        } else {
+            fm.ascent = (int) paint.ascent();
+        }
     }
 
     @Override

@@ -35,8 +35,8 @@ public abstract class ListItemSpan implements LeadingMarginSpan, UpdateLayout, U
         }
     }
 
-    public void drawIndex(Canvas canvas, Paint paint, int x, int dir,
-                          int baseline, int index) {
+    private void drawIndex(Canvas canvas, Paint paint, int x, int dir,
+                           int baseline, int index) {
         Paint.Style orgStyle = paint.getStyle();
         paint.setStyle(Paint.Style.FILL);
         float width = getMeasureWidth(paint);

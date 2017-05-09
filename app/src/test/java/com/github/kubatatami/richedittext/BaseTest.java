@@ -54,6 +54,17 @@ public class BaseTest {
 
     @After
     public void testExportImport() {
+        testStandalone();
+        testNonStandalone();
+    }
+
+    private void testStandalone() {
+        String html = editText.getHtml(true);
+        editText.setHtml(html, null);
+        assertEquals(html, editText.getHtml(true));
+    }
+
+    private void testNonStandalone() {
         String html = editText.getHtml(false);
         String cssStyle = editText.getCssStyle();
         editText.setHtml(html, cssStyle);

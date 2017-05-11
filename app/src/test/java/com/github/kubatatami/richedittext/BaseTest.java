@@ -26,7 +26,7 @@ public class BaseTest {
     RichEditText editText;
 
     @ParameterizedRobolectricTestRunner.Parameters(name = "Writer = {0}")
-    public static Collection<Object[]> data() {
+    public static Collection<Object[]> writers() {
         return Arrays.asList(new Object[][]{
                 {new TypeWriter()}, {new PasteWriter()}, {new SuggestionWriter()}
         });

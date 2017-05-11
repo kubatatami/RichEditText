@@ -49,6 +49,11 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
         return null;
     }
 
+    @Override
+    public boolean isCssBlockElement() {
+        return true;
+    }
+
     protected ListSpan add(Editable editable, int selectionStart, int selectionEnd, int flags) {
         return add(editable, selectionStart, selectionEnd, flags, internalClazz);
     }
@@ -134,13 +139,15 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
         int spanStart = editable.getSpanStart(span);
         int spanEnd = editable.getSpanEnd(span);
         int spanFlags = editable.getSpanFlags(span);
-        Class<? extends ListItemSpan> spanInternalClass = (Class<? extends ListItemSpan>) ((ListSpan) span).getInternalClazz();
         removeSpan(span, editable);
-        if (spanStart < lineInfo.start) {
-            add(editable, spanStart, lineInfo.start - 1, spanFlags, spanInternalClass);
-        }
-        if (spanEnd > lineInfo.end) {
-            add(editable, lineInfo.end + 1, spanEnd, spanFlags, spanInternalClass);
+        if (span instanceof ListSpan) {
+            Class<? extends ListItemSpan> spanInternalClass = (Class<? extends ListItemSpan>) ((ListSpan) span).getInternalClazz();
+            if (spanStart < lineInfo.start) {
+                add(editable, spanStart, lineInfo.start - 1, spanFlags, spanInternalClass);
+            }
+            if (spanEnd > lineInfo.end) {
+                add(editable, lineInfo.end + 1, spanEnd, spanFlags, spanInternalClass);
+            }
         }
     }
 
@@ -150,7 +157,7 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
             Editable text = editText.getEditableText();
             ListSpan[] spans = text.getSpans(0, text.length(), ListSpan.class);
             for (ListSpan span : spans) {
-                if (span.internalClazz.equals(internalClazz)) {
+                if (span.getInternalClazz().equals(internalClazz)) {
                     int start = text.getSpanStart(span);
                     int end = text.getSpanEnd(span);
                     int flags = text.getSpanFlags(span);
@@ -195,7 +202,7 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
         text.removeSpan(span);
     }
 
-    public void endList(BaseRichEditText editText, int index, StyleSelectionInfo styleSelectionInfo, Editable text, ListSpan span, int start) {
+    private void endList(BaseRichEditText editText, int index, StyleSelectionInfo styleSelectionInfo, Editable text, ListSpan span, int start) {
         index += start;
         int end = text.getSpanEnd(span);
         int flag = text.getSpanFlags(span);
@@ -236,16 +243,19 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
         String[] lines = textStr.substring(spanStart, spanEnd).split("\n");
         int pos = spanStart;
         int i = 0;
-        for (String line : lines) {
-            int end = pos + line.length();
-            text.setSpan(createInternalSpan(), pos, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            if (i == 0 && (text.getSpans(pos - 1, pos - 1, ListSpan.class).length == 0)) {
-                text.setSpan(new TopMarginSpan(), pos, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            } else if (i == lines.length - 1) {
-                text.setSpan(new BottomMarginSpan(), pos, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        span.setValidSpan(spanStart != spanEnd);
+        if (span.isValid()) {
+            for (String line : lines) {
+                int end = pos + line.length();
+                text.setSpan(createInternalSpan(), pos, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                if (i == 0 && (text.getSpans(pos - 1, pos - 1, ListSpan.class).length == 0)) {
+                    text.setSpan(new TopMarginSpan(), pos, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                } else if (i == lines.length - 1) {
+                    text.setSpan(new BottomMarginSpan(), pos, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                }
+                pos = end + 1;
+                i++;
             }
-            pos = end + 1;
-            i++;
         }
     }
 

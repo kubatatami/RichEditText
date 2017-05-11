@@ -5,13 +5,11 @@ import android.graphics.Paint;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.style.LeadingMarginSpan;
-import android.text.style.UpdateAppearance;
-import android.text.style.UpdateLayout;
 
 import com.github.kubatatami.richedittext.other.DimenUtil;
 import com.github.kubatatami.richedittext.styles.base.RichSpan;
 
-public abstract class ListItemSpan implements LeadingMarginSpan, UpdateLayout, UpdateAppearance, RichSpan {
+public abstract class ListItemSpan implements LeadingMarginSpan, RichSpan {
 
     private final int gapWidth;
 
@@ -39,14 +37,14 @@ public abstract class ListItemSpan implements LeadingMarginSpan, UpdateLayout, U
                            int baseline, int index) {
         Paint.Style orgStyle = paint.getStyle();
         paint.setStyle(Paint.Style.FILL);
-        float width = getMeasureWidth(paint);
+        float width = getMeasureWidth(paint, index);
         canvas.drawText(getText(index), (x - width + gapWidth) * dir, baseline, paint);
         paint.setStyle(orgStyle);
     }
 
     protected abstract String getText(int index);
 
-    protected abstract float getMeasureWidth(Paint paint);
+    protected abstract float getMeasureWidth(Paint paint, int index);
 
     private int getIndex(Spannable spanText, int start) {
         int index = 1;

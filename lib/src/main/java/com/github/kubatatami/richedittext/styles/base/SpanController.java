@@ -111,4 +111,8 @@ public abstract class SpanController<T, Z> {
         String value = styleMap.get(key);
         return value != null && value.toLowerCase().contains(style.toLowerCase());
     }
+
+    public String getTagName() {
+        return tagName;
+    }
 }

@@ -24,8 +24,12 @@ public class SuggestionWriter implements Writer {
     public void delete(EditText editText) {
         int lastSpace = editText.getText().subSequence(0, editText.getSelectionStart()).toString().lastIndexOf(" ");
         int start = lastSpace == -1 ? 0 : lastSpace + 1;
-        String subText = editText.getEditableText().toString().substring(start, editText.getSelectionStart() - 1);
-        editText.getEditableText().replace(start, start + subText.length() + 1, subText);
+        if (start == editText.getSelectionStart()) {
+            editText.getEditableText().delete(editText.getSelectionStart() - 1, editText.getSelectionStart());
+        } else {
+            String subText = editText.getEditableText().toString().substring(start, editText.getSelectionStart() - 1);
+            editText.getEditableText().replace(start, start + subText.length() + 1, subText);
+        }
     }
 
     private void writeWord(EditText editText, String word) {

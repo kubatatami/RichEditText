@@ -18,8 +18,8 @@ public class BulletListController extends ListController<BulletListController.Ri
             return "\u2022";
         }
 
-        protected float getMeasureWidth(Paint paint) {
-            return paint.measureText("4.  ");
+        protected float getMeasureWidth(Paint paint, int index) {
+            return paint.measureText("\u2022  ");
         }
     }
 

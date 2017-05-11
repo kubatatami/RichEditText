@@ -18,8 +18,9 @@ public class NumberListController extends ListController<NumberListController.Ri
             return index + ".";
         }
 
-        protected float getMeasureWidth(Paint paint) {
-            return paint.measureText("4.  ");
+        @Override
+        protected float getMeasureWidth(Paint paint, int index) {
+            return paint.measureText(index + ".  ");
         }
 
     }

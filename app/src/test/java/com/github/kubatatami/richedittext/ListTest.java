@@ -46,7 +46,7 @@ public class ListTest extends BaseTest {
     }
 
     @Test
-    public void exportedHtmlShouldContainsNumberListWith3Items() {
+    public void exportedHtmlShouldContainsListWith3Items() {
         listClick();
         writer.write(editText, FIRST_ITEM);
         writer.write(editText, SECOND_ITEM);
@@ -55,7 +55,7 @@ public class ListTest extends BaseTest {
     }
 
     @Test
-    public void exportedHtmlShouldContainsNumberListWith2Items() {
+    public void exportedHtmlShouldContainsListWith2Items() {
         listClick();
         writer.write(editText, FIRST_ITEM);
         writer.write(editText, SECOND_ITEM);
@@ -66,7 +66,7 @@ public class ListTest extends BaseTest {
     }
 
     @Test
-    public void exportedHtmlShouldContainsNumberListWith2ItemsVer2() {
+    public void exportedHtmlShouldContainsListWith2ItemsVer2() {
         listClick();
         writer.write(editText, FIRST_ITEM);
         writer.write(editText, SECOND_ITEM);
@@ -76,6 +76,42 @@ public class ListTest extends BaseTest {
             writer.delete(editText);
         }
         checkHtml(String.format("<%1$s><li>First item</li><li>Third item</li></%1$s>", tag));
+    }
+
+    @Test
+    public void exportedHtmlShouldContainsTwoLists() {
+        listClick();
+        writer.write(editText, FIRST_ITEM);
+        writer.write(editText, SECOND_ITEM);
+        writer.write(editText, THIRD_ITEM);
+        editText.setSelection(FIRST_ITEM.length() + SECOND_ITEM.length() / 2);
+        listClick();
+        checkHtml(String.format("<%1$s><li>First item</li></%1$s>Second item<%1$s><li>Third item</li></%1$s>", tag));
+    }
+
+    @Test
+    public void exportedHtmlShouldContainsOneLists() {
+        listClick();
+        writer.write(editText, FIRST_ITEM);
+        writer.write(editText, SECOND_ITEM);
+        writer.write(editText, "\n");
+        writer.write(editText, THIRD_ITEM);
+        editText.setSelection(0, editText.length());
+        listClick();
+        checkHtml(String.format("<%1$s><li>First item</li><li>Second item</li><li>Third item</li></%1$s>", tag));
+    }
+
+    @Test
+    public void exportedHtmlShouldNotContainAnyLists() {
+        listClick();
+        writer.write(editText, FIRST_ITEM);
+        writer.write(editText, SECOND_ITEM);
+        writer.write(editText, "\n");
+        writer.write(editText, THIRD_ITEM);
+        editText.setSelection(0, editText.length());
+        listClick();
+        listClick();
+        checkHtml("First item<br/>Second item<br/>Third item<br/>");
     }
 
     @SuppressWarnings("unchecked")

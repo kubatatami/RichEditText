@@ -5,12 +5,15 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        WriterTest.class,
-        InseparableTest.class,
         BinaryFontStyleTest.class,
+        HtmlUtilsTest.class,
+        InseparableTest.class,
+        LineInfoTest.class,
         LineStyleTest.class,
+        ListTest.class,
         MultiStyleTest.class,
-        HtmlUtilsTest.class
+        StyleSelectionInfoTest.class,
+        WriterTest.class,
 })
 public class AllTests {
 

@@ -10,7 +10,6 @@ import com.github.kubatatami.richedittext.modules.LineInfo;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.styles.base.BinarySpanController;
 import com.github.kubatatami.richedittext.styles.base.LineChangingController;
-import com.github.kubatatami.richedittext.styles.base.LineSpanController;
 import com.github.kubatatami.richedittext.styles.base.MultiSpanController;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
@@ -126,17 +125,12 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         for (SpanController<?, ?> spanController : mSpanControllers) {
             Object object = spanController.createSpanFromTag(tag, styleMap, attributes);
             if (object != null) {
-                if (spanController instanceof LineSpanController && mSpannableSb.length() > 0) {
-                    if (mSpannableSb.charAt(mSpannableSb.length() - 1) != '\n') {
-                        mSpannableSb.append('\n');
-                    }
+                if (spanController instanceof LineChangingController) {
+                    ((LineChangingController) spanController).changeLineStart(mSpannableSb, tag);
                 }
                 start(mSpannableSb, object);
                 supported = true;
                 firstTag = false;
-            }
-            if (spanController instanceof LineChangingController) {
-                ((LineChangingController) spanController).changeLineStart(mSpannableSb, tag);
             }
         }
         return supported;

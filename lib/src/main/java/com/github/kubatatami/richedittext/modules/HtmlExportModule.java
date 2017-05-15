@@ -129,10 +129,8 @@ public class HtmlExportModule {
             } else if (c == '&') {
                 out.append("&amp;");
             } else if (c == '\n') {
-                if (!endOfList(text, i) && !isCssBlockElementConnection(text, spanControllers, i)) {
+                if (!startOfList(text, i) &&!endOfList(text, i) && !isCssBlockElementConnection(text, spanControllers, i)) {
                     out.append("<br/>");
-                } else {
-                    i++;
                 }
             } else if (c >= 0xD800 && c <= 0xDFFF) {
                 if (c < 0xDC00 && i + 1 < end) {
@@ -161,6 +159,10 @@ public class HtmlExportModule {
 
     private boolean endOfList(Editable text, int i) {
         return text.getSpans(i, i, ListSpan.class).length > 0;
+    }
+
+    private boolean startOfList(Editable text, int i) {
+        return text.getSpans(i + 1, i + 1, ListSpan.class).length > 0;
     }
 
     private boolean isCssBlockElementConnection(Editable text, Collection<SpanController<?, ?>> spanControllers, int textStart) {

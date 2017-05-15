@@ -120,7 +120,11 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
 
     @Override
     public void changeLineStart(SpannableStringBuilder sb, String tag) {
-
+        if (tag.equals(tagName)) {
+            if (sb.length() > 0 && sb.charAt(sb.length() - 1) != '\n') {
+                sb.append("\n");
+            }
+        }
     }
 
     @Override
@@ -187,8 +191,9 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
     }
 
     private void performInternal(Editable editable, StyleSelectionInfo styleSelectionInfo) {
+        boolean value = getCurrentValue(editable, styleSelectionInfo);
         clearStyles(editable, styleSelectionInfo);
-        if (!getCurrentValue(editable, styleSelectionInfo)) {
+        if (!value) {
             add(editable, styleSelectionInfo.selectionStart, styleSelectionInfo.selectionEnd);
         }
     }

@@ -3,6 +3,7 @@ package com.github.kubatatami.richedittext.styles.line;
 import android.annotation.SuppressLint;
 import android.text.Editable;
 import android.text.Layout;
+import android.text.SpannableStringBuilder;
 import android.text.style.AlignmentSpan;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
@@ -118,6 +119,20 @@ public class AlignmentSpanController extends LineSpanController<AlignmentSpanCon
     @Override
     public boolean isCssBlockElement() {
         return true;
+    }
+
+    @Override
+    public void changeLineStart(SpannableStringBuilder sb, String tag) {
+        if (tag.equals(getTagName())) {
+            if (sb.length() > 0 && sb.charAt(sb.length() - 1) != '\n') {
+                sb.append("\n");
+            }
+        }
+    }
+
+    @Override
+    public void changeLineEnd(SpannableStringBuilder sb, String tag) {
+
     }
 
     @SuppressLint("ParcelCreator")

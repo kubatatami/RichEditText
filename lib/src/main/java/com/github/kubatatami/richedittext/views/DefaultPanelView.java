@@ -28,7 +28,6 @@ import com.github.kubatatami.richedittext.RichEditText;
 import com.github.kubatatami.richedittext.modules.HistoryModule;
 import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -683,25 +682,14 @@ public class DefaultPanelView extends RelativeLayout {
 
 
     private void setChecked(ToggleImageButton checkBox, boolean checked) {
-        try {
-            Field field = ToggleImageButton.class.getDeclaredField("isBroadCasting");
-            field.setAccessible(true);
-            field.setBoolean(checkBox, true);
-            checkBox.setChecked(checked);
-            field.setBoolean(checkBox, false);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        checkBox.setChecked(checked, false);
     }
-
 
     public enum ColorPanelVisibility {
         INVISIBLE,
         PRIMARY,
         SECONDARY
     }
-
 
     public void addOnAlignmentClickListener(BaseRichEditText.OnValueChangeListener<Layout.Alignment> onAlignmentClickListener) {
         onAlignmentClickListeners.add(onAlignmentClickListener);

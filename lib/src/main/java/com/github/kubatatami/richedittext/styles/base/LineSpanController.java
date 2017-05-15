@@ -7,7 +7,7 @@ import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.modules.LineInfo;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 
-public abstract class LineSpanController<T, Z> extends MultiSpanController<T, Z> {
+public abstract class LineSpanController<T, Z> extends MultiSpanController<T, Z> implements LineChangingController {
 
     private static int defaultLineFlags = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
 
@@ -81,5 +81,4 @@ public abstract class LineSpanController<T, Z> extends MultiSpanController<T, Z>
             clearStyle(editable, span, styleSelectionInfo);
         }
     }
-
 }

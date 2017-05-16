@@ -33,14 +33,14 @@ public abstract class HtmlImportModule {
             throw new RuntimeException(e);
         }
 
-        HtmlToSpannedConverter converter =
-                new HtmlToSpannedConverter(baseRichEditText,
-                        source,
-                        parser,
-                        spanControllers,
-                        properties,
-                        style,
-                        strict);
+        HtmlToSpannedConverter converter = new HtmlToSpannedConverter(
+                baseRichEditText,
+                source,
+                parser,
+                spanControllers,
+                properties,
+                style,
+                strict);
         return converter.convert();
     }
 }

@@ -96,17 +96,16 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
     @SuppressWarnings("unchecked")
     private void applySpans() {
         for (SpanInfo spanInfo : spanInfoList) {
-            for (SpanController<?, ?> spanController : mSpanControllers) {
-                if (spanController.acceptSpan(spanInfo.span)) {
-                    StyleSelectionInfo selectionInfo = new StyleSelectionInfo(spanInfo.start, spanInfo.end, spanInfo.start, spanInfo.end, true);
-                    if (spanController instanceof ListController) {
-                        LineInfo lineInfo = new LineInfo(spanInfo.start, spanInfo.end - 1);
-                        ((ListController) spanController).perform(mSpannableSb, lineInfo);
-                    } else if (spanController instanceof BinarySpanController) {
-                        ((BinarySpanController) spanController).perform(mSpannableSb, selectionInfo);
-                    } else if (spanController instanceof MultiSpanController) {
-                        ((MultiSpanController) spanController).performSpan(spanInfo.span, mSpannableSb, selectionInfo);
-                    }
+            SpanController<?, ?> spanController = spanInfo.spanController;
+            if (spanController.acceptSpan(spanInfo.span)) {
+                StyleSelectionInfo selectionInfo = new StyleSelectionInfo(spanInfo.start, spanInfo.end, spanInfo.start, spanInfo.end, true);
+                if (spanController instanceof ListController) {
+                    LineInfo lineInfo = new LineInfo(spanInfo.start, spanInfo.end - 1);
+                    ((ListController) spanController).perform(mSpannableSb, lineInfo);
+                } else if (spanController instanceof BinarySpanController) {
+                    ((BinarySpanController) spanController).perform(mSpannableSb, selectionInfo);
+                } else if (spanController instanceof MultiSpanController) {
+                    ((MultiSpanController) spanController).performSpan(spanInfo.span, mSpannableSb, selectionInfo);
                 }
             }
         }
@@ -259,7 +258,7 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         if (where != len && where != -1) {
             for (int i = where; i <= len; i++) {
                 if ((spanController.checkSpans(text, kind, i) || i == len) && i != where) {
-                    SpanInfo spanInfo = new SpanInfo(where, i, obj);
+                    SpanInfo spanInfo = new SpanInfo(spanController, where, i, obj);
                     spanInfoList.add(spanInfo);
                     where = i;
                 }
@@ -321,13 +320,16 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
 
     private static class SpanInfo {
 
+        private final SpanController<?, ?> spanController;
+
         int start;
 
         int end;
 
         Object span;
 
-        SpanInfo(int start, int end, Object span) {
+        SpanInfo(SpanController<?, ?> spanController, int start, int end, Object span) {
+            this.spanController = spanController;
             this.start = start;
             this.end = end;
             this.span = span;

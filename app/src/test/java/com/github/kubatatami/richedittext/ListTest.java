@@ -21,7 +21,7 @@ public class ListTest extends BaseTest {
 
     private final ListController controller;
 
-    @ParameterizedRobolectricTestRunner.Parameters(name = "Writer ={0}, Tag = {1}, ControllerClass = {2}")
+    @ParameterizedRobolectricTestRunner.Parameters(name = "Writer = {0}, ControllerClass = {1}")
     public static Collection<Object[]> tags() {
         return Arrays.asList(new Object[][]{
                 {new TypeWriter(), new NumberListController()},
@@ -52,6 +52,18 @@ public class ListTest extends BaseTest {
         writer.write(editText, SECOND_ITEM);
         writer.write(editText, THIRD_ITEM);
         checkHtml(String.format("<%1$s><li>First item</li><li>Second item</li><li>Third item</li></%1$s>", tag));
+    }
+
+    @Test
+    public void exportedHtmlShouldContainsListWith3ItemsVer2() {
+        editText.sizeClick(19f);
+        listClick();
+        writer.write(editText, FIRST_ITEM);
+        editText.sizeClick(12f);
+        writer.write(editText, SECOND_ITEM);
+        writer.write(editText, THIRD_ITEM);
+        checkHtml(String.format("<%1$s><li>First item</li><li><span style=\"font-size:12.0px;\">Second item</span></li>" +
+                "<li><span style=\"font-size:12.0px;\">Third item</span></li></%1$s>", tag));
     }
 
     @Test

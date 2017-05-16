@@ -9,6 +9,7 @@ import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.other.SpanUtil;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
+import com.github.kubatatami.richedittext.styles.list.ListController;
 import com.github.kubatatami.richedittext.styles.list.ListItemSpan;
 import com.github.kubatatami.richedittext.styles.list.ListSpan;
 
@@ -18,6 +19,10 @@ import java.util.Comparator;
 import java.util.List;
 
 public class HtmlExportModule {
+
+    private boolean insideListElement;
+
+    private boolean insideInternalListElement;
 
     private boolean insideCssBlockElement;
 
@@ -82,28 +87,26 @@ public class HtmlExportModule {
         for (int i = start; i < end; i = next) {
             next = text.nextSpanTransition(i, end, clazz);
             Object[] spans = text.getSpans(i, next, clazz);
-            Arrays.sort(spans, new Comparator<Object>() {
-                @Override
-                public int compare(Object item1, Object item2) {
-                    if (item2 instanceof ListItemSpan && !(item1 instanceof ListItemSpan)) {
-                        return -1;
-                    } else if (item1 instanceof ListItemSpan && !(item2 instanceof ListItemSpan)) {
-                        return 1;
-                    }
-                    return item1.getClass().getName().compareTo(item2.getClass().getName());
-                }
-            });
+            spanSort(spans);
             for (Object span : spans) {
                 SpanController<?, ?> controller = SpanUtil.acceptController(spanControllers, span);
                 if (controller != null && text.getSpanStart(span) != text.getSpanEnd(span)) {
                     out.append(controller.beginTag(span, text.getSpanStart(span) != i, spans));
                     insideCssBlockElement = controller.isCssBlockElement();
+                    if (controller instanceof ListController && ((ListController) controller).isListSpan(span)) {
+                        insideListElement = true;
+                    }
+                    if (controller instanceof ListController && ((ListController) controller).isListInternalSpan(span)) {
+                        insideInternalListElement = true;
+                    }
                 }
             }
-            if (withinCallback != null) {
+            if (withinCallback != null && (!insideListElement || insideInternalListElement)) {
                 withinCallback.nextWithin(clazz, out, editText, i, next);
             }
             insideCssBlockElement = false;
+            insideListElement = false;
+            insideInternalListElement = false;
             for (int j = spans.length - 1; j >= 0; j--) {
                 SpanController<?, ?> controller = SpanUtil.acceptController(spanControllers, spans[j]);
                 if (controller != null && text.getSpanStart(spans[j]) != text.getSpanEnd(spans[j])) {
@@ -129,7 +132,7 @@ public class HtmlExportModule {
             } else if (c == '&') {
                 out.append("&amp;");
             } else if (c == '\n') {
-                if (!startOfList(text, i) &&!endOfList(text, i) && !isCssBlockElementConnection(text, spanControllers, i)) {
+                if (!startOfList(text, i) && !endOfList(text, i) && !isCssBlockElementConnection(text, spanControllers, i)) {
                     out.append("<br/>");
                 }
             } else if (c >= 0xD800 && c <= 0xDFFF) {
@@ -177,5 +180,19 @@ public class HtmlExportModule {
             }
         }
         return false;
+    }
+
+    private void spanSort(Object[] spans) {
+        Arrays.sort(spans, new Comparator<Object>() {
+            @Override
+            public int compare(Object item1, Object item2) {
+                if (item2 instanceof ListItemSpan && !(item1 instanceof ListItemSpan)) {
+                    return -1;
+                } else if (item1 instanceof ListItemSpan && !(item2 instanceof ListItemSpan)) {
+                    return 1;
+                }
+                return item1.getClass().getName().compareTo(item2.getClass().getName());
+            }
+        });
     }
 }

@@ -31,7 +31,7 @@ import java.util.Map;
 
 public class BaseRichEditText extends AppCompatEditText {
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private static final long DEFAULT_TEXT_CHANGE_MS = 1000;
 

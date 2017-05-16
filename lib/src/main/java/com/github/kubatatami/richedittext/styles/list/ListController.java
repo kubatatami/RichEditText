@@ -260,7 +260,7 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
         if (span.isValid()) {
             for (String line : lines) {
                 int end = pos + line.length();
-                text.setSpan(createInternalSpan(), pos, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                text.setSpan(createInternalSpan(i + 1), pos, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 if (i == 0 && (text.getSpans(pos - 1, pos - 1, ListSpan.class).length == 0)) {
                     text.setSpan(new TopMarginSpan(), pos, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 }  if (i == lines.length - 1) {
@@ -298,9 +298,11 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
         return new LineInfo(start, end);
     }
 
-    private T createInternalSpan() {
+    private T createInternalSpan(int index) {
         try {
-            return internalClazz.newInstance();
+            T item = internalClazz.newInstance();
+            item.setIndex(index);
+            return item;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

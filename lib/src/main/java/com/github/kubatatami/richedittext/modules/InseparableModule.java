@@ -44,6 +44,11 @@ public abstract class InseparableModule {
     }
 
 
+    public interface Inseparable {
+
+        boolean isEnabled();
+    }
+
     public static class InseparableSpan extends CharacterStyle implements Inseparable {
 
         @Override
@@ -55,11 +60,6 @@ public abstract class InseparableModule {
         public boolean isEnabled() {
             return true;
         }
-    }
-
-    public interface Inseparable {
-
-        boolean isEnabled();
     }
 
     public static class RemoveInfo {

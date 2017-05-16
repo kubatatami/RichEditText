@@ -30,6 +30,8 @@ public class TestActivity extends AppCompatActivity {
 
     private static final boolean DEFAULT_LIVE_PREVIEW = true;
 
+    private final Handler handler = new Handler();
+
     private RichEditText richEditText;
 
     private RichEditText richEditTextPreview;
@@ -39,8 +41,6 @@ public class TestActivity extends AppCompatActivity {
     private TextView htmlView;
 
     private WebView webView;
-
-    private final Handler handler = new Handler();
 
     private Font arialFont;
 

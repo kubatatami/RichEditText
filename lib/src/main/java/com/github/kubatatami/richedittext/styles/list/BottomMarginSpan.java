@@ -15,7 +15,7 @@ public class BottomMarginSpan implements LineHeightSpan.WithDensity, UpdateLayou
 
     @Override
     public void chooseHeight(CharSequence text, int start, int end, int spanstartv, int v, Paint.FontMetricsInt fm, TextPaint paint) {
-        int spanEnd = ((Spannable)text).getSpanEnd(this);
+        int spanEnd = ((Spannable) text).getSpanEnd(this);
         if (spanEnd == end - 1) {
             fm.bottom = (int) ((paint.getFontMetrics().bottom) + (float) VERTICAL_SPACING * paint.density);
             fm.descent = (int) (paint.descent() + (float) VERTICAL_SPACING * paint.density);

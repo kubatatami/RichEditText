@@ -80,7 +80,7 @@ public abstract class BinaryFontSpanController<T> extends BinarySpanController<T
                 clearStyle(editable, span, styleSelectionInfo);
             }
         } else if (spans.size() > 0) {
-            for(T span : spans) {
+            for (T span : spans) {
                 endNow(editable, span);
             }
         }

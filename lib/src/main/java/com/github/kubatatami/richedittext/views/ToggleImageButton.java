@@ -66,17 +66,17 @@ public class ToggleImageButton extends AppCompatImageButton implements Checkable
         return isChecked;
     }
 
+    @Override
+    public void setChecked(boolean checked) {
+        setChecked(checked, false);
+    }
+
     public boolean isToggleOnClick() {
         return isToggleOnClick;
     }
 
     public void setToggleOnClick(boolean toggleOnClick) {
         isToggleOnClick = toggleOnClick;
-    }
-
-    @Override
-    public void setChecked(boolean checked) {
-        setChecked(checked, false);
     }
 
     public void setChecked(boolean checked, boolean invokeListeners) {

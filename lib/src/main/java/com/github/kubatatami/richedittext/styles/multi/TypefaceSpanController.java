@@ -31,6 +31,32 @@ public class TypefaceSpanController extends MultiSpanController<TypefaceSpanCont
         super(FontSpan.class, "span");
     }
 
+    @NonNull
+    public static List<Font> getFonts() {
+        return new ArrayList<>(fontMap.values());
+    }
+
+    public static Typeface create(Typeface family, int style) {
+        final boolean bold = (style & Typeface.BOLD) != 0;
+        final boolean italic = (style & Typeface.ITALIC) != 0;
+        for (Font font : getFonts()) {
+            if (font.isSupported(family)) {
+                return font.getTypeface(bold, italic);
+            }
+        }
+        return null;
+    }
+
+    public static void registerFonts(Font... fonts) {
+        for (Font font : fonts) {
+            TypefaceSpanController.registerFont(font);
+        }
+    }
+
+    public static void registerFont(Font font) {
+        fontMap.put(font.fontName, font);
+    }
+
     @Override
     public Font getValueFromSpan(FontSpan span) {
         return span.font;
@@ -52,7 +78,6 @@ public class TypefaceSpanController extends MultiSpanController<TypefaceSpanCont
     protected Font getMultiValue() {
         return null;
     }
-
 
     @Override
     public String beginTag(Object span, boolean continuation, Object[] spans) {
@@ -96,36 +121,9 @@ public class TypefaceSpanController extends MultiSpanController<TypefaceSpanCont
         return font.replaceAll("'", "").replaceAll("\"", "").trim();
     }
 
-    @NonNull
-    public static List<Font> getFonts() {
-        return new ArrayList<>(fontMap.values());
-    }
-
-    public static Typeface create(Typeface family, int style) {
-        final boolean bold = (style & Typeface.BOLD) != 0;
-        final boolean italic = (style & Typeface.ITALIC) != 0;
-        for (Font font : getFonts()) {
-            if (font.isSupported(family)) {
-                return font.getTypeface(bold, italic);
-            }
-        }
-        return null;
-    }
-
-
     @Override
     public String getDebugValueFromSpan(FontSpan span) {
         return getValueFromSpan(span).getFontName();
-    }
-
-    public static void registerFonts(Font... fonts) {
-        for (Font font : fonts) {
-            TypefaceSpanController.registerFont(font);
-        }
-    }
-
-    public static void registerFont(Font font) {
-        fontMap.put(font.fontName, font);
     }
 
     public static class Font {

@@ -263,7 +263,8 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
                 text.setSpan(createInternalSpan(i + 1), pos, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 if (i == 0 && (text.getSpans(pos - 1, pos - 1, ListSpan.class).length == 0)) {
                     text.setSpan(new TopMarginSpan(), pos, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                }  if (i == lines.length - 1) {
+                }
+                if (i == lines.length - 1) {
                     text.setSpan(new BottomMarginSpan(), pos, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 }
                 pos = end + 1;

@@ -116,11 +116,6 @@ public class HtmlExportModule {
         }
     }
 
-    interface WithinCallback {
-
-        void nextWithin(Class<?> clazz, StringBuilder out, EditText editText, int start, int end);
-    }
-
     private void withinStyle(StringBuilder out, Editable text, int start, int end) {
         for (int i = start; i < end; i++) {
             char c = text.charAt(i);
@@ -194,5 +189,10 @@ public class HtmlExportModule {
                 return item1.getClass().getName().compareTo(item2.getClass().getName());
             }
         });
+    }
+
+    interface WithinCallback {
+
+        void nextWithin(Class<?> clazz, StringBuilder out, EditText editText, int start, int end);
     }
 }

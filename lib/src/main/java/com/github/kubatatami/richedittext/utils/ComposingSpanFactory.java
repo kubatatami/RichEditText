@@ -13,15 +13,15 @@ import com.github.kubatatami.richedittext.styles.binary.UnderlineSpanController;
 
 public class ComposingSpanFactory extends Editable.Factory {
 
+    private static final String COMPOSING_CLASS_NAME = "android.view.inputmethod.ComposingText";
+
     private final HistoryModule historyModule;
+
+    private OnValueChangeListener<Editable> onSpanChangeListeners;
 
     public ComposingSpanFactory(HistoryModule historyModule) {
         this.historyModule = historyModule;
     }
-
-    private static final String COMPOSING_CLASS_NAME = "android.view.inputmethod.ComposingText";
-
-    private OnValueChangeListener<Editable> onSpanChangeListeners;
 
     @Override
     public Editable newEditable(CharSequence source) {

@@ -15,13 +15,13 @@ import java.util.Map;
 
 public abstract class SpanController<T, Z> {
 
+    final static int defaultFlags = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
+
     protected final Class<T> clazz;
 
     protected final String tagName;
 
     private final List<BaseRichEditText.OnValueChangeListener<Z>> onValueChangeListeners = new ArrayList<>();
-
-    final static int defaultFlags = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
 
     SpanController(Class<T> clazz, String tagName) {
         this.clazz = clazz;

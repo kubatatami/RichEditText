@@ -86,17 +86,6 @@ public class SizeSpanController extends FontStyleSpanController<SizeSpanControll
             this.size = size;
         }
 
-        public float getSize() {
-            return size;
-        }
-
-
-        @Override
-        public String toString() {
-            return size + "";
-        }
-
-
         public static Size getByName(String name) {
             for (Size size : values()) {
                 if (size.name.equalsIgnoreCase(name)) {
@@ -104,6 +93,15 @@ public class SizeSpanController extends FontStyleSpanController<SizeSpanControll
                 }
             }
             return null;
+        }
+
+        public float getSize() {
+            return size;
+        }
+
+        @Override
+        public String toString() {
+            return size + "";
         }
     }
 

@@ -35,6 +35,32 @@ public class DefaultPanelView extends RelativeLayout {
 
     private final static int ANIM_DURATION = 250;
 
+    private final Handler handler = new Handler();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Layout.Alignment>> onAlignmentClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Float>> onSizeClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<ColorPanelVisibility>> onColorPanelShowListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Integer>> onColorClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onBoldClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onItalicClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onStrikeThroughClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onUnderlineClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Void>> onUndoClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Void>> onRedoClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onNumberListClickListeners = new ArrayList<>();
+
+    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onBulletListClickListeners = new ArrayList<>();
+
     private ToggleImageButton boldButton;
 
     private ToggleImageButton italicButton;
@@ -73,7 +99,6 @@ public class DefaultPanelView extends RelativeLayout {
 
     private ImageView fontSizeValueRightArrow;
 
-
     private boolean visible = false;
 
     private ColorPanelVisibility colorPanelVisibility = ColorPanelVisibility.INVISIBLE;
@@ -81,8 +106,6 @@ public class DefaultPanelView extends RelativeLayout {
     private boolean changeState = false;
 
     private InputMethodManager inputManager;
-
-    private final Handler handler = new Handler();
 
     private RichEditText richEditText;
 
@@ -95,30 +118,6 @@ public class DefaultPanelView extends RelativeLayout {
     private ViewPropertyAnimator animator;
 
     private View mainPanel;
-
-    private final List<BaseRichEditText.OnValueChangeListener<Layout.Alignment>> onAlignmentClickListeners = new ArrayList<>();
-
-    private final List<BaseRichEditText.OnValueChangeListener<Float>> onSizeClickListeners = new ArrayList<>();
-
-    private final List<BaseRichEditText.OnValueChangeListener<ColorPanelVisibility>> onColorPanelShowListeners = new ArrayList<>();
-
-    private final List<BaseRichEditText.OnValueChangeListener<Integer>> onColorClickListeners = new ArrayList<>();
-
-    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onBoldClickListeners = new ArrayList<>();
-
-    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onItalicClickListeners = new ArrayList<>();
-
-    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onStrikeThroughClickListeners = new ArrayList<>();
-
-    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onUnderlineClickListeners = new ArrayList<>();
-
-    private final List<BaseRichEditText.OnValueChangeListener<Void>> onUndoClickListeners = new ArrayList<>();
-
-    private final List<BaseRichEditText.OnValueChangeListener<Void>> onRedoClickListeners = new ArrayList<>();
-
-    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onNumberListClickListeners = new ArrayList<>();
-
-    private final List<BaseRichEditText.OnValueChangeListener<Boolean>> onBulletListClickListeners = new ArrayList<>();
 
     private View lists;
 
@@ -685,12 +684,6 @@ public class DefaultPanelView extends RelativeLayout {
         checkBox.setChecked(checked, false);
     }
 
-    public enum ColorPanelVisibility {
-        INVISIBLE,
-        PRIMARY,
-        SECONDARY
-    }
-
     public void addOnAlignmentClickListener(BaseRichEditText.OnValueChangeListener<Layout.Alignment> onAlignmentClickListener) {
         onAlignmentClickListeners.add(onAlignmentClickListener);
     }
@@ -737,6 +730,12 @@ public class DefaultPanelView extends RelativeLayout {
 
     public void addOnBulletListClickListener(BaseRichEditText.OnValueChangeListener<Boolean> onBulletListClickListener) {
         onBulletListClickListeners.add(onBulletListClickListener);
+    }
+
+    public enum ColorPanelVisibility {
+        INVISIBLE,
+        PRIMARY,
+        SECONDARY
     }
 
 }

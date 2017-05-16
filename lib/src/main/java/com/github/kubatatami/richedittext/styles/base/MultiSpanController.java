@@ -13,9 +13,9 @@ import java.util.Map;
 
 public abstract class MultiSpanController<T, Z> extends SpanController<T, Z> {
 
-    private Z value;
-
     SpanInfo<Z> spanInfo;
+
+    private Z value;
 
     protected MultiSpanController(Class<T> clazz, String tagName) {
         super(clazz, tagName);

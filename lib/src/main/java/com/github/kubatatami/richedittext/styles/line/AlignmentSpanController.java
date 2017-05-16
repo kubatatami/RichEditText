@@ -23,6 +23,24 @@ public class AlignmentSpanController extends LineSpanController<AlignmentSpanCon
         super(RichAlignmentSpanStandard.class, "div");
     }
 
+    public static String beginStyle(Object span) {
+        Layout.Alignment spanValue = ((RichAlignmentSpanStandard) span).getAlignment();
+        String alignValue;
+        switch (spanValue) {
+            case ALIGN_CENTER:
+                alignValue = "center";
+                break;
+            case ALIGN_OPPOSITE:
+                alignValue = "right";
+                break;
+            default:
+            case ALIGN_NORMAL:
+                alignValue = "left";
+                break;
+        }
+        return TEXT_ALIGN + ": " + alignValue;
+    }
+
     @Override
     public Layout.Alignment getValueFromSpan(RichAlignmentSpanStandard span) {
         return (span).getAlignment();
@@ -80,24 +98,6 @@ public class AlignmentSpanController extends LineSpanController<AlignmentSpanCon
     @Override
     public String endTag(Object span, boolean end, Object[] spans) {
         return isInsideList(spans) ? "" : super.endTag(span, end, spans);
-    }
-
-    public static String beginStyle(Object span) {
-        Layout.Alignment spanValue = ((RichAlignmentSpanStandard) span).getAlignment();
-        String alignValue;
-        switch (spanValue) {
-            case ALIGN_CENTER:
-                alignValue = "center";
-                break;
-            case ALIGN_OPPOSITE:
-                alignValue = "right";
-                break;
-            default:
-            case ALIGN_NORMAL:
-                alignValue = "left";
-                break;
-        }
-        return TEXT_ALIGN + ": " + alignValue;
     }
 
     @Override

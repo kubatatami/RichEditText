@@ -35,11 +35,7 @@ public class BaseRichEditText extends AppCompatEditText {
 
     private static final long DEFAULT_TEXT_CHANGE_MS = 1000;
 
-    private boolean inflateFinished;
-
-    private boolean oneStyleMode;
-
-    private Handler handler;
+    private static Context appContext;
 
     private final HistoryModule historyModule = new HistoryModule(this);
 
@@ -55,7 +51,11 @@ public class BaseRichEditText extends AppCompatEditText {
 
     private final List<OnValueChangeListener<Editable>> onTextChangeDelayedListeners = new ArrayList<>();
 
-    private static Context appContext;
+    private boolean inflateFinished;
+
+    private boolean oneStyleMode;
+
+    private Handler handler;
 
     private boolean passiveStatus;
 
@@ -109,6 +109,10 @@ public class BaseRichEditText extends AppCompatEditText {
         init(context);
     }
 
+    public static Context getAppContext() {
+        return appContext;
+    }
+
     private void init(Context context) {
         appContext = context.getApplicationContext();
         super.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -126,10 +130,6 @@ public class BaseRichEditText extends AppCompatEditText {
             }
         });
         setEditableFactory(composingSpanFactory);
-    }
-
-    public static Context getAppContext() {
-        return appContext;
     }
 
     @Override
@@ -229,10 +229,6 @@ public class BaseRichEditText extends AppCompatEditText {
         HtmlImportModule.fromHtml(this, html, spanControllerMap.values(), properties, style, true);
     }
 
-    public void setHtml(String html) {
-        setHtml(html, null);
-    }
-
     public void setHtml(String html, String style) {
         try {
             passiveStatus = true;
@@ -293,6 +289,10 @@ public class BaseRichEditText extends AppCompatEditText {
         return getHtml(true);
     }
 
+    public void setHtml(String html) {
+        setHtml(html, null);
+    }
+
     public String getHtml(boolean standalone) {
         return htmlExportModule.getHtml(this, spanControllerMap.values(), properties, standalone);
     }
@@ -309,16 +309,16 @@ public class BaseRichEditText extends AppCompatEditText {
         historyModule.redo();
     }
 
-    public void setHistoryEnabled(boolean enabled) {
-        historyModule.setEnabled(enabled);
-    }
-
     public void setHistoryLimit(int limit) {
         historyModule.setLimit(limit);
     }
 
     public boolean isHistoryEnabled() {
         return historyModule.isEnabled();
+    }
+
+    public void setHistoryEnabled(boolean enabled) {
+        historyModule.setEnabled(enabled);
     }
 
     public boolean isStyled() {
@@ -406,11 +406,6 @@ public class BaseRichEditText extends AppCompatEditText {
         historyModule.clearOnHistoryChangeListeners();
     }
 
-    public interface OnValueChangeListener<T> {
-
-        void onValueChange(T value);
-    }
-
     public float getLineSpacingMultiplierCompat() {
         return CompatUtils.getLineSpacingMultiplier(this);
     }
@@ -461,12 +456,12 @@ public class BaseRichEditText extends AppCompatEditText {
         getText().replace(Math.min(start, end), Math.max(start, end), textToInsert);
     }
 
-    public void setInseparableEnabled(boolean inseparableEnabled) {
-        InseparableModule.setEnabled(inseparableEnabled);
-    }
-
     public boolean isInseparableEnabled() {
         return InseparableModule.isEnabled();
+    }
+
+    public void setInseparableEnabled(boolean inseparableEnabled) {
+        InseparableModule.setEnabled(inseparableEnabled);
     }
 
     public void changeTextOnSpan(String text, Object span) {
@@ -492,6 +487,11 @@ public class BaseRichEditText extends AppCompatEditText {
 
     public void restoreHistoryPoint(HistoryModule.HistoryPoint historyPoint) {
         historyModule.restoreHistoryPoint(historyPoint);
+    }
+
+    public interface OnValueChangeListener<T> {
+
+        void onValueChange(T value);
     }
 
 }

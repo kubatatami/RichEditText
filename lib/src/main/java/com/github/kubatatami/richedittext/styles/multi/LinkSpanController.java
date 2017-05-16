@@ -137,12 +137,12 @@ public class LinkSpanController extends MultiSpanController<LinkSpanController.R
             return url;
         }
 
-        public String getAlt() {
-            return alt;
-        }
-
         public void setUrl(String url) {
             this.url = url;
+        }
+
+        public String getAlt() {
+            return alt;
         }
 
         public void setAlt(String alt) {

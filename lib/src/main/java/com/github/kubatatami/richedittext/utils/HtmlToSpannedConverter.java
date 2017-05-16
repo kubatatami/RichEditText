@@ -82,6 +82,35 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         }
     }
 
+    private static Object getLast(Spanned text, Class kind, SpanController<?, ?> spanController) {
+        Object[] objs = text.getSpans(0, text.length(), kind);
+        if (objs.length == 0) {
+            return null;
+        } else {
+            if (spanController instanceof MultiSpanController) {
+                for (Object obj : objs) {
+                    int flag = text.getSpanFlags(obj);
+                    if (flag == Spannable.SPAN_MARK_MARK) {
+                        return obj;
+                    }
+                }
+            } else {
+                for (int i = objs.length - 1; i >= 0; i--) {
+                    int flag = text.getSpanFlags(objs[i]);
+                    if (flag == Spannable.SPAN_MARK_MARK) {
+                        return objs[i];
+                    }
+                }
+            }
+            return null;
+        }
+    }
+
+    private static void start(SpannableStringBuilder text, Object mark) {
+        int len = text.length();
+        text.setSpan(mark, len, len, Spannable.SPAN_MARK_MARK);
+    }
+
     public Spanned convert() throws IOException {
         mReader.setContentHandler(this);
         try {
@@ -207,35 +236,6 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
                 ((LineChangingController) spanController).changeLineEnd(mSpannableSb, tag);
             }
         }
-    }
-
-    private static Object getLast(Spanned text, Class kind, SpanController<?, ?> spanController) {
-        Object[] objs = text.getSpans(0, text.length(), kind);
-        if (objs.length == 0) {
-            return null;
-        } else {
-            if (spanController instanceof MultiSpanController) {
-                for (Object obj : objs) {
-                    int flag = text.getSpanFlags(obj);
-                    if (flag == Spannable.SPAN_MARK_MARK) {
-                        return obj;
-                    }
-                }
-            } else {
-                for (int i = objs.length - 1; i >= 0; i--) {
-                    int flag = text.getSpanFlags(objs[i]);
-                    if (flag == Spannable.SPAN_MARK_MARK) {
-                        return objs[i];
-                    }
-                }
-            }
-            return null;
-        }
-    }
-
-    private static void start(SpannableStringBuilder text, Object mark) {
-        int len = text.length();
-        text.setSpan(mark, len, len, Spannable.SPAN_MARK_MARK);
     }
 
     private boolean end(SpannableStringBuilder text, Class kind, SpanController<?, ?> spanController) {

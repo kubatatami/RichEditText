@@ -61,16 +61,6 @@ public abstract class FontStyleSpanController extends BinaryFontSpanController<F
             this.style = style;
         }
 
-        @Override
-        public void updateDrawState(TextPaint ds) {
-            apply(ds, style);
-        }
-
-        @Override
-        public void updateMeasureState(TextPaint paint) {
-            apply(paint, style);
-        }
-
         private static void apply(Paint paint, int style) {
             int oldStyle;
             Typeface typeface;
@@ -109,6 +99,16 @@ public abstract class FontStyleSpanController extends BinaryFontSpanController<F
             }
 
             paint.setTypeface(tf);
+        }
+
+        @Override
+        public void updateDrawState(TextPaint ds) {
+            apply(ds, style);
+        }
+
+        @Override
+        public void updateMeasureState(TextPaint paint) {
+            apply(paint, style);
         }
 
     }

@@ -26,12 +26,6 @@ public class CircleView extends View {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public void setColor(int color) {
-        paint.setColor(color);
-        paint.setAntiAlias(true);
-        invalidate();
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -40,5 +34,11 @@ public class CircleView extends View {
 
     public int getColor() {
         return paint.getColor();
+    }
+
+    public void setColor(int color) {
+        paint.setColor(color);
+        paint.setAntiAlias(true);
+        invalidate();
     }
 }

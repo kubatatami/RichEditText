@@ -19,11 +19,11 @@ public class HistoryModule {
 
     private final LimitedQueue<HistoryPoint> redoList = new LimitedQueue<>(Integer.MAX_VALUE);
 
+    private final List<OnHistoryChangeListener> onHistoryChangeListeners = new ArrayList<>();
+
     private boolean ignoreHistory = false;
 
     private boolean enabled = true;
-
-    private final List<OnHistoryChangeListener> onHistoryChangeListeners = new ArrayList<>();
 
     private boolean isDuringRestore = false;
 
@@ -119,6 +119,11 @@ public class HistoryModule {
         return isDuringRestore;
     }
 
+    public interface OnHistoryChangeListener {
+
+        void onHistoryChange(int undoSteps, int redoSteps);
+    }
+
     public static class HistoryPoint {
 
         final Editable editable;
@@ -169,11 +174,6 @@ public class HistoryModule {
         void setLimit(int limit) {
             this.limit = limit;
         }
-    }
-
-    public interface OnHistoryChangeListener {
-
-        void onHistoryChange(int undoSteps, int redoSteps);
     }
 
 }

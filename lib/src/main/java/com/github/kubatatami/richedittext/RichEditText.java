@@ -395,10 +395,4 @@ public class RichEditText extends BaseRichEditText {
         getModule(LinkSpanController.class).setInseparable(inseparable);
     }
 
-    public void clearAllListeners() {
-        clearOnFocusChangeListeners();
-        clearOnHistoryChangeListeners();
-        clearValueChangeListeners();
-    }
-
 }

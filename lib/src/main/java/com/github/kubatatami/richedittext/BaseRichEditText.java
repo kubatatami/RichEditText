@@ -210,17 +210,6 @@ public class BaseRichEditText extends AppCompatEditText {
         onFocusChangeListeners.remove(listener);
     }
 
-    public void clearOnFocusChangeListeners() {
-        onFocusChangeListeners.clear();
-    }
-
-    public void clearValueChangeListeners() {
-        onFocusChangeListeners.clear();
-        for (SpanController controller : spanControllerMap.values()) {
-            controller.clearOnValueChangeListeners();
-        }
-    }
-
     public void isValidHtml(String html) throws IOException {
         isValidHtml(html, "");
     }
@@ -400,10 +389,6 @@ public class BaseRichEditText extends AppCompatEditText {
 
     public void removeOnHistoryChangeListener(HistoryModule.OnHistoryChangeListener onHistoryChangeListener) {
         historyModule.removeOnHistoryChangeListener(onHistoryChangeListener);
-    }
-
-    public void clearOnHistoryChangeListeners() {
-        historyModule.clearOnHistoryChangeListeners();
     }
 
     public float getLineSpacingMultiplierCompat() {

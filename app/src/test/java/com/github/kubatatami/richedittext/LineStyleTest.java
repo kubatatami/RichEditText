@@ -137,4 +137,27 @@ public class LineStyleTest extends BaseTest {
 
         checkHtml("<div style=\"text-align: left;\">&nbsp;Left.</div><div style=\"text-align: center;\">&nbsp;Center.</div><div style=\"text-align: right;\">Right. <br/></div>");
     }
+
+    @Test
+    public void exportedHtmlShouldContainsCenterAlignment() {
+        editText.alignmentClick(ALIGN_CENTER);
+        writer.write(editText, "Long text.");
+        editText.setSelection(4);
+        writer.write(editText, "\n");
+
+        checkHtml("<div style=\"text-align: center;\">Long<br/> text.</div>");
+    }
+
+
+    @Test
+    public void exportedHtmlShouldContainsCenterAlignmentVer2() {
+        editText.alignmentClick(ALIGN_CENTER);
+        writer.write(editText, "Line 1.\n");
+        writer.write(editText, "Line 2.\n");
+        writer.write(editText, "Line 3.\n");
+        editText.selectAll();
+        editText.setSelection(10);
+
+        checkHtml("<div style=\"text-align: center;\">Line 1.</div><div style=\"text-align: center;\">Line 2.</div><div style=\"text-align: center;\">Line 3.</div>");
+    }
 }

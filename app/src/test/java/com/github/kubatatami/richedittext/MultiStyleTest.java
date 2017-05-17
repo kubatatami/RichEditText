@@ -53,4 +53,13 @@ public class MultiStyleTest extends BaseTest {
                 "<span style=\"font-size:18.0px;\">LargeBlack</span></span>");
     }
 
+    @Test
+    public void exportedHtmlShouldContainsValidSizeTag() {
+        writer.write(editText, "Normal text.");
+        editText.selectAll();
+        for (int i = 1; i < 50; i++) {
+            editText.sizeClick(i);
+            checkHtml("<span style=\"font-size:" + i + ".0px;\">Normal text.</span>");
+        }
+    }
 }

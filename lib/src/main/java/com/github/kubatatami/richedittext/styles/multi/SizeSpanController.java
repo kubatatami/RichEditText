@@ -17,12 +17,12 @@ public class SizeSpanController extends FontStyleSpanController<SizeSpanControll
 
     @Override
     public Float getValueFromSpan(RichAbsoluteSizeSpan span) {
-        return DimenUtil.convertPixelsToDp((span).getSize());
+        return span.getValue();
     }
 
     @Override
     public RichAbsoluteSizeSpan add(Float value, Editable editable, int selectionStart, int selectionEnd, int flags) {
-        RichAbsoluteSizeSpan result = new RichAbsoluteSizeSpan((int) DimenUtil.convertDpToPixel(value));
+        RichAbsoluteSizeSpan result = new RichAbsoluteSizeSpan((int) DimenUtil.convertDpToPixel(value), value);
         editable.setSpan(result, selectionStart, selectionEnd, flags);
         return result;
     }
@@ -51,7 +51,7 @@ public class SizeSpanController extends FontStyleSpanController<SizeSpanControll
     @Override
     protected RichAbsoluteSizeSpan createSpan(String styleValue) {
         float value = parseSize(styleValue);
-        return new RichAbsoluteSizeSpan((int) DimenUtil.convertDpToPixel(value));
+        return new RichAbsoluteSizeSpan((int) DimenUtil.convertDpToPixel(value), value);
     }
 
     private float parseSize(String style) {
@@ -108,9 +108,15 @@ public class SizeSpanController extends FontStyleSpanController<SizeSpanControll
     @SuppressLint("ParcelCreator")
     public static class RichAbsoluteSizeSpan extends AbsoluteSizeSpan implements RichSpan {
 
-        public RichAbsoluteSizeSpan(int size) {
+        private final Float value;
+
+        public RichAbsoluteSizeSpan(int size, Float value) {
             super(size);
+            this.value = value;
         }
 
+        public Float getValue() {
+            return value;
+        }
     }
 }

@@ -148,7 +148,6 @@ public class LineStyleTest extends BaseTest {
         checkHtml("<div style=\"text-align: center;\">Long<br/> text.</div>");
     }
 
-
     @Test
     public void exportedHtmlShouldContainsCenterAlignmentVer2() {
         editText.alignmentClick(ALIGN_CENTER);

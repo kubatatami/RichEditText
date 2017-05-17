@@ -25,6 +25,8 @@ public class ToggleImageButton extends AppCompatImageButton implements Checkable
 
     private boolean isBroadCasting;
 
+    private boolean uncheckable;
+
     private OnCheckedChangeListener onCheckedChangeListener;
 
     public ToggleImageButton(Context context) {
@@ -55,7 +57,7 @@ public class ToggleImageButton extends AppCompatImageButton implements Checkable
 
     @Override
     public boolean performClick() {
-        if (isToggleOnClick) {
+        if (isToggleOnClick && (!uncheckable || !isChecked)) {
             toggle();
         }
         return super.performClick();
@@ -150,6 +152,14 @@ public class ToggleImageButton extends AppCompatImageButton implements Checkable
             state = outState.getParcelable("instanceState");
         }
         super.onRestoreInstanceState(state);
+    }
+
+    public boolean isUncheckable() {
+        return uncheckable;
+    }
+
+    public void setUncheckable(boolean uncheckable) {
+        this.uncheckable = uncheckable;
     }
 
     public interface OnCheckedChangeListener {

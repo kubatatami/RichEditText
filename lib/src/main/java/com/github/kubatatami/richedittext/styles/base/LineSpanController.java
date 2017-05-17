@@ -33,7 +33,6 @@ public abstract class LineSpanController<T, Z> extends MultiSpanController<T, Z>
 
     @Override
     public void checkAfterChange(BaseRichEditText editText, StyleSelectionInfo styleSelectionInfo, boolean passive) {
-        super.checkAfterChange(editText, styleSelectionInfo, passive);
         LineInfo lineInfo;
         final Editable editable = editText.getEditableText();
         int start = 0;
@@ -42,15 +41,16 @@ public abstract class LineSpanController<T, Z> extends MultiSpanController<T, Z>
             for (Object span : editable.getSpans(lineInfo.start, lineInfo.end, clazz)) {
                 int spanStart = editable.getSpanStart(span);
                 int spanEnd = editable.getSpanEnd(span);
-                if (spanStart != lineInfo.start && spanEnd == lineInfo.end) {
+                if (spanStart > lineInfo.start && spanEnd == lineInfo.end) {
                     editable.removeSpan(span);
-                } else if (spanEnd != lineInfo.end) {
+                } else if (spanStart == lineInfo.start && spanEnd < lineInfo.end) {
                     editable.removeSpan(span);
                     editable.setSpan(span, lineInfo.start, lineInfo.end, defaultLineFlags);
                 }
             }
             start = lineInfo.end + 1;
         } while (lineInfo.end < editText.length());
+        super.checkAfterChange(editText, styleSelectionInfo, passive);
     }
 
     @SuppressWarnings("unchecked")
@@ -63,13 +63,13 @@ public abstract class LineSpanController<T, Z> extends MultiSpanController<T, Z>
             editable.removeSpan(span);
         } else if (spanStart < lineInfo.start && spanEnd <= lineInfo.end) {
             editable.removeSpan(span);
-            add(getValueFromSpan((T) span), editable, spanStart, lineInfo.start);
+            add(getValueFromSpan((T) span), editable, spanStart, lineInfo.start - 1);
         } else if (spanStart >= lineInfo.start && spanEnd > lineInfo.end) {
             editable.removeSpan(span);
             add(getValueFromSpan((T) span), editable, lineInfo.end, spanEnd);
         } else {
             editable.removeSpan(span);
-            add(getValueFromSpan((T) span), editable, spanStart, lineInfo.start);
+            add(getValueFromSpan((T) span), editable, spanStart, lineInfo.start - 1);
             add(getValueFromSpan((T) span), editable, lineInfo.end, spanEnd);
         }
     }

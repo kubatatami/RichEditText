@@ -145,7 +145,7 @@ public class LineStyleTest extends BaseTest {
         editText.setSelection(4);
         writer.write(editText, "\n");
 
-        checkHtml("<div style=\"text-align: center;\">Long<br/> text.</div>");
+        checkHtml("<div style=\"text-align: center;\">Long<br/>&nbsp;text.</div>");
     }
 
     @Test
@@ -153,10 +153,10 @@ public class LineStyleTest extends BaseTest {
         editText.alignmentClick(ALIGN_CENTER);
         writer.write(editText, "Line 1.\n");
         writer.write(editText, "Line 2.\n");
-        writer.write(editText, "Line 3.\n");
+        writer.write(editText, "Line 3.");
         editText.selectAll();
         editText.setSelection(10);
 
-        checkHtml("<div style=\"text-align: center;\">Line 1.</div><div style=\"text-align: center;\">Line 2.</div><div style=\"text-align: center;\">Line 3.</div>");
+        checkHtml("<div style=\"text-align: center;\">Line 1.<br/>Line 2.<br/>Line 3.</div>");
     }
 }

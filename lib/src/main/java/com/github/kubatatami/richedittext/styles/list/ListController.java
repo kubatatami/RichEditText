@@ -187,7 +187,7 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
                     } else {
                         LineInfo lineInfo = getLineInfo(text, new StyleSelectionInfo(start, end, start, end, true));
                         if (lineInfo.start != start || lineInfo.end != end) {
-                            text.removeSpan(span);
+                            removeSpan(span, text);
                             text.setSpan(span, lineInfo.start, lineInfo.end, flags);
                         }
                     }
@@ -210,6 +210,12 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
         int spanStart = text.getSpanStart(span);
         int spanEnd = text.getSpanEnd(span);
         for (ListItemSpan internalSpan : text.getSpans(spanStart, spanEnd, ListItemSpan.class)) {
+            text.removeSpan(internalSpan);
+        }
+        for (TopMarginSpan internalSpan : text.getSpans(spanStart, spanEnd, TopMarginSpan.class)) {
+            text.removeSpan(internalSpan);
+        }
+        for (BottomMarginSpan internalSpan : text.getSpans(spanStart, spanEnd, BottomMarginSpan.class)) {
             text.removeSpan(internalSpan);
         }
         text.removeSpan(span);

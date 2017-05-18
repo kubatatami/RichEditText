@@ -487,5 +487,4 @@ public class BaseRichEditText extends AppCompatEditText {
 
         void onValueChange(T value);
     }
-
 }

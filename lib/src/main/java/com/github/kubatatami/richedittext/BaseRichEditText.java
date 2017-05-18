@@ -8,6 +8,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 
 import com.github.kubatatami.richedittext.modules.HistoryModule;
 import com.github.kubatatami.richedittext.modules.HtmlExportModule;
@@ -252,6 +254,13 @@ public class BaseRichEditText extends AppCompatEditText {
                 controller.checkBeforeChange(getText(), styleSelectionInfo, added);
             }
         }
+    }
+
+    @Override
+    public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
+        InputConnection result = super.onCreateInputConnection(outAttrs);
+        outAttrs.imeOptions |= EditorInfo.IME_FLAG_NO_EXTRACT_UI;
+        return result;
     }
 
     protected StyleSelectionInfo getAllSelectionInfo() {

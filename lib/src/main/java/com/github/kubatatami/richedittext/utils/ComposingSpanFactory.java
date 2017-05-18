@@ -3,7 +3,9 @@ package com.github.kubatatami.richedittext.utils;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
+import android.text.style.UpdateLayout;
 
 import com.github.kubatatami.richedittext.BaseRichEditText.OnValueChangeListener;
 import com.github.kubatatami.richedittext.modules.HistoryModule;
@@ -98,9 +100,20 @@ public class ComposingSpanFactory extends Editable.Factory {
                 }
                 if (what instanceof RichSpan) {
                     onSpanChangeListeners.onValueChange(this);
+                    if (what instanceof UpdateLayout) {
+                        workaround();
+                    }
                 }
             }
 
+            private void workaround() {
+                TextWatcher[] spans = getSpans(0, length(), TextWatcher.class);
+                for (TextWatcher span : spans) {
+                    if (span.getClass().getName().contains("DynamicLayout")) {
+                        span.onTextChanged(this, 0, length(), length());
+                    }
+                }
+            }
         };
     }
 

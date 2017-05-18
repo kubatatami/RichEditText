@@ -37,7 +37,7 @@ public abstract class FontStyleSpanController<T, Z> extends MultiSpanController<
     }
 
     @NonNull
-    public final String getStyle(Z spanValue) {
+    private String getStyle(Z spanValue) {
         return styleName + ":" + getStyleValue(spanValue);
     }
 

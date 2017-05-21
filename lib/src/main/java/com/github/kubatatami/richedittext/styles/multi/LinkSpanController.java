@@ -1,6 +1,7 @@
 package com.github.kubatatami.richedittext.styles.multi;
 
 import android.annotation.SuppressLint;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.style.URLSpan;
@@ -57,7 +58,16 @@ public class LinkSpanController extends MultiSpanController<LinkSpanController.R
     @Override
     public String beginTag(Object span, boolean continuation, Object[] spans) {
         RichURLSpan urlSpan = (RichURLSpan) span;
-        return "<a href=\"" + autoUrlFix(urlSpan.getUrlModel().getUrl()) + "\" alt=\"" + urlSpan.getUrlModel().getAlt() + "\">";
+        StringBuilder sb = new StringBuilder();
+        Link urlModel = urlSpan.getUrlModel();
+        sb.append("<a href=\"").append(autoUrlFix(urlModel.getUrl())).append("\"");
+        if (!urlModel.getAlt().isEmpty()) {
+            sb.append(" alt=\"").append(urlModel.getAlt()).append("\"");
+        }
+        if (!urlModel.getTitle().isEmpty()) {
+            sb.append(" title=\"").append(urlModel.getTitle()).append("\"");
+        }
+        return sb.append(">").toString();
     }
 
     protected String autoUrlFix(String url) {
@@ -68,10 +78,16 @@ public class LinkSpanController extends MultiSpanController<LinkSpanController.R
     protected RichURLSpan createSpan(Map<String, String> styleMap, Attributes attributes) {
         String href = attributes.getValue("href");
         String alt = attributes.getValue("alt");
-        Link link = new Link(href == null ? "" : href, alt == null ? "" : alt);
+        String title = attributes.getValue("title");
+        Link link = new Link(orEmpty(href), orEmpty(alt), orEmpty(title));
         RichURLSpan span = new RichURLSpan(link, inseparable);
         link.setSpan(span);
         return span;
+    }
+
+    @NonNull
+    private String orEmpty(String value) {
+        return value == null ? "" : value;
     }
 
     @Override
@@ -126,11 +142,14 @@ public class LinkSpanController extends MultiSpanController<LinkSpanController.R
 
         private String alt;
 
+        private String title;
+
         private RichURLSpan span;
 
-        public Link(String url, String alt) {
+        public Link(String url, String alt, String title) {
             this.url = url;
             this.alt = alt;
+            this.title = title;
         }
 
         public String getUrl() {
@@ -147,6 +166,14 @@ public class LinkSpanController extends MultiSpanController<LinkSpanController.R
 
         public void setAlt(String alt) {
             this.alt = alt;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
         }
 
         public RichURLSpan getSpan() {

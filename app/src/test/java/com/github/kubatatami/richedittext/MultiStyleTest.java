@@ -17,9 +17,9 @@ public class MultiStyleTest extends BaseTest {
     public void exportedHtmlShouldContainsUrlTag() {
         writer.write(editText, "This is link.");
         editText.setSelection(0, editText.length());
-        editText.addLink("alt", "www.example.com");
+        editText.addLink("www.example.com", "alt");
         editText.setSelection(editText.length());
-        editText.addLink("alt", "www.example.com");
+        editText.addLink("www.example.com", "alt");
         checkHtml("<a href=\"http://www.example.com\" alt=\"alt\">This is link.</a>" +
                 "<a href=\"http://www.example.com\" alt=\"alt\">www.example.com</a>");
     }

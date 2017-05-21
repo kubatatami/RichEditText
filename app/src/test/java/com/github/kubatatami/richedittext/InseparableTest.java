@@ -21,7 +21,7 @@ public class InseparableTest extends BaseTest {
     public void exportedHtmlShouldContainsValidTextVer2() {
         writer.write(editText, "This is normal text. ");
         editText.setLinkInseparable(true);
-        editText.addLink("alt", "example.com");
+        editText.addLink("example.com", "alt");
         checkHtml("This is normal text. <a href=\"http://example.com\" alt=\"alt\">example.com</a>");
     }
 
@@ -29,7 +29,7 @@ public class InseparableTest extends BaseTest {
     public void exportedHtmlShouldContainsValidTextVer3() {
         writer.write(editText, "This is normal text. ");
         editText.setLinkInseparable(true);
-        editText.addLink("alt", "example.com");
+        editText.addLink("example.com", "alt");
         writer.delete(editText);
         checkHtml("This is normal text. ");
     }

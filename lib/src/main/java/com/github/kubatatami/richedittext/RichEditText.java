@@ -116,10 +116,18 @@ public class RichEditText extends BaseRichEditText {
         multiClick(font, TypefaceSpanController.class);
     }
 
-    public LinkSpanController.Link addLink(String alt, String url) {
+    public LinkSpanController.Link addLink(String url) {
+        return addLink(url, "");
+    }
+
+    public LinkSpanController.Link addLink(String url, String alt) {
+        return addLink(url, alt, "");
+    }
+
+    public LinkSpanController.Link addLink(String url, String alt, String title) {
         int start = getSelectionStart();
         int stop = getSelectionEnd();
-        LinkSpanController.Link link = new LinkSpanController.Link(url, alt);
+        LinkSpanController.Link link = new LinkSpanController.Link(url, alt, title);
         if (start == stop) {
             getText().replace(getSelectionStart(), getSelectionEnd(), url);
             start = getSelectionStart() - url.length();

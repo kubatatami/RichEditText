@@ -136,7 +136,7 @@ public class TestActivity extends AppCompatActivity {
                 richEditText.addInseparable("[[inseparable]]");
                 break;
             case R.id.menu_add_link:
-                richEditText.addLink("", "http://www.google.pl");
+                richEditText.addLink("http://www.google.pl", "", "");
                 break;
             case R.id.menu_change_link:
                 if (richEditText.getCurrentLink() != null) {

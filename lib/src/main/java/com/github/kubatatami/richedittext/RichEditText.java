@@ -402,5 +402,4 @@ public class RichEditText extends BaseRichEditText {
     public void setLinkInseparable(boolean inseparable) {
         getModule(LinkSpanController.class).setInseparable(inseparable);
     }
-
 }

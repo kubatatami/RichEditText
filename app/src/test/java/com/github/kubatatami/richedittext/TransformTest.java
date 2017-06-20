@@ -21,4 +21,23 @@ public class TransformTest extends BaseTest {
         editText.setHtml("a <span style=\"text-transform: capitalize\">TEST</span> ok");
         checkHtml("a Test ok");
     }
+
+    @Test
+    public void importedHtmlShouldBeCapitalizeInsideLink() {
+        editText.setHtml("a <a href=\"http://google.com\" style=\"text-transform: capitalize\">TEST</a> ok");
+        checkHtml("a <a href=\"http://google.com\">Test</a> ok");
+    }
+
+    @Test
+    public void importedHtmlShouldBeLowerCaseAndUpperCase() {
+        editText.setHtml("<span style=\"text-transform:lowercase;\">TEST</span> a <span style=\"text-transform:uppercase;\">test</span> ok");
+        checkHtml("test a TEST ok");
+    }
+
+    @Test
+    public void importedHtmlShouldBeLowerCaseUpperCaseAndCapitalize() {
+        editText.setHtml("<span style=\"text-transform:lowercase;\">TEST</span> <span style=\"text-transform:capitalize;\">A</span>" +
+                " <span style=\"text-transform:uppercase;\">test</span> ok");
+        checkHtml("test A TEST ok");
+    }
 }

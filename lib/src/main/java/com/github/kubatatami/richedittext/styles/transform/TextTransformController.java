@@ -43,7 +43,7 @@ public abstract class TextTransformController<T extends TextTransformController.
 
     @Override
     public T createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if ("span".equals(tag) && transformValue.equals(styleMap.get("text-transform"))) {
+        if (transformValue.equals(styleMap.get("text-transform"))) {
             return createSpan();
         }
         return null;

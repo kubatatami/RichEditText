@@ -5,17 +5,20 @@ import android.text.Editable;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.style.AlignmentSpan;
+import android.view.Gravity;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.styles.base.LineSpanController;
 import com.github.kubatatami.richedittext.styles.base.RichSpan;
+import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
 import com.github.kubatatami.richedittext.styles.list.ListSpan;
 
 import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public class AlignmentSpanController extends LineSpanController<AlignmentSpanController.RichAlignmentSpanStandard, Layout.Alignment> {
+@SuppressLint("RtlHardcoded")
+public class AlignmentSpanController extends LineSpanController<AlignmentSpanController.RichAlignmentSpanStandard, Layout.Alignment> implements StartStyleProperty {
 
     private static final String TEXT_ALIGN = "text-align";
 
@@ -55,7 +58,19 @@ public class AlignmentSpanController extends LineSpanController<AlignmentSpanCon
 
     @Override
     public Layout.Alignment getDefaultValue(BaseRichEditText editText) {
-        return Layout.Alignment.ALIGN_NORMAL;
+        return translateGravityToLayoutAlignment(editText);
+    }
+
+    private Layout.Alignment translateGravityToLayoutAlignment(BaseRichEditText editText) {
+        switch (editText.getGravity() & Gravity.HORIZONTAL_GRAVITY_MASK) {
+            case Gravity.CENTER_HORIZONTAL:
+                return Layout.Alignment.ALIGN_CENTER;
+            case Gravity.RIGHT:
+                return Layout.Alignment.ALIGN_OPPOSITE;
+            default:
+            case Gravity.LEFT:
+                return Layout.Alignment.ALIGN_NORMAL;
+        }
     }
 
     @Override
@@ -133,6 +148,42 @@ public class AlignmentSpanController extends LineSpanController<AlignmentSpanCon
     @Override
     public void changeLineEnd(SpannableStringBuilder sb, String tag) {
 
+    }
+
+    @Override
+    public String createStyle(BaseRichEditText editText) {
+        return getStyleByGravity(editText.getGravity());
+    }
+
+    @Override
+    public boolean setPropertyFromTag(BaseRichEditText editText, Map<String, String> styleMap) {
+        if (styleMap.containsKey(TEXT_ALIGN)) {
+            switch (styleMap.get(TEXT_ALIGN)) {
+                case "center":
+                    editText.setGravity(Gravity.CENTER_HORIZONTAL);
+                    return true;
+                case "right":
+                    editText.setGravity(Gravity.RIGHT);
+                    return true;
+                default:
+                case "left":
+                    editText.setGravity(Gravity.LEFT);
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private static String getStyleByGravity(int gravity) {
+        switch (gravity & Gravity.HORIZONTAL_GRAVITY_MASK) {
+            case Gravity.CENTER_HORIZONTAL:
+                return TEXT_ALIGN + ": center;";
+            case Gravity.RIGHT:
+                return TEXT_ALIGN + ": right;";
+            default:
+            case Gravity.LEFT:
+                return "";
+        }
     }
 
     @SuppressLint("ParcelCreator")

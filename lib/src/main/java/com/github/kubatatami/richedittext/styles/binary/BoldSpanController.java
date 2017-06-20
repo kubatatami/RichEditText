@@ -16,10 +16,14 @@ public class BoldSpanController extends FontStyleSpanController {
     @Override
     public RichStyleSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
         if (tag.equals("b") || tag.equals("strong") ||
-                (tag.equals("span") && "bold".equals(styleMap.get("font-weight")))) {
+                isCssSpan(tag, styleMap)) {
             return new RichStyleSpan(typeface);
         }
         return null;
+    }
+
+    private boolean isCssSpan(String tag, Map<String, String> styleMap) {
+        return tag.equals("span") && ("bold".equals(styleMap.get("font-weight")) || "700".equals(styleMap.get("font-weight")));
     }
 
     @Override

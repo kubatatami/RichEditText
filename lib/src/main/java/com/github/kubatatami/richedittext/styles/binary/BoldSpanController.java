@@ -15,8 +15,7 @@ public class BoldSpanController extends FontStyleSpanController {
 
     @Override
     public RichStyleSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if (tag.equals("b") || tag.equals("strong") ||
-                isCssSpan(tag, styleMap)) {
+        if (tag.equals("b") || tag.equals("strong") || isCssSpan(tag, styleMap)) {
             return new RichStyleSpan(typeface);
         }
         return null;

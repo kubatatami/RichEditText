@@ -22,7 +22,17 @@ public class BoldSpanController extends FontStyleSpanController {
     }
 
     private boolean isCssSpan(String tag, Map<String, String> styleMap) {
-        return tag.equals("span") && ("bold".equals(styleMap.get("font-weight")) || "700".equals(styleMap.get("font-weight")));
+        if (tag.equals("span") && styleMap.containsKey("font-weight")) {
+            String value = styleMap.get("font-weight");
+            if ("bold".equals(value)) {
+                return true;
+            }
+            try {
+                return Integer.parseInt(value) >= 600;
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        return false;
     }
 
     @Override

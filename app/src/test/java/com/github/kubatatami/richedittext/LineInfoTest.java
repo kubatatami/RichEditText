@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class LineInfoTest extends BaseTest {
+public class LineInfoTest extends BaseWriterTest {
 
     public LineInfoTest(Writer writer) {
         super(writer);

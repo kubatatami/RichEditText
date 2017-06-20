@@ -127,7 +127,7 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
     }
 
     @Override
-    public void changeLineStart(SpannableStringBuilder sb, String tag) {
+    public void changeLineStart(SpannableStringBuilder sb, String tag, Map<String, String> styleMap) {
         if (tag.equals(tagName)) {
             if (sb.length() > 0 && sb.charAt(sb.length() - 1) != '\n') {
                 sb.append("\n");

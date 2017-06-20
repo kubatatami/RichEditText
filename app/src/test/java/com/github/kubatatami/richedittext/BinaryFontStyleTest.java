@@ -4,7 +4,7 @@ import com.github.kubatatami.richedittext.writer.Writer;
 
 import org.junit.Test;
 
-public class BinaryFontStyleTest extends BaseTest {
+public class BinaryFontStyleTest extends BaseWriterTest {
 
     public BinaryFontStyleTest(Writer writer) {
         super(writer);

@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class StyleSelectionInfoTest extends BaseTest {
+public class StyleSelectionInfoTest extends BaseWriterTest {
 
     public StyleSelectionInfoTest(Writer writer) {
         super(writer);

@@ -4,7 +4,7 @@ import com.github.kubatatami.richedittext.writer.Writer;
 
 import org.junit.Test;
 
-public class WriterTest extends BaseTest {
+public class WriterTest extends BaseWriterTest {
 
     public WriterTest(Writer writer) {
         super(writer);

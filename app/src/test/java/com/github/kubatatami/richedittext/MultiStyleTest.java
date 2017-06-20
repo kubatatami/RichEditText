@@ -7,7 +7,7 @@ import com.github.kubatatami.richedittext.writer.Writer;
 
 import org.junit.Test;
 
-public class MultiStyleTest extends BaseTest {
+public class MultiStyleTest extends BaseWriterTest {
 
     public MultiStyleTest(Writer writer) {
         super(writer);

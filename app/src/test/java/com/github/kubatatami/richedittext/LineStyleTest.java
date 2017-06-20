@@ -8,7 +8,7 @@ import static android.text.Layout.Alignment.ALIGN_CENTER;
 import static android.text.Layout.Alignment.ALIGN_NORMAL;
 import static android.text.Layout.Alignment.ALIGN_OPPOSITE;
 
-public class LineStyleTest extends BaseTest {
+public class LineStyleTest extends BaseWriterTest {
 
     public LineStyleTest(Writer writer) {
         super(writer);

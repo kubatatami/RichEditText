@@ -18,6 +18,9 @@ import com.github.kubatatami.richedittext.styles.multi.ColorSpanController;
 import com.github.kubatatami.richedittext.styles.multi.LinkSpanController;
 import com.github.kubatatami.richedittext.styles.multi.SizeSpanController;
 import com.github.kubatatami.richedittext.styles.multi.TypefaceSpanController;
+import com.github.kubatatami.richedittext.styles.transform.CapitalizeTextTransformController;
+import com.github.kubatatami.richedittext.styles.transform.LowercaseTextTransformController;
+import com.github.kubatatami.richedittext.styles.transform.UppercaseTextTransformController;
 
 public class RichEditText extends BaseRichEditText {
 
@@ -40,7 +43,14 @@ public class RichEditText extends BaseRichEditText {
         initBinary();
         initMulti();
         initList();
+        initTransform();
         registerProperty(new LineHeight());
+    }
+
+    private void initTransform() {
+        registerController(LowercaseTextTransformController.class, new LowercaseTextTransformController());
+        registerController(UppercaseTextTransformController.class, new UppercaseTextTransformController());
+        registerController(CapitalizeTextTransformController.class, new CapitalizeTextTransformController());
     }
 
     private void initList() {

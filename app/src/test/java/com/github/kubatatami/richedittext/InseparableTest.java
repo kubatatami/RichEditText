@@ -4,7 +4,7 @@ import com.github.kubatatami.richedittext.writer.Writer;
 
 import org.junit.Test;
 
-public class InseparableTest extends BaseTest {
+public class InseparableTest extends BaseWriterTest {
 
     public InseparableTest(Writer writer) {
         super(writer);

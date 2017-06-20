@@ -13,6 +13,7 @@ import org.junit.runners.Suite;
         ListTest.class,
         MultiStyleTest.class,
         StyleSelectionInfoTest.class,
+        TransformTest.class,
         WriterTest.class,
 })
 public class AllTests {

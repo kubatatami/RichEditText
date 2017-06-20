@@ -15,7 +15,7 @@ import org.robolectric.ParameterizedRobolectricTestRunner;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class ListTest extends BaseTest {
+public class ListTest extends BaseWriterTest {
 
     private final String tag;
 

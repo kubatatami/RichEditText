@@ -88,14 +88,6 @@ public class AlignmentSpanController extends LineSpanController<AlignmentSpanCon
     }
 
     @Override
-    public Class<?> spanFromEndTag(String tag) {
-        if (tag.equals("div") || tag.equals("span")) {
-            return clazz;
-        }
-        return null;
-    }
-
-    @Override
     public String beginTag(Object span, boolean continuation, Object[] spans) {
         return isInsideList(spans) ? "" : "<div style=\"" + beginStyle(span) + ";\">";
     }

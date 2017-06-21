@@ -42,14 +42,6 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
     }
 
     @Override
-    public Class<?> spanFromEndTag(String tag) {
-        if (tag.equals(tagName)) {
-            return clazz;
-        }
-        return null;
-    }
-
-    @Override
     public boolean isCssBlockElement() {
         return true;
     }

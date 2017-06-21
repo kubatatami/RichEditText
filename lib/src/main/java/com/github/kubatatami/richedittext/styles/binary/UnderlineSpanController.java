@@ -31,14 +31,6 @@ public class UnderlineSpanController extends BinaryFontSpanController<UnderlineS
         return containsStyle(styleMap, "text-decoration", "underline");
     }
 
-
-    public Class<?> spanFromEndTag(String tag) {
-        if (tag.equals("u") || tag.equals("span")) {
-            return clazz;
-        }
-        return null;
-    }
-
     @SuppressLint("ParcelCreator")
     public static class RichUnderlineSpan extends UnderlineSpan implements RichSpan {
 

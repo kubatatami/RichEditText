@@ -28,14 +28,6 @@ public class StrikeThroughSpanController extends BinaryFontSpanController<Strike
         return containsStyle(styleMap, "text-decoration", "line-through");
     }
 
-    @Override
-    public Class<?> spanFromEndTag(String tag) {
-        if (tag.equals("strike") || tag.equals("span")) {
-            return clazz;
-        }
-        return null;
-    }
-
     @SuppressLint("ParcelCreator")
     public static class RichStrikethroughSpan extends StrikethroughSpan implements RichSpan {
 

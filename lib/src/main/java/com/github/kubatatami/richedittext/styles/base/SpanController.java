@@ -96,13 +96,6 @@ public abstract class SpanController<T, Z> {
         this.onValueChangeListeners.clear();
     }
 
-    public Class<?> spanFromEndTag(String tag) {
-        if (tag.equals(tagName)) {
-            return clazz;
-        }
-        return null;
-    }
-
     public String endTag(Object span, boolean end, Object[] spans) {
         return "</" + tagName + ">";
     }

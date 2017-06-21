@@ -40,13 +40,6 @@ public class BoldSpanController extends FontStyleSpanController {
         return new RichBoldSpan();
     }
 
-    public Class<?> spanFromEndTag(String tag) {
-        if (tag.equals("b") || tag.equals("strong") || tag.equals("span")) {
-            return clazz;
-        }
-        return null;
-    }
-
     @SuppressLint("ParcelCreator")
     public static class RichBoldSpan extends RichStyleSpan {
 

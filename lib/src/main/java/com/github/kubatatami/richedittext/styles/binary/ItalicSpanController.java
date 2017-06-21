@@ -26,14 +26,6 @@ public class ItalicSpanController extends FontStyleSpanController {
         return new RichItalicSpan();
     }
 
-    @Override
-    public Class<?> spanFromEndTag(String tag) {
-        if (tag.equals("i") || tag.equals("span")) {
-            return clazz;
-        }
-        return null;
-    }
-
     @SuppressLint("ParcelCreator")
     public static class RichItalicSpan extends RichStyleSpan {
 

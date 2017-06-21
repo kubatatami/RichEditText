@@ -23,8 +23,10 @@ import org.xml.sax.XMLReader;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +50,8 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
     private final boolean strict;
 
     private final boolean standalone;
+
+    private Map<String, Deque<List<SpanController>>> controllersStack = new HashMap<>();
 
     private boolean firstTag = true;
 
@@ -150,9 +154,11 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
 
     private boolean handleTag(String tag, Attributes attributes, Map<String, String> styleMap) {
         boolean supported = false;
+        List<SpanController> spanControllerList = new ArrayList<>();
         for (SpanController<?, ?> spanController : mSpanControllers) {
             Object object = spanController.createSpanFromTag(tag, styleMap, attributes);
             if (object != null) {
+                spanControllerList.add(spanController);
                 if (spanController instanceof LineChangingController) {
                     ((LineChangingController) spanController).changeLineStart(mSpannableSb, tag, styleMap);
                 }
@@ -161,7 +167,17 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
                 firstTag = false;
             }
         }
+        if (supported) {
+            putToControllersStack(tag, spanControllerList);
+        }
         return supported;
+    }
+
+    private void putToControllersStack(String tag, List<SpanController> spanControllerList) {
+        if (!controllersStack.containsKey(tag)) {
+            controllersStack.put(tag, new ArrayDeque<List<SpanController>>());
+        }
+        controllersStack.get(tag).push(spanControllerList);
     }
 
     private boolean handleStartStyle(String tag, Map<String, String> styleMap) {
@@ -225,10 +241,9 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
     }
 
     private void handleEndTag(String tag) throws SAXException {
-        for (SpanController<?, ?> spanController : mSpanControllers) {
-            Class<?> spanClass = spanController.spanFromEndTag(tag);
-            if (spanClass != null) {
-                end(mSpannableSb, spanClass, spanController);
+        if (controllersStack.containsKey(tag) && controllersStack.get(tag).size() > 0) {
+            for (SpanController<?, ?> spanController : controllersStack.get(tag).pop()) {
+                end(mSpannableSb, spanController.getClazz(), spanController);
             }
         }
         for (SpanController<?, ?> spanController : mSpanControllers) {

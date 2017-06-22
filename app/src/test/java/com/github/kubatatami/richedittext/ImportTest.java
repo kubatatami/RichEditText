@@ -24,4 +24,16 @@ public class ImportTest extends BaseTest {
                 "<b><u><span style=\"color:rgb(255, 255, 255);\"><span style=\"font-size:48.0px;\">EFFECTIVE </span></span></u></b>" +
                 "<b><span style=\"color:rgb(255, 255, 255);\"><span style=\"font-size:48.0px;\">MARKETING TACTICS FORM EXPERTS</span></span></b>");
     }
+
+    @Test
+    public void testNamedColor() {
+        editText.setHtml("<span style=\"color:aliceblue;\">blue text</span>");
+        checkHtml("<span style=\"color:rgb(240, 248, 255);\">blue text</span>");
+    }
+
+    @Test
+    public void testWrongColor() {
+        editText.setHtml("<span style=\"color:00ff00;\">green text</span>");
+        checkHtml("<span style=\"color:rgb(0, 255, 0);\">green text</span>");
+    }
 }

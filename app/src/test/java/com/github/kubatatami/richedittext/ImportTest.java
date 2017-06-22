@@ -36,4 +36,10 @@ public class ImportTest extends BaseTest {
         editText.setHtml("<span style=\"color:00ff00;\">green text</span>");
         checkHtml("<span style=\"color:rgb(0, 255, 0);\">green text</span>");
     }
+
+    @Test
+    public void testLinkColor() {
+        editText.setHtml("<a href=\"google.com\" style=\"color:#0073b9\">Dig in!</a>");
+        checkHtml("<span style=\"color:rgb(0, 115, 185);\"><a href=\"http://google.com\">Dig in!</a></span>");
+    }
 }

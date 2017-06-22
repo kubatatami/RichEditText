@@ -42,11 +42,15 @@ public abstract class FontStyleSpanController<T, Z> extends MultiSpanController<
     }
 
     @Override
-    protected final T createSpan(Map<String, String> styleMap, Attributes attributes) {
+    public T createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
         if (styleMap.containsKey(styleName)) {
-            return createSpan(styleMap.get(styleName));
+            return createSpan(styleMap, attributes);
         }
         return null;
+    }
+
+    protected final T createSpan(Map<String, String> styleMap, Attributes attributes) {
+        return createSpan(styleMap.get(styleName));
     }
 
     public boolean setPropertyFromTag(BaseRichEditText editText, Map<String, String> styleMap) {

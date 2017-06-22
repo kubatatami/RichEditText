@@ -43,7 +43,7 @@ public class TransformTest extends BaseTest {
     @Test
     public void importedHtmlShouldBeCapitalizeInsideLinkWithManyStyle() {
         editText.setHtml("a <a href=\"http://google.com\" style=\"font-family:'Helvetica Neue',Helvetica,sans-serif;color:#ffffff;font-size:25px;font-weight:600;text-decoration:none; text-transform: capitalize\">TEST</a> ok");
-        checkHtml("a <a href=\"http://google.com\">Test</a> ok");
+        checkHtml("a <span style=\"color:rgb(255, 255, 255);\"><a href=\"http://google.com\"><span style=\"font-size:25.0px;\">Test</span></a></span> ok");
     }
 
     @Test

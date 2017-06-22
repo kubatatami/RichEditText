@@ -57,7 +57,7 @@ public class BackgroundColorSpanController extends FontStyleSpanController<Backg
 
     @Override
     protected RichBackgroundColorSpan createSpan(String styleValue) {
-        return new RichBackgroundColorSpan(HtmlUtils.parseColor(styleValue));
+        return new RichBackgroundColorSpan(HtmlUtils.parseColor(styleValue, Color.TRANSPARENT));
     }
 
     @Override

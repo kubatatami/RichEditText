@@ -44,12 +44,12 @@ public class ColorSpanController extends FontStyleSpanController<ColorSpanContro
 
     @Override
     protected void setDefaultProperty(BaseRichEditText editText, String style) {
-        editText.setTextColor(HtmlUtils.parseColor(style));
+        editText.setTextColor(HtmlUtils.parseColor(style, Color.BLACK));
     }
 
     @Override
     protected RichForegroundColorSpan createSpan(String styleValue) {
-        return new RichForegroundColorSpan(HtmlUtils.parseColor(styleValue));
+        return new RichForegroundColorSpan(HtmlUtils.parseColor(styleValue, Color.BLACK));
     }
 
     @Override

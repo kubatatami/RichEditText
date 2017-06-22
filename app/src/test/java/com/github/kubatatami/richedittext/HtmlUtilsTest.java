@@ -27,6 +27,6 @@ public class HtmlUtilsTest {
 
     private void test(int color) {
         String html = HtmlUtils.getColor(color);
-        assertEquals(HtmlUtils.parseColor(html), color);
+        assertEquals(HtmlUtils.parseColor(html, Color.BLACK), color);
     }
 }

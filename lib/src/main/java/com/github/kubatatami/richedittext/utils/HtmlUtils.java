@@ -19,7 +19,7 @@ public class HtmlUtils {
         return ((float) Color.alpha(color)) / 255f;
     }
 
-    public static int parseColor(String styleValue) {
+    public static int parseColor(String styleValue, int defaultColor) {
         try {
             if (styleValue.contains("#")) {
                 return Color.parseColor(styleValue);
@@ -37,11 +37,13 @@ public class HtmlUtils {
                         Integer.parseInt(values[1]),
                         Integer.parseInt(values[2]));
 
+            } else {
+                return Color.parseColor("#" + styleValue);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return 0;
+        return defaultColor;
     }
 
     @NonNull

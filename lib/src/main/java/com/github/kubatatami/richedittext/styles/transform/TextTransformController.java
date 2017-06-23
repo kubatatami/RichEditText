@@ -37,7 +37,7 @@ public abstract class TextTransformController<T extends TextTransformController.
     }
 
     @Override
-    public String beginTag(Object span, boolean continuation, Object[] spans) {
+    public ExportElement beginTag(Object span, boolean continuation, boolean end, Object[] spans) {
         return null;
     }
 

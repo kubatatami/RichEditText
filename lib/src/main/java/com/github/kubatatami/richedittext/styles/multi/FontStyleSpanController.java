@@ -8,6 +8,7 @@ import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
 
 import org.xml.sax.Attributes;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public abstract class FontStyleSpanController<T, Z> extends MultiSpanController<T, Z> implements StartStyleProperty {
@@ -21,24 +22,26 @@ public abstract class FontStyleSpanController<T, Z> extends MultiSpanController<
 
     @SuppressWarnings("unchecked")
     @Override
-    public String beginTag(Object span, boolean continuation, Object[] spans) {
+    public ExportElement beginTag(Object span, boolean continuation, boolean end, Object[] spans) {
         Z spanValue = getValueFromSpan((T) span);
-        String style = getStyle(spanValue);
+        final String style = getStyle(spanValue);
         if (style.length() > 0) {
-            return "<" + tagName + " style=\"" + style + ";\">";
+            return new ExportElement(tagName, tagName, true, new LinkedHashMap<String, String>() {{
+                put("style", style);
+            }});
         } else {
-            return "";
+            return null;
         }
     }
 
     @Override
     public String createStyle(BaseRichEditText editText) {
-        return getStyle(getDefaultValue(editText)) + ";";
+        return getStyle(getDefaultValue(editText));
     }
 
     @NonNull
     private String getStyle(Z spanValue) {
-        return styleName + ":" + getStyleValue(spanValue);
+        return styleName + ":" + getStyleValue(spanValue) + ";";
     }
 
     @Override

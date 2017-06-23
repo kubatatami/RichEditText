@@ -18,6 +18,7 @@ import org.xml.sax.Attributes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,10 +26,12 @@ public class TypefaceSpanController extends MultiSpanController<TypefaceSpanCont
 
     private static final String STYLE_NAME = "font-family";
 
+    private static final String TAG_NAME = "span";
+
     private static Map<String, Font> fontMap = new HashMap<>();
 
     public TypefaceSpanController() {
-        super(FontSpan.class, "span");
+        super(FontSpan.class, TAG_NAME);
     }
 
     @NonNull
@@ -80,9 +83,11 @@ public class TypefaceSpanController extends MultiSpanController<TypefaceSpanCont
     }
 
     @Override
-    public String beginTag(Object span, boolean continuation, Object[] spans) {
-        String[] familyValues = ((FontSpan) span).getTypeface().getFamilyValues();
-        return "<span style=\"" + STYLE_NAME + ": " + StringUtils.join(familyValues, ", ") + ";\">";
+    public ExportElement beginTag(Object span, boolean continuation, boolean end, Object[] spans) {
+        final String[] familyValues = ((FontSpan) span).getTypeface().getFamilyValues();
+        return new ExportElement(TAG_NAME, TAG_NAME, true, new LinkedHashMap<String, String>() {{
+            put("style", STYLE_NAME + ": " + StringUtils.join(familyValues, ", "));
+        }});
     }
 
     @Override

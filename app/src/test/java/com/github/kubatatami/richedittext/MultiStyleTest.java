@@ -33,9 +33,9 @@ public class MultiStyleTest extends BaseWriterTest {
         writer.write(editText, " Large red text.");
         editText.colorClick(Color.BLACK);
         writer.write(editText, " Large black text.");
-        checkHtml("Normal text.<span style=\"color:rgb(255, 0, 0);\"> Red text.</span><span style=\"color:rgb(255, 0, 0);\">" +
-                "<span style=\"font-size:18.0px;\"> Large red text.</span></span><span style=\"color:rgb(0, 0, 0);\">" +
-                "<span style=\"font-size:18.0px;\"> Large black text.</span></span>");
+        checkHtml("Normal text.<span style=\"color:rgb(255, 0, 0);\"> Red text.</span>" +
+                "<span style=\"color:rgb(255, 0, 0);font-size:18.0px;\"> Large red text.</span>" +
+                "<span style=\"color:rgb(0, 0, 0);font-size:18.0px;\"> Large black text.</span>");
     }
 
     @Test
@@ -48,9 +48,9 @@ public class MultiStyleTest extends BaseWriterTest {
         editText.colorClick(Color.BLACK);
         writer.write(editText, "LargeBlack1");
         writer.delete(editText);
-        checkHtml("Normal<span style=\"color:rgb(255, 0, 0);\">Red</span><span style=\"color:rgb(255, 0, 0);\">" +
-                "<span style=\"font-size:18.0px;\">LargeRed</span></span><span style=\"color:rgb(0, 0, 0);\">" +
-                "<span style=\"font-size:18.0px;\">LargeBlack</span></span>");
+        checkHtml("Normal<span style=\"color:rgb(255, 0, 0);\">Red</span>" +
+                "<span style=\"color:rgb(255, 0, 0);font-size:18.0px;\">LargeRed</span>" +
+                "<span style=\"color:rgb(0, 0, 0);font-size:18.0px;\">LargeBlack</span>");
     }
 
     @Test

@@ -13,10 +13,12 @@ import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
 import com.github.kubatatami.richedittext.styles.list.ListController;
 import com.github.kubatatami.richedittext.styles.list.ListSpan;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 public class HtmlExportModule {
 
@@ -82,35 +84,89 @@ public class HtmlExportModule {
 
     private void within(Class<?> clazz, StringBuilder out, EditText editText, int start, int end, WithinCallback withinCallback) {
         Editable text = editText.getText();
-
         int next;
         for (int i = start; i < end; i = next) {
             next = text.nextSpanTransition(i, end, clazz);
             Object[] spans = text.getSpans(i, next, clazz);
             spanSort(spans);
-            for (Object span : spans) {
-                SpanController<?, ?> controller = SpanUtil.acceptController(spanControllers, span);
-                if (controller != null && text.getSpanStart(span) != text.getSpanEnd(span)) {
-                    out.append(controller.beginTag(span, text.getSpanStart(span) != i, spans));
-                    insideCssBlockElement = controller.isCssBlockElement();
-                    if (controller instanceof ListController && ((ListController) controller).isListSpan(span)) {
-                        insideListElement = true;
-                    }
-                    if (controller instanceof ListController && ((ListController) controller).isListInternalSpan(span)) {
-                        insideInternalListElement = true;
-                    }
-                }
-            }
+            List<SpanController.ExportElement> allElements = new ArrayList<>();
+            List<SpanController.ExportElement> finalElements = new ArrayList<>();
+            createElements(text, allElements, i, next, spans);
+            optimizeElements(allElements, finalElements);
+            writeElements(out, finalElements);
+
             if (withinCallback != null && (!insideListElement || insideInternalListElement)) {
                 withinCallback.nextWithin(clazz, out, editText, i, next);
             }
             insideCssBlockElement = false;
             insideListElement = false;
             insideInternalListElement = false;
-            for (int j = spans.length - 1; j >= 0; j--) {
-                SpanController<?, ?> controller = SpanUtil.acceptController(spanControllers, spans[j]);
-                if (controller != null && text.getSpanStart(spans[j]) != text.getSpanEnd(spans[j])) {
-                    out.append(controller.endTag(spans[j], text.getSpanEnd(spans[j]) == next, spans));
+            writeEndElements(out, finalElements);
+        }
+    }
+
+    private void writeEndElements(StringBuilder out, List<SpanController.ExportElement> elements) {
+        for (int i = elements.size() - 1; i >= 0; i--) {
+            SpanController.ExportElement element = elements.get(i);
+            String tag = element.getEndTag();
+            if (tag != null) {
+                out.append("</").append(tag).append(">");
+            }
+        }
+    }
+
+    private void createElements(Editable text, List<SpanController.ExportElement> allElements, int start, int end, Object[] spans) {
+        for (Object span : spans) {
+            boolean continuation = text.getSpanStart(span) != start;
+            boolean spanEnd = text.getSpanEnd(span) == end;
+            SpanController<?, ?> controller = SpanUtil.acceptController(spanControllers, span);
+            if (controller != null && text.getSpanStart(span) != text.getSpanEnd(span)) {
+                SpanController.ExportElement element = controller.beginTag(span, continuation, spanEnd, spans);
+                if (element != null) {
+                    allElements.add(element);
+                }
+                insideCssBlockElement = controller.isCssBlockElement();
+                if (controller instanceof ListController && ((ListController) controller).isListSpan(span)) {
+                    insideListElement = true;
+                }
+                if (controller instanceof ListController && ((ListController) controller).isListInternalSpan(span)) {
+                    insideInternalListElement = true;
+                }
+            }
+        }
+    }
+
+    private void writeElements(StringBuilder out, List<SpanController.ExportElement> elements) {
+        for (SpanController.ExportElement element : elements) {
+            if (element.getTag() != null) {
+                out.append("<").append(element.getTag());
+                for (Map.Entry<String, String> entry : element.getAttrs().entrySet()) {
+                    out.append(" ").append(entry.getKey()).append("=\"").append(entry.getValue()).append("\"");
+                }
+                out.append(">");
+            }
+        }
+    }
+
+    private void optimizeElements(List<SpanController.ExportElement> allElements, List<SpanController.ExportElement> finalElements) {
+        for (SpanController.ExportElement element : allElements) {
+            if (!element.isTagOptional()) {
+                finalElements.add(element);
+            }
+        }
+        for (SpanController.ExportElement element : allElements) {
+            if (element.isTagOptional()) {
+                if (finalElements.size() == 0) {
+                    finalElements.add(element);
+                } else {
+                    Map<String, String> firstElementStyle = finalElements.get(0).getAttrs();
+                    for (Map.Entry<String, String> entry : element.getAttrs().entrySet()) {
+                        if (firstElementStyle.containsKey(entry.getKey())) {
+                            firstElementStyle.put(entry.getKey(), firstElementStyle.get(entry.getKey()) + entry.getValue());
+                        } else {
+                            firstElementStyle.put(entry.getKey(), entry.getValue());
+                        }
+                    }
                 }
             }
         }
@@ -191,7 +247,7 @@ public class HtmlExportModule {
         });
     }
 
-    public static int compareInt(int x, int y) {
+    private static int compareInt(int x, int y) {
         return (x < y) ? -1 : ((x == y) ? 0 : 1);
     }
 

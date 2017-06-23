@@ -10,6 +10,7 @@ import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import org.xml.sax.Attributes;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -88,17 +89,9 @@ public abstract class SpanController<T, Z> {
 
     public abstract void checkAfterChange(BaseRichEditText editText, StyleSelectionInfo styleSelectionInfo, boolean passive);
 
-    public abstract String beginTag(Object span, boolean continuation, Object[] spans);
+    public abstract ExportElement beginTag(Object span, boolean continuation, boolean end, Object[] spans);
 
     public abstract T createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes);
-
-    public void clearOnValueChangeListeners() {
-        this.onValueChangeListeners.clear();
-    }
-
-    public String endTag(Object span, boolean end, Object[] spans) {
-        return "</" + tagName + ">";
-    }
 
     protected boolean containsStyle(Map<String, String> styleMap, String key, String style) {
         String value = styleMap.get(key);
@@ -107,5 +100,43 @@ public abstract class SpanController<T, Z> {
 
     public String getTagName() {
         return tagName;
+    }
+
+    public static class ExportElement {
+        private final String tag;
+        private final boolean tagOptional;
+        private final Map<String, String> attrs;
+        private final String endTag;
+
+        public ExportElement(String tag) {
+            this(tag, tag, false, new LinkedHashMap<String, String>());
+        }
+
+        public ExportElement(String tag, String endTag) {
+            this(tag, endTag, false, new LinkedHashMap<String, String>());
+        }
+
+        public ExportElement(String tag, String endTag, boolean tagOptional, LinkedHashMap<String, String> attrs) {
+            this.tag = tag;
+            this.endTag = endTag;
+            this.tagOptional = tagOptional;
+            this.attrs = attrs;
+        }
+
+        public String getTag() {
+            return tag;
+        }
+
+        public boolean isTagOptional() {
+            return tagOptional;
+        }
+
+        public Map<String, String> getAttrs() {
+            return attrs;
+        }
+
+        public String getEndTag() {
+            return endTag;
+        }
     }
 }

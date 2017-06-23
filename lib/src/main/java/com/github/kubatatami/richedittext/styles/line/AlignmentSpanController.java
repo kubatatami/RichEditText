@@ -15,6 +15,7 @@ import com.github.kubatatami.richedittext.styles.list.ListSpan;
 
 import org.xml.sax.Attributes;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @SuppressLint("RtlHardcoded")
@@ -41,7 +42,7 @@ public class AlignmentSpanController extends LineSpanController<AlignmentSpanCon
                 alignValue = "left";
                 break;
         }
-        return TEXT_ALIGN + ": " + alignValue;
+        return TEXT_ALIGN + ": " + alignValue + ";";
     }
 
     @Override
@@ -88,8 +89,10 @@ public class AlignmentSpanController extends LineSpanController<AlignmentSpanCon
     }
 
     @Override
-    public String beginTag(Object span, boolean continuation, Object[] spans) {
-        return isInsideList(spans) ? "" : "<div style=\"" + beginStyle(span) + ";\">";
+    public ExportElement beginTag(final Object span, boolean continuation, boolean end, Object[] spans) {
+        return isInsideList(spans) ? null : new ExportElement("div", "div", false, new LinkedHashMap<String, String>() {{
+            put("style", beginStyle(span));
+        }});
     }
 
     private boolean isInsideList(Object[] spans) {
@@ -100,11 +103,6 @@ public class AlignmentSpanController extends LineSpanController<AlignmentSpanCon
             }
         }
         return insideList;
-    }
-
-    @Override
-    public String endTag(Object span, boolean end, Object[] spans) {
-        return isInsideList(spans) ? "" : super.endTag(span, end, spans);
     }
 
     @Override

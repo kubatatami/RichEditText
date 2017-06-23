@@ -14,6 +14,7 @@ import com.github.kubatatami.richedittext.styles.base.RichSpan;
 
 import org.xml.sax.Attributes;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class LinkSpanController extends MultiSpanController<LinkSpanController.RichURLSpan, LinkSpanController.Link> {
@@ -56,21 +57,21 @@ public class LinkSpanController extends MultiSpanController<LinkSpanController.R
     }
 
     @Override
-    public String beginTag(Object span, boolean continuation, Object[] spans) {
+    public ExportElement beginTag(Object span, boolean continuation, boolean end, Object[] spans) {
         RichURLSpan urlSpan = (RichURLSpan) span;
-        StringBuilder sb = new StringBuilder();
+        LinkedHashMap<String, String> attrs = new LinkedHashMap<>();
         Link urlModel = urlSpan.getUrlModel();
-        sb.append("<a href=\"").append(autoUrlFix(urlModel.getUrl())).append("\"");
+        attrs.put("href", autoUrlFix(urlModel.getUrl()));
         if (!urlModel.getAlt().isEmpty()) {
-            sb.append(" alt=\"").append(urlModel.getAlt()).append("\"");
+            attrs.put("alt", urlModel.getAlt());
         }
         if (!urlModel.getTitle().isEmpty()) {
-            sb.append(" title=\"").append(urlModel.getTitle()).append("\"");
+            attrs.put("title", urlModel.getTitle());
         }
-        return sb.append(">").toString();
+        return new ExportElement("a", "a", false, attrs);
     }
 
-    protected String autoUrlFix(String url) {
+    private String autoUrlFix(String url) {
         return !autoUrlFix || url.contains("://") || url.contains("mailto:") ? url : "http://" + url;
     }
 

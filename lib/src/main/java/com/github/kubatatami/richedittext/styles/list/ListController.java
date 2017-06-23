@@ -14,6 +14,7 @@ import com.github.kubatatami.richedittext.styles.line.AlignmentSpanController.Ri
 
 import org.xml.sax.Attributes;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,29 +66,24 @@ public class ListController<T extends ListItemSpan> extends BinarySpanController
     }
 
     @Override
-    public String beginTag(Object span, boolean continuation, Object[] spans) {
+    public ExportElement beginTag(Object span, boolean continuation, boolean end, Object[] spans) {
         if (span.getClass().equals(internalClazz)) {
-            RichAlignmentSpanStandard alignmentSpanStandard = getAlignment(spans);
+            final RichAlignmentSpanStandard alignmentSpanStandard = getAlignment(spans);
             if (alignmentSpanStandard != null) {
-                return "<" + LI + " style=\"" + AlignmentSpanController.beginStyle(alignmentSpanStandard) + "\">";
+                return new ExportElement(LI, LI, false, new LinkedHashMap<String, String>() {{
+                    put("style",  AlignmentSpanController.beginStyle(alignmentSpanStandard));
+                }});
             } else {
-                return "<" + LI + ">";
+                return new ExportElement(LI);
             }
+        } else if (continuation && !end) {
+            return null;
         } else if (continuation) {
-            return "";
-        } else {
-            return "<" + tagName + ">";
-        }
-    }
-
-    @Override
-    public String endTag(Object span, boolean end, Object[] spans) {
-        if (span.getClass().equals(internalClazz)) {
-            return "</" + LI + ">";
+            return new ExportElement(null, tagName);
         } else if (end) {
-            return "</" + tagName + ">";
+            return new ExportElement(tagName, tagName);
         } else {
-            return "";
+            return new ExportElement(tagName, null);
         }
     }
 

@@ -134,6 +134,11 @@ public class LinkSpanController extends MultiSpanController<LinkSpanController.R
         public boolean isEnabled() {
             return inseparable;
         }
+
+        @Override
+        public int getPriority() {
+            return PRIORITY_HIGH;
+        }
     }
 
     public static class Link {

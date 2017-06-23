@@ -7,10 +7,10 @@ import android.widget.EditText;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.other.SpanUtil;
+import com.github.kubatatami.richedittext.styles.base.RichSpan;
 import com.github.kubatatami.richedittext.styles.base.SpanController;
 import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
 import com.github.kubatatami.richedittext.styles.list.ListController;
-import com.github.kubatatami.richedittext.styles.list.ListItemSpan;
 import com.github.kubatatami.richedittext.styles.list.ListSpan;
 
 import java.util.Arrays;
@@ -181,14 +181,18 @@ public class HtmlExportModule {
         Arrays.sort(spans, new Comparator<Object>() {
             @Override
             public int compare(Object item1, Object item2) {
-                if (item2 instanceof ListItemSpan && !(item1 instanceof ListItemSpan)) {
-                    return -1;
-                } else if (item1 instanceof ListItemSpan && !(item2 instanceof ListItemSpan)) {
-                    return 1;
+                int item1Priority = item1 instanceof RichSpan ? ((RichSpan) item1).getPriority() : RichSpan.PRIORITY_NORMAL;
+                int item2Priority = item2 instanceof RichSpan ? ((RichSpan) item2).getPriority() : RichSpan.PRIORITY_NORMAL;
+                if (item1Priority == item2Priority) {
+                    return item1.getClass().getName().compareTo(item2.getClass().getName());
                 }
-                return item1.getClass().getName().compareTo(item2.getClass().getName());
+                return compareInt(item2Priority, item1Priority);
             }
         });
+    }
+
+    public static int compareInt(int x, int y) {
+        return (x < y) ? -1 : ((x == y) ? 0 : 1);
     }
 
     interface WithinCallback {

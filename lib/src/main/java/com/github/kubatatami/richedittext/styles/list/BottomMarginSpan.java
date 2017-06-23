@@ -29,4 +29,9 @@ public class BottomMarginSpan implements LineHeightSpan.WithDensity, UpdateLayou
     public void chooseHeight(CharSequence text, int start, int end, int spanstartv, int v, Paint.FontMetricsInt fm) {
 
     }
+
+    @Override
+    public int getPriority() {
+        return PRIORITY_NORMAL;
+    }
 }

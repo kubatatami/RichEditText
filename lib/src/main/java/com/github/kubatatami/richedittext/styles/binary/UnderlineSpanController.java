@@ -34,6 +34,10 @@ public class UnderlineSpanController extends BinaryFontSpanController<UnderlineS
     @SuppressLint("ParcelCreator")
     public static class RichUnderlineSpan extends UnderlineSpan implements RichSpan {
 
+        @Override
+        public int getPriority() {
+            return PRIORITY_NORMAL;
+        }
     }
 
 }

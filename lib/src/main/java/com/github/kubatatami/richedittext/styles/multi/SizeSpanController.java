@@ -118,5 +118,10 @@ public class SizeSpanController extends FontStyleSpanController<SizeSpanControll
         public Float getValue() {
             return value;
         }
+
+        @Override
+        public int getPriority() {
+            return PRIORITY_NORMAL;
+        }
     }
 }

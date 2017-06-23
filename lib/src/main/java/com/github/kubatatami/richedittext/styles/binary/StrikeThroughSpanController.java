@@ -31,5 +31,9 @@ public class StrikeThroughSpanController extends BinaryFontSpanController<Strike
     @SuppressLint("ParcelCreator")
     public static class RichStrikethroughSpan extends StrikethroughSpan implements RichSpan {
 
+        @Override
+        public int getPriority() {
+            return PRIORITY_NORMAL;
+        }
     }
 }

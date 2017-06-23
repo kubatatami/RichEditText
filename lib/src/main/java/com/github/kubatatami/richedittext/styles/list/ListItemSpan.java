@@ -48,4 +48,9 @@ public abstract class ListItemSpan implements LeadingMarginSpan, RichSpan {
     public void setIndex(int index) {
         this.index = index;
     }
+
+    @Override
+    public int getPriority() {
+        return PRIORITY_HIGH;
+    }
 }

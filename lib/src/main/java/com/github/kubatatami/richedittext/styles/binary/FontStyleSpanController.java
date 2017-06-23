@@ -111,5 +111,9 @@ public abstract class FontStyleSpanController extends BinaryFontSpanController<F
             apply(paint, style);
         }
 
+        @Override
+        public int getPriority() {
+            return PRIORITY_NORMAL;
+        }
     }
 }

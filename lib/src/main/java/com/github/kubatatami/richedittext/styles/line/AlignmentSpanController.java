@@ -184,5 +184,10 @@ public class AlignmentSpanController extends LineSpanController<AlignmentSpanCon
         public RichAlignmentSpanStandard(Layout.Alignment align) {
             super(align);
         }
+
+        @Override
+        public int getPriority() {
+            return PRIORITY_NORMAL;
+        }
     }
 }

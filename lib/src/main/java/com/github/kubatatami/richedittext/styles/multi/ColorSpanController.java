@@ -64,5 +64,10 @@ public class ColorSpanController extends FontStyleSpanController<ColorSpanContro
         public RichForegroundColorSpan(int color) {
             super(color);
         }
+
+        @Override
+        public int getPriority() {
+            return PRIORITY_NORMAL;
+        }
     }
 }

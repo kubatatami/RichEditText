@@ -72,5 +72,10 @@ public class BackgroundColorSpanController extends FontStyleSpanController<Backg
         public RichBackgroundColorSpan(int color) {
             super(color);
         }
+
+        @Override
+        public int getPriority() {
+            return PRIORITY_NORMAL;
+        }
     }
 }

@@ -41,4 +41,9 @@ public class ListSpan implements LeadingMarginSpan, RichSpan {
     public boolean isValid() {
         return validSpan;
     }
+
+    @Override
+    public int getPriority() {
+        return PRIORITY_HIGHER;
+    }
 }

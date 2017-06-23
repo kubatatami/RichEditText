@@ -71,7 +71,7 @@ public class LinkSpanController extends MultiSpanController<LinkSpanController.R
         return new ExportElement("a", "a", false, attrs);
     }
 
-    private String autoUrlFix(String url) {
+    protected String autoUrlFix(String url) {
         return !autoUrlFix || url.contains("://") || url.contains("mailto:") ? url : "http://" + url;
     }
 

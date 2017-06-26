@@ -1,5 +1,7 @@
 package com.github.kubatatami.richedittext.properties;
 
+import android.text.SpannableStringBuilder;
+
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.other.DimenUtil;
 import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
@@ -20,7 +22,7 @@ public class LineHeight implements StartStyleProperty {
     }
 
     @Override
-    public boolean setPropertyFromTag(BaseRichEditText editText, Map<String, String> styleMap) {
+    public boolean setPropertyFromTag(BaseRichEditText editText, SpannableStringBuilder builder, Map<String, String> styleMap) {
         String value = styleMap.get("line-height");
         if (value != null) {
             if (value.contains("px")) {

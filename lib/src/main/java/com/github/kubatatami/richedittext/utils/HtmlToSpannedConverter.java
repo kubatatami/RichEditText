@@ -73,11 +73,11 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         if (style != null) {
             Map<String, String> styleMap = getStyleStringMap(style);
             for (StartStyleProperty property : properties) {
-                property.setPropertyFromTag(baseRichEditText, styleMap);
+                property.setPropertyFromTag(baseRichEditText, mSpannableSb, styleMap);
             }
             for (SpanController<?, ?> spanController : mSpanControllers) {
                 if (spanController instanceof StartStyleProperty) {
-                    ((StartStyleProperty) spanController).setPropertyFromTag(baseRichEditText, styleMap);
+                    ((StartStyleProperty) spanController).setPropertyFromTag(baseRichEditText, mSpannableSb, styleMap);
                 }
             }
             standalone = false;
@@ -184,11 +184,11 @@ public class HtmlToSpannedConverter extends BaseContentHandler {
         if (standalone && tag.equals("div") && firstTag) {
             firstTag = false;
             for (StartStyleProperty property : properties) {
-                property.setPropertyFromTag(baseRichEditText, styleMap);
+                property.setPropertyFromTag(baseRichEditText, mSpannableSb, styleMap);
             }
             for (SpanController<?, ?> spanController : mSpanControllers) {
                 if (spanController instanceof StartStyleProperty) {
-                    ((StartStyleProperty) spanController).setPropertyFromTag(baseRichEditText, styleMap);
+                    ((StartStyleProperty) spanController).setPropertyFromTag(baseRichEditText, mSpannableSb, styleMap);
                 }
             }
             return true;

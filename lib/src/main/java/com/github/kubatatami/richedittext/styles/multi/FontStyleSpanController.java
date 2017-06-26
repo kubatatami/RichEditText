@@ -1,6 +1,7 @@
 package com.github.kubatatami.richedittext.styles.multi;
 
 import android.support.annotation.NonNull;
+import android.text.SpannableStringBuilder;
 
 import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.styles.base.MultiSpanController;
@@ -56,7 +57,7 @@ public abstract class FontStyleSpanController<T, Z> extends MultiSpanController<
         return createSpan(styleMap.get(styleName));
     }
 
-    public boolean setPropertyFromTag(BaseRichEditText editText, Map<String, String> styleMap) {
+    public boolean setPropertyFromTag(BaseRichEditText editText, SpannableStringBuilder builder, Map<String, String> styleMap) {
         if (styleMap.containsKey(styleName)) {
             setDefaultProperty(editText, styleMap.get(styleName));
             return true;

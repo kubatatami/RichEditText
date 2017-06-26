@@ -42,4 +42,10 @@ public class ImportTest extends BaseTest {
         editText.setHtml("<a href=\"google.com\" style=\"color:#0073b9\">Dig in!</a>");
         checkHtml("<span style=\"color:rgb(0, 115, 185);\"><a href=\"http://google.com\">Dig in!</a></span>");
     }
+
+    @Test
+    public void testBoldText() {
+        editText.setHtml("text", "font-weight: bold");
+        checkHtml("<b>text</b>");
+    }
 }

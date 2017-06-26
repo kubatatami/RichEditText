@@ -4,18 +4,22 @@ import android.annotation.SuppressLint;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.StyleSpan;
 
+import com.github.kubatatami.richedittext.BaseRichEditText;
 import com.github.kubatatami.richedittext.styles.base.BinaryFontSpanController;
 import com.github.kubatatami.richedittext.styles.base.RichSpan;
+import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
 import com.github.kubatatami.richedittext.styles.multi.TypefaceSpanController;
 
 import org.xml.sax.Attributes;
 
 import java.util.Map;
 
-public abstract class FontStyleSpanController extends BinaryFontSpanController<FontStyleSpanController.RichStyleSpan> {
+public abstract class FontStyleSpanController extends BinaryFontSpanController<FontStyleSpanController.RichStyleSpan> implements StartStyleProperty  {
 
     final int typeface;
 
@@ -50,6 +54,19 @@ public abstract class FontStyleSpanController extends BinaryFontSpanController<F
     }
 
     abstract RichStyleSpan createSpan();
+
+    public boolean setPropertyFromTag(BaseRichEditText editText, SpannableStringBuilder builder, Map<String, String> styleMap) {
+        if (styleMap.containsKey(styleName)) {
+            add(builder, 0, 0, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public String createStyle(BaseRichEditText editText) {
+        return "";
+    }
 
     @SuppressLint("ParcelCreator")
     public static class RichStyleSpan extends StyleSpan implements RichSpan {

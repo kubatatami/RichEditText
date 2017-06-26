@@ -146,7 +146,7 @@ public class AlignmentSpanController extends LineSpanController<AlignmentSpanCon
     }
 
     @Override
-    public boolean setPropertyFromTag(BaseRichEditText editText, Map<String, String> styleMap) {
+    public boolean setPropertyFromTag(BaseRichEditText editText, SpannableStringBuilder builder, Map<String, String> styleMap) {
         if (styleMap.containsKey(TEXT_ALIGN)) {
             switch (styleMap.get(TEXT_ALIGN)) {
                 case "center":

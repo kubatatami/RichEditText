@@ -89,7 +89,7 @@ public class AlignmentSpanController extends LineSpanController<AlignmentSpanCon
     }
 
     @Override
-    public ExportElement beginTag(final Object span, boolean continuation, boolean end, Object[] spans) {
+    public ExportElement createExportElement(final Object span, boolean continuation, boolean end, Object[] spans) {
         return isInsideList(spans) ? null : new ExportElement("div", "div", false, new LinkedHashMap<String, String>() {{
             put("style", beginStyle(span));
         }});

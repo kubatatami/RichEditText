@@ -89,7 +89,7 @@ public abstract class SpanController<T, Z> {
 
     public abstract void checkAfterChange(BaseRichEditText editText, StyleSelectionInfo styleSelectionInfo, boolean passive);
 
-    public abstract ExportElement beginTag(Object span, boolean continuation, boolean end, Object[] spans);
+    public abstract ExportElement createExportElement(Object span, boolean continuation, boolean end, Object[] spans);
 
     public abstract T createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes);
 

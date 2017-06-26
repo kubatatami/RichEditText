@@ -26,6 +26,9 @@ public class LineHeight implements StartStyleProperty {
             if (value.contains("px")) {
                 float valuePx = Float.parseFloat(value.replace("px", ""));
                 editText.setLineSpacing(DimenUtil.convertDpToPixel(valuePx), 0f);
+            } else if (value.contains("%")) {
+                float valuePercent = Float.parseFloat(value.replace("%", ""));
+                editText.setLineSpacing(0, valuePercent / 100f);
             } else {
                 editText.setLineSpacing(0, Float.parseFloat(value));
             }

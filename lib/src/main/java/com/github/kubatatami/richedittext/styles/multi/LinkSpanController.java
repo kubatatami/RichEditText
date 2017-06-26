@@ -57,7 +57,7 @@ public class LinkSpanController extends MultiSpanController<LinkSpanController.R
     }
 
     @Override
-    public ExportElement beginTag(Object span, boolean continuation, boolean end, Object[] spans) {
+    public ExportElement createExportElement(Object span, boolean continuation, boolean end, Object[] spans) {
         RichURLSpan urlSpan = (RichURLSpan) span;
         LinkedHashMap<String, String> attrs = new LinkedHashMap<>();
         Link urlModel = urlSpan.getUrlModel();

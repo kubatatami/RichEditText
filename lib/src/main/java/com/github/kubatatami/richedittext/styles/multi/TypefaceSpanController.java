@@ -83,7 +83,7 @@ public class TypefaceSpanController extends MultiSpanController<TypefaceSpanCont
     }
 
     @Override
-    public ExportElement beginTag(Object span, boolean continuation, boolean end, Object[] spans) {
+    public ExportElement createExportElement(Object span, boolean continuation, boolean end, Object[] spans) {
         final String[] familyValues = ((FontSpan) span).getTypeface().getFamilyValues();
         return new ExportElement(TAG_NAME, TAG_NAME, true, new LinkedHashMap<String, String>() {{
             put("style", STYLE_NAME + ": " + StringUtils.join(familyValues, ", "));

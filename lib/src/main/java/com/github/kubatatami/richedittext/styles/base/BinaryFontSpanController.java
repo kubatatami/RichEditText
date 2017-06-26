@@ -103,7 +103,7 @@ public abstract class BinaryFontSpanController<T> extends BinarySpanController<T
     }
 
     @Override
-    public ExportElement beginTag(Object span, boolean continuation, boolean end, Object[] spans) {
+    public ExportElement createExportElement(Object span, boolean continuation, boolean end, Object[] spans) {
         return new ExportElement(tagName);
     }
 

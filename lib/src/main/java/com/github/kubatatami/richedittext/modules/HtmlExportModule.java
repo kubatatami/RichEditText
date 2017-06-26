@@ -121,7 +121,7 @@ public class HtmlExportModule {
             boolean spanEnd = text.getSpanEnd(span) == end;
             SpanController<?, ?> controller = SpanUtil.acceptController(spanControllers, span);
             if (controller != null && text.getSpanStart(span) != text.getSpanEnd(span)) {
-                SpanController.ExportElement element = controller.beginTag(span, continuation, spanEnd, spans);
+                SpanController.ExportElement element = controller.createExportElement(span, continuation, spanEnd, spans);
                 if (element != null) {
                     allElements.add(element);
                 }

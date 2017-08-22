@@ -25,13 +25,10 @@ public abstract class FontStyleSpanController extends BinaryFontSpanController<F
 
     private final String styleName;
 
-    private final String styleValue;
-
-    public FontStyleSpanController(int typeface, String tagName, String styleName, String styleValue) {
+    public FontStyleSpanController(int typeface, String tagName, String styleName) {
         super(RichStyleSpan.class, tagName);
         this.typeface = typeface;
         this.styleName = styleName;
-        this.styleValue = styleValue;
     }
 
     @Override

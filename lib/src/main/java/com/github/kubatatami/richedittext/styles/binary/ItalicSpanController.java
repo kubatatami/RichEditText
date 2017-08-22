@@ -10,12 +10,12 @@ import java.util.Map;
 public class ItalicSpanController extends FontStyleSpanController {
 
     public ItalicSpanController() {
-        super(Typeface.ITALIC, "i", "font-style", "italic");
+        super(Typeface.ITALIC, "i", "font-style");
     }
 
     @Override
     public RichStyleSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if (tag.equals("i") || (tag.equals("span") && "italic".equals(styleMap.get("font-style")))) {
+        if (tag.equals("i") || "italic".equals(styleMap.get("font-style"))) {
             return new RichStyleSpan(typeface);
         }
         return null;

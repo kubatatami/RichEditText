@@ -10,19 +10,19 @@ import java.util.Map;
 public class BoldSpanController extends FontStyleSpanController {
 
     public BoldSpanController() {
-        super(Typeface.BOLD, "b", "font-weight", "bold");
+        super(Typeface.BOLD, "b", "font-weight");
     }
 
     @Override
     public RichStyleSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if (tag.equals("b") || tag.equals("strong") || isCssSpan(tag, styleMap)) {
+        if (tag.equals("b") || tag.equals("strong") || isCssTag(styleMap)) {
             return new RichStyleSpan(typeface);
         }
         return null;
     }
 
-    private boolean isCssSpan(String tag, Map<String, String> styleMap) {
-        if (tag.equals("span") && styleMap.containsKey("font-weight")) {
+    private boolean isCssTag(Map<String, String> styleMap) {
+        if (styleMap.containsKey("font-weight")) {
             String value = styleMap.get("font-weight");
             if ("bold".equals(value)) {
                 return true;

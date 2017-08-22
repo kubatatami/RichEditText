@@ -82,7 +82,7 @@ public class AlignmentSpanController extends LineSpanController<AlignmentSpanCon
     @Override
     public RichAlignmentSpanStandard createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
         if ((tag.equals("div") && styleMap.containsKey(TEXT_ALIGN))
-                || (tag.equals("span") && styleMap.containsKey(TEXT_ALIGN) && "block".equals(styleMap.get("display")))) {
+                || "block".equals(styleMap.get("display"))) {
             return createSpan(styleMap, attributes);
         }
         return null;

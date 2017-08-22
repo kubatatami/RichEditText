@@ -18,7 +18,7 @@ public class StrikeThroughSpanController extends BinaryFontSpanController<Strike
 
     @Override
     public RichStrikethroughSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if (tag.equals("strike") || (tag.equals("span") && containsStrikeTroughStyle(styleMap))) {
+        if (tag.equals("strike") || containsStrikeTroughStyle(styleMap)) {
             return new RichStrikethroughSpan();
         }
         return null;

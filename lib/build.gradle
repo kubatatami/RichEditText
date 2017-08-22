@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'android-maven'
 
+group='com.github.kubatatami'
+
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.1"
@@ -26,22 +28,26 @@ dependencies {
 }
 
 
-task androidJavadocs(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-}
-
-task androidJavadocsJar(type: Jar) {
-    classifier = 'javadoc'
-    from androidJavadocs.destinationDir
-}
-
-task androidSourcesJar(type: Jar) {
-    classifier = 'sources'
+// build a jar with source files
+task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    failOnError  false
+    source = android.sourceSets.main.java.sourceFiles
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.compile
+}
+
+// build a jar with javadoc
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
 }
 
 artifacts {
-//    archives packageReleaseJar
-    archives androidSourcesJar
-    archives androidJavadocsJar
+    archives sourcesJar
+    archives javadocJar
 }

@@ -13,7 +13,7 @@ import org.robolectric.shadows.ShadowLog;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 22, packageName = "com.github.kubatatami.richedittext.example")
+@Config(constants = BuildConfig.class, packageName = "com.github.kubatatami.richedittext.example")
 public class BaseTest {
 
     RichEditText editText;
@@ -23,7 +23,7 @@ public class BaseTest {
         ShadowLog.stream = System.out;
         TestActivity activity = Robolectric.setupActivity(TestActivity.class);
         activity.setLivePreview(false);
-        editText = (RichEditText) activity.findViewById(com.github.kubatatami.richedittext.example.R.id.rich_edit_text);
+        editText = activity.findViewById(com.github.kubatatami.richedittext.example.R.id.rich_edit_text);
         editText.setText("");
         editText.setSelection(0);
     }

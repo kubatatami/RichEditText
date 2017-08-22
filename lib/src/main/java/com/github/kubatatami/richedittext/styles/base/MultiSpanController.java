@@ -168,13 +168,6 @@ public abstract class MultiSpanController<T, Z> extends SpanController<T, Z> {
         }
     }
 
-    public T createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if (tag.equals(tagName)) {
-            return createSpan(styleMap, attributes);
-        }
-        return null;
-    }
-
     protected abstract T createSpan(Map<String, String> styleMap, Attributes attributes);
 
     protected abstract Z getDefaultValue(BaseRichEditText editText);

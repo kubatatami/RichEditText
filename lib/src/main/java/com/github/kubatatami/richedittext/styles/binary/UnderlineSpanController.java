@@ -19,9 +19,7 @@ public class UnderlineSpanController extends BinaryFontSpanController<UnderlineS
 
     @Override
     public RichUnderlineSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if (tag.equals("u")) {
-            return new RichUnderlineSpan();
-        } else if (containsUnderlineStyle(styleMap)) {
+        if (tag.equals("u") || containsUnderlineStyle(styleMap)) {
             return new RichUnderlineSpan();
         }
         return null;

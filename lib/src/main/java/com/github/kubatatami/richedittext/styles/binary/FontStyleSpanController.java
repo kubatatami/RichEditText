@@ -15,8 +15,6 @@ import com.github.kubatatami.richedittext.styles.base.RichSpan;
 import com.github.kubatatami.richedittext.styles.base.StartStyleProperty;
 import com.github.kubatatami.richedittext.styles.multi.TypefaceSpanController;
 
-import org.xml.sax.Attributes;
-
 import java.util.Map;
 
 public abstract class FontStyleSpanController extends BinaryFontSpanController<FontStyleSpanController.RichStyleSpan> implements StartStyleProperty  {
@@ -29,14 +27,6 @@ public abstract class FontStyleSpanController extends BinaryFontSpanController<F
         super(RichStyleSpan.class, tagName);
         this.typeface = typeface;
         this.styleName = styleName;
-    }
-
-    @Override
-    public FontStyleSpanController.RichStyleSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if (tag.equals(tagName)) {
-            return new RichStyleSpan(typeface);
-        }
-        return null;
     }
 
     public boolean acceptSpan(Object span) {

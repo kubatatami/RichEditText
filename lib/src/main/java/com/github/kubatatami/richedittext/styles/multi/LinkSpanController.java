@@ -106,6 +106,13 @@ public class LinkSpanController extends MultiSpanController<LinkSpanController.R
 
     }
 
+    public LinkSpanController.RichURLSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
+        if (tag.equals(tagName)) {
+            return createSpan(styleMap, attributes);
+        }
+        return null;
+    }
+
     public void setInseparable(boolean inseparable) {
         this.inseparable = inseparable;
     }

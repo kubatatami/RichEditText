@@ -126,6 +126,13 @@ public class TypefaceSpanController extends MultiSpanController<TypefaceSpanCont
         return font.replaceAll("'", "").replaceAll("\"", "").trim();
     }
 
+    public TypefaceSpanController.FontSpan createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
+        if (styleMap.containsKey(STYLE_NAME)) {
+            return createSpan(styleMap, attributes);
+        }
+        return null;
+    }
+
     @Override
     public String getDebugValueFromSpan(FontSpan span) {
         return getValueFromSpan(span).getFontName();

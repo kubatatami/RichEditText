@@ -6,10 +6,7 @@ import android.text.Spanned;
 import com.github.kubatatami.richedittext.modules.StyleSelectionInfo;
 import com.github.kubatatami.richedittext.other.SpanUtil;
 
-import org.xml.sax.Attributes;
-
 import java.util.List;
-import java.util.Map;
 
 public abstract class BinaryFontSpanController<T> extends BinarySpanController<T> {
 
@@ -88,18 +85,6 @@ public abstract class BinaryFontSpanController<T> extends BinarySpanController<T
 
     private void endNow(Editable editable, T span) {
         SpanUtil.changeFlags(span, editable, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-    }
-
-    @Override
-    public T createSpanFromTag(String tag, Map<String, String> styleMap, Attributes attributes) {
-        if (tag.equals(tagName)) {
-            try {
-                return clazz.newInstance();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return null;
     }
 
     @Override

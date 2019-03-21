@@ -39,7 +39,7 @@ public class ComposingSpanFactory extends Editable.Factory {
                         removeSpan(span);
                         boolean modified = replaceInternal(start + offset, end, tb, tbstart + offset, tbend);
                         if (!modified) {
-                            setSpan(span, start, start + tbend, flags);
+                            setSpan(span, start, Math.min(length(), start + tbend), flags);
                         }
                     } else {
                         replaceInternal(start + offset, end, tb, tbstart + offset, tbend);

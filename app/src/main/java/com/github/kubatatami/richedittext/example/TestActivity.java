@@ -54,12 +54,12 @@ public class TestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        richEditText = (RichEditText) findViewById(R.id.rich_edit_text);
-        richEditTextPreview = (RichEditText) findViewById(R.id.rich_edit_text_preview);
-        panelView = (DefaultPanelView) findViewById(R.id.panel);
-        webView = (WebView) findViewById(R.id.webview);
-        htmlView = (TextView) findViewById(R.id.html);
-        Button sendButton = (Button) findViewById(R.id.send_button);
+        richEditText = findViewById(R.id.rich_edit_text);
+        richEditTextPreview = findViewById(R.id.rich_edit_text_preview);
+        panelView = findViewById(R.id.panel);
+        webView = findViewById(R.id.webview);
+        htmlView = findViewById(R.id.html);
+        Button sendButton = findViewById(R.id.send_button);
         webView.setWebChromeClient(new WebChromeClient());
         webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
         richEditTextPreview.setHistoryEnabled(false);

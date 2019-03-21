@@ -4,12 +4,11 @@ apply plugin: 'android-maven'
 group='com.github.kubatatami'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -23,8 +22,8 @@ android {
 
 dependencies {
     compile 'org.ccil.cowan.tagsoup:tagsoup:1.2.1'
-    compile 'com.android.support:support-v4:26.0.1'
-    compile 'com.android.support:appcompat-v7:26.0.1'
+    compile 'com.android.support:support-v4:28.0.0'
+    compile 'com.android.support:appcompat-v7:28.0.0'
 }
 
 

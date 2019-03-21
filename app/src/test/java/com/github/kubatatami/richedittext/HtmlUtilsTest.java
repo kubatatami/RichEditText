@@ -12,7 +12,7 @@ import org.robolectric.annotation.Config;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 22, packageName = "com.github.kubatatami.richedittext.example")
+@Config(sdk = 22, packageName = "com.github.kubatatami.richedittext.example")
 public class HtmlUtilsTest {
 
     @Test
